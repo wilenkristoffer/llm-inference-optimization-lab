@@ -1,0 +1,28 @@
+# Third-party binaries. LibreHardwareMonitor is downloaded, not authored here,
+# and ships without a licence file in the zip. See README for how to fetch it.
+tools/
+
+# Generated experiment data. Regenerate with 05_benchmark.py.
+# To commit a snapshot deliberately: git add -f lab.db
+lab.db
+*.db-journal
+*.db-wal
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Logs and scratch
+*.log
+scratch/
+tmp/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
