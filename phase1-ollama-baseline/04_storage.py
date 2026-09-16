@@ -72,6 +72,12 @@ CREATE TABLE IF NOT EXISTS inference_runs (
     -- HARDWARE, all nullable ----------------------------------------------
     -- On AMD + Windows most of these are unavailable. NULL means unavailable,
     -- and the UI must render it as "unavailable", not as zero.
+    -- Concurrency experiments. Every row of one concurrent batch carries the
+    -- same batch_wall_ms, so aggregate throughput is recoverable later as
+    -- SUM(output_tokens) / batch_wall_ms rather than only living in a printout.
+    concurrency         INTEGER,
+    batch_wall_ms       REAL,
+
     hardware_id         TEXT,
     cpu_percent         REAL,
     system_ram_used_mb  REAL,
@@ -97,6 +103,8 @@ CREATE INDEX IF NOT EXISTS idx_runs_compare ON inference_runs(model, backend, qu
 MIGRATIONS = {
     "gpu_clock_mhz": "REAL",
     "cpu_temp_c": "REAL",
+    "concurrency": "INTEGER",
+    "batch_wall_ms": "REAL",
 }
 
 

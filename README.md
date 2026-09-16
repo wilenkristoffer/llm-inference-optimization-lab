@@ -61,6 +61,23 @@ weights, FP16, same chat template, same OpenAI-compatible interface:
 | Ollama | 121 tok/s | 375 GB/s | 60% |
 | vLLM | 153 tok/s | 472 GB/s | 76% |
 
+**But vLLM's batching hits a wall at 4 sequences on this GPU.** Aggregate
+throughput, 300-token requests:
+
+| concurrency | vLLM | Ollama |
+|---|---|---|
+| 1 | 148.9 tok/s | 120.3 tok/s |
+| 2 | 287.0 | 194.3 |
+| 4 | **563.0** | 388.8 |
+| 8 | 563.8 | **647.9** |
+
+vLLM serves four sequences in the time it serves one (batch step 6.65 → 6.97 ms
+— 4x the work for 5% more latency). At batch 8 its step time doubles and
+aggregate stops dead, so Ollama overtakes it. vLLM's own `/metrics` rule out
+the serving logic: all 8 sequences running, nothing queued, KV cache 1% full,
+zero preemptions. Since Ollama reaches 648 tok/s on the same card, the ceiling
+is a kernel limit in vLLM's ROCm path on RDNA3, not a hardware one.
+
 **The KV cache is not free.** For qwen2.5:1.5b it costs ~28 KB per token, so a
 32k context needs ~917 MB — about the size of the model itself. Ollama
 preallocates `num_ctx x num_parallel` at load time whether you use it or not.
@@ -79,8 +96,10 @@ phase1-ollama-baseline/   raw request -> streaming/TTFT -> repeated trials
                           -> SQLite storage -> benchmark harness
                           -> hardware sampler
 phase2-model-serving/     API surface and chat templates; concurrency/batching
-phase3-vllm/              backend-agnostic OpenAI-compatible client
-docs/                     per-phase technical notes
+phase3-vllm/              OpenAI-compatible client -> matched backend benchmark
+                          -> concurrency sweep -> vLLM /metrics diagnostics
+docs/                     per-phase technical notes, including the WSL2 + ROCm
+                          setup that gets vLLM running on consumer AMD
 ```
 
 Files are numbered in the order they were built. Each one exists to teach a
@@ -146,7 +165,12 @@ scaling predictions. Those are kept deliberately; they are the useful part.
 
 ## Status
 
-Phases 1 and 2 are complete and documented. Phase 3 (vLLM) is in progress —
-the backend comparison runs, the concurrency comparison does not yet.
-Quantization, GPU environments, Docker, optimization and a final benchmark are
-planned but not built.
+Phases 1-3 are complete and documented: Ollama baseline and instrumentation,
+model serving and batching, and a matched Ollama-vs-vLLM comparison including
+the concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics.
+
+Quantization, GPU environments, Docker, further optimization and a final
+benchmark are planned but not built. Known gaps are listed at the end of each
+phase document — the largest are that `gpu_vram_used_mb` is board-wide rather
+than model-attributable, and that kernel profiling is unavailable in this
+environment because `rocprof` had to be disabled to get vLLM running under WSL.
