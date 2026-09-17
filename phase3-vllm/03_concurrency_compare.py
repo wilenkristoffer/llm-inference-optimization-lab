@@ -137,6 +137,11 @@ def sweep(name, cfg, levels, notes, conn):
     print(f"{name}  ({cfg['model']} @ {cfg['base_url']})")
     print("=" * 80)
 
+    # Before the warm-up: the availability probe is also the VRAM baseline,
+    # and the warm-up is what loads the model.
+    hw = sampler_mod.HardwareSampler(interval=0.15)
+    baseline_vram = hw.baseline_vram_mb()
+
     try:
         client.run_once(cfg["base_url"], cfg["model"], max_tokens=MAX_TOKENS)
     except Exception as exc:
@@ -148,7 +153,6 @@ def sweep(name, cfg, levels, notes, conn):
     run_group = (f"conc|{name}|{cfg['model']}|"
                  f"{datetime.now(timezone.utc):%Y%m%dT%H%M%S}")
 
-    hw = sampler_mod.HardwareSampler(interval=0.15)
     if not hw.available:
         print("WARNING: LibreHardwareMonitor unreachable - hardware columns NULL")
 
@@ -193,6 +197,7 @@ def sweep(name, cfg, levels, notes, conn):
                     gpu_power_w=s.get("gpu_power_w_mean"),
                     gpu_temp_c=s.get("gpu_temp_c_peak"),
                     gpu_vram_used_mb=s.get("gpu_vram_used_mb_peak"),
+                    gpu_vram_baseline_mb=baseline_vram,
                     cpu_percent=s.get("cpu_percent_mean"),
                     system_ram_used_mb=(ram_gb * 1024) if ram_gb else None,
                     hardware_id=HARDWARE_ID, notes=notes,

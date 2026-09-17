@@ -98,6 +98,8 @@ phase1-ollama-baseline/   raw request -> streaming/TTFT -> repeated trials
 phase2-model-serving/     API surface and chat templates; concurrency/batching
 phase3-vllm/              OpenAI-compatible client -> matched backend benchmark
                           -> concurrency sweep -> vLLM /metrics diagnostics
+phase4-observability/     read-only JSON API over lab.db, backend process
+                          control, and a React + TypeScript UI
 docs/                     per-phase technical notes, including the WSL2 + ROCm
                           setup that gets vLLM running on consumer AMD
 ```
@@ -121,6 +123,21 @@ python phase2-model-serving/02_concurrency.py --levels 1,2,4,8
 
 Results persist to `lab.db` (SQLite), which is gitignored — regenerate it by
 running the benchmark.
+
+### The observability UI
+
+```bash
+python phase4-observability/api.py              # 127.0.0.1:8010
+cd phase4-observability/ui && npm install && npm run dev   # localhost:5173
+```
+
+Dashboard, a filterable/sortable runs table with drill-down, comparison charts,
+and start/stop control for both backends with readiness polling — so swapping
+Ollama for vLLM is one click instead of three terminals.
+
+Open the UI on `localhost:5173`, not `127.0.0.1:5173`: Vite binds IPv6-only,
+which is the exact mirror of Ollama binding IPv4-only. Both facts cost time to
+discover and are documented in `docs/`.
 
 ### Hardware telemetry (optional)
 
@@ -165,9 +182,10 @@ scaling predictions. Those are kept deliberately; they are the useful part.
 
 ## Status
 
-Phases 1-3 are complete and documented: Ollama baseline and instrumentation,
-model serving and batching, and a matched Ollama-vs-vLLM comparison including
-the concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics.
+Phases 1-4 are complete and documented: Ollama baseline and instrumentation,
+model serving and batching, a matched Ollama-vs-vLLM comparison including the
+concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics, and
+an observability API and UI over the results.
 
 Quantization, GPU environments, Docker, further optimization and a final
 benchmark are planned but not built. Known gaps are listed at the end of each

@@ -105,7 +105,63 @@ MIGRATIONS = {
     "cpu_temp_c": "REAL",
     "concurrency": "INTEGER",
     "batch_wall_ms": "REAL",
+    # Board VRAM BEFORE this run's workload, so the UI can show
+    # (gpu_vram_used_mb - gpu_vram_baseline_mb) instead of a board-wide total
+    # that includes the desktop and browser.
+    "gpu_vram_baseline_mb": "REAL",
+    # Canonical identity for "the same weights", across backends that name
+    # them differently. Derived, not typed in - see canonical_model().
+    "model_key": "TEXT",
 }
+
+
+# Backends name identical weights differently:
+#
+#   qwen2.5:1.5b                  Ollama, Q4_K_M  (Ollama's default tag IS the
+#                                                  instruct model, unlabelled)
+#   qwen2.5:1.5b-instruct-fp16    Ollama, FP16
+#   qwen2.5-1.5b-instruct         vLLM,   FP16
+#
+# Grouping a comparison by `model` would treat the last two as different
+# models when they are the same weights on different runtimes. model_key
+# collapses them; `quantization` still separates FP16 from Q4_K_M.
+#
+# An explicit table, not a clever rule: "qwen2.5:1.5b" cannot be known to be
+# the instruct variant from its name alone, and guessing wrong here corrupts
+# every comparison downstream.
+MODEL_ALIASES = {
+    "qwen2.5:1.5b": "qwen2.5-1.5b-instruct",
+    "qwen2.5:1.5b-instruct-fp16": "qwen2.5-1.5b-instruct",
+    "qwen2.5-1.5b-instruct": "qwen2.5-1.5b-instruct",
+    "qwen2.5:3b": "qwen2.5-3b-instruct",
+    "qwen2.5:7b": "qwen2.5-7b-instruct",
+    "qwen2.5:14b": "qwen2.5-14b-instruct",
+    "qwen2.5:32b": "qwen2.5-32b-instruct",
+}
+
+_PRECISION_SUFFIXES = ("-fp16", "-f16", "-bf16", "-fp32", "-f32",
+                       "-q8_0", "-q6_k", "-q5_k_m", "-q4_k_m", "-q4_0")
+
+
+def canonical_model(name):
+    """
+    Map a backend-specific model name onto a canonical identity.
+
+    Known names come from MODEL_ALIASES. Anything else falls back to a
+    conservative normalisation - lowercase, ':' to '-', drop a trailing
+    precision suffix - which keeps new models usable without silently
+    asserting that two differently-named things are the same weights.
+    """
+    if not name:
+        return None
+    if name in MODEL_ALIASES:
+        return MODEL_ALIASES[name]
+    key = name.lower().replace(":", "-")
+    for suffix in _PRECISION_SUFFIXES:
+        if key.endswith(suffix):
+            key = key[: -len(suffix)]
+            break
+    return key
 
 
 def _migrate(conn):
@@ -132,6 +188,10 @@ def record_run(conn, **fields):
     whole point - we never invent a value we did not measure.
     """
     fields.setdefault("timestamp_utc", datetime.now(timezone.utc).isoformat())
+    # Derived here rather than in each harness, so no caller can forget it and
+    # no caller can disagree with another about what the same model is called.
+    if fields.get("model") and not fields.get("model_key"):
+        fields["model_key"] = canonical_model(fields["model"])
     columns = ", ".join(fields)
     placeholders = ", ".join("?" for _ in fields)
     cursor = conn.execute(

@@ -8,6 +8,12 @@ lab.db
 *.db-journal
 *.db-wal
 
+# Frontend build artefacts. package.json and package-lock.json ARE committed
+# so the UI is reproducible; node_modules is not.
+node_modules/
+dist/
+.vite/
+
 # Python
 __pycache__/
 *.py[cod]

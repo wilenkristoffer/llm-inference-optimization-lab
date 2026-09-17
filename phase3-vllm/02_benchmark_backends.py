@@ -148,6 +148,11 @@ def bench(name, cfg, n_trials, quantization_hint, notes, conn):
     print(f"{name}  ({cfg['model']} @ {cfg['base_url']})")
     print("=" * 78)
 
+    # Constructed before the warm-up: its availability probe doubles as the
+    # VRAM baseline, and the warm-up is what loads the model.
+    hw = sampler_mod.HardwareSampler(interval=0.15)
+    baseline_vram = hw.baseline_vram_mb()
+
     try:
         warm = client.run_once(cfg["base_url"], cfg["model"])
     except Exception as exc:
@@ -161,7 +166,6 @@ def bench(name, cfg, n_trials, quantization_hint, notes, conn):
     print(f"version={meta['backend_version']}  quant={meta['quantization']}  "
           f"ctx={meta['context_length']}")
 
-    hw = sampler_mod.HardwareSampler(interval=0.15)
     if not hw.available:
         # Warn, do not abort: a speed-only benchmark is still valid, it just
         # stores NULL for every hardware column. But say exactly how to fix it.
@@ -214,6 +218,7 @@ def bench(name, cfg, n_trials, quantization_hint, notes, conn):
                 gpu_power_w=s.get("gpu_power_w_mean"),
                 gpu_temp_c=s.get("gpu_temp_c_peak"),
                 gpu_vram_used_mb=s.get("gpu_vram_used_mb_peak"),
+                gpu_vram_baseline_mb=baseline_vram,
                 cpu_percent=s.get("cpu_percent_mean"),
                 cpu_temp_c=s.get("cpu_temp_c_peak"),
                 system_ram_used_mb=(ram_gb * 1024) if ram_gb else None,

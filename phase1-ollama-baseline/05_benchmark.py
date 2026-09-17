@@ -136,18 +136,23 @@ print(f"digest  : {meta['model_digest']}")
 print(f"backend : ollama {meta['backend_version']}")
 print(f"group   : {run_group}")
 
-print("\nwarm-up (discarded)...", end="", flush=True)
-warm = trials_mod.run_once(args.model, args.num_ctx)
-print(f" {warm['client_total_ms']:.0f} ms")
-
-# One sampler for the whole loop, sliced per trial. Starting and stopping a
-# thread around each request would cost more than it measures, and a 350 ms
-# trial would catch barely one sample.
+# Constructed BEFORE the warm-up, because its availability probe doubles as
+# the VRAM baseline - and the warm-up is what loads the model. One sampler for
+# the whole loop, sliced per trial: starting and stopping a thread around each
+# request would cost more than it measures, and a 350 ms trial would catch
+# barely one sample.
 hw = sampler_mod.HardwareSampler(interval=0.15)
 if not hw.available:
     print()
     print("WARNING: LibreHardwareMonitor unreachable - every hardware column")
     print("  will be NULL. Start it ELEVATED, then Options > Remote Web Server.")
+baseline_vram = hw.baseline_vram_mb()
+
+print("\nwarm-up (discarded)...", end="", flush=True)
+warm = trials_mod.run_once(args.model, args.num_ctx)
+print(f" {warm['client_total_ms']:.0f} ms")
+if baseline_vram is not None:
+    print(f"vram baseline (pre-load): {baseline_vram:,.0f} MB")
 
 print("trials: ", end="", flush=True)
 results = []
@@ -198,6 +203,7 @@ with hw:
             gpu_power_w=hw_stats.get("gpu_power_w_mean"),
             gpu_temp_c=hw_stats.get("gpu_temp_c_peak"),
             gpu_vram_used_mb=hw_stats.get("gpu_vram_used_mb_peak"),
+            gpu_vram_baseline_mb=baseline_vram,
             cpu_percent=hw_stats.get("cpu_percent_mean"),
             cpu_temp_c=hw_stats.get("cpu_temp_c_peak"),
             system_ram_used_mb=(ram_gb * 1024) if ram_gb else None,

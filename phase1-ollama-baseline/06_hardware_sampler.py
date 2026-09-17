@@ -109,9 +109,23 @@ class HardwareSampler:
         self.interval = interval
         self.url = url
         self.samples = []
-        self.available = read_sensors(url) is not None
+        # The availability probe doubles as a BASELINE reading. Construct the
+        # sampler before the workload starts and `baseline` records what the
+        # board looked like beforehand - which is how VRAM becomes
+        # attributable instead of board-wide (the desktop and browser alone
+        # hold ~2-3 GB here).
+        #
+        # Caveat worth knowing: if the model is already resident when this is
+        # taken, the baseline includes it and the delta will be near zero.
+        # That is honest - it says no NEW memory was allocated - but it is not
+        # "how much VRAM this model needs". For that, evict first.
+        self.baseline = read_sensors(url) or {}
+        self.available = bool(self.baseline)
         self._stop = threading.Event()
         self._thread = None
+
+    def baseline_vram_mb(self):
+        return self.baseline.get("gpu_vram_used_mb")
 
     def __enter__(self):
         if self.available:

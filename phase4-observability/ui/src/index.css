@@ -1,0 +1,382 @@
+/*
+ * Design tokens.
+ *
+ * Roles, not raw hex, everywhere in the app - so light/dark swap in one place
+ * and a component never hardcodes a colour. Dark values are declared twice on
+ * purpose: the media query follows the OS setting, the [data-theme] scope
+ * follows an explicit toggle, and the toggle has to win in both directions.
+ *
+ * The categorical series slots are a fixed, validated order. They are assigned
+ * by position and never cycled - slot 1 is always the first series, and an
+ * entity keeps its colour even when a filter changes how many series are on
+ * screen.
+ */
+
+:root {
+  color-scheme: light;
+
+  --surface-1: #fcfcfb;              /* cards, chart surface */
+  --page: #f9f9f7;                   /* page plane behind cards */
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;             /* axis ticks, labels */
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+
+  --series-1: #2a78d6;               /* blue */
+  --series-2: #eb6834;               /* orange */
+  --series-3: #1baf7a;               /* aqua */
+  --series-4: #eda100;               /* yellow */
+
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-critical: #d03b3b;
+
+  --radius: 10px;
+  --gap: 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #1a1a19;
+  --page: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --gridline: #2c2c2a;
+  --baseline: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; }
+h1 { font-size: 20px; }
+h2 { font-size: 15px; }
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.muted { color: var(--text-muted); }
+.secondary { color: var(--text-secondary); }
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* Hero figure: exactly one per view, >=48px, same sans as everything else.
+   Proportional figures - tabular-nums makes large numbers look loose. */
+.hero-value {
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--gap);
+  margin-top: var(--gap);
+}
+
+/* Stat tile: label (sentence case, no colon), then value. */
+.tile-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.tile-value {
+  font-size: 26px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.tile-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 3px;
+}
+
+/* "unavailable" is a real state and must not look like a zero. */
+.unavailable {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.error {
+  border-left: 3px solid var(--status-critical);
+  padding: 12px 16px;
+}
+
+@media (max-width: 480px) {
+  .hero-value { font-size: 40px; }
+}
+
+/* Buttons: plain, quiet, and obviously disabled when they would do nothing. */
+button {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--page);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) { border-color: var(--baseline); }
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Filters sit in one row above the data - filtering is how a comparison is
+   made, so it belongs at the top rather than buried per column. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0 10px;
+}
+
+.filter { display: flex; flex-direction: column; gap: 2px; }
+
+select {
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-1);
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+
+th, td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+}
+
+th {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Columns of numbers align vertically, so tabular figures belong here -
+   unlike the large standalone values in stat tiles. */
+td { font-variant-numeric: tabular-nums; }
+
+tbody tr:last-child td { border-bottom: none; }
+
+.row { cursor: pointer; }
+.row:hover td { background: var(--page); }
+.row.open td { background: var(--page); font-weight: 500; }
+
+button.sort {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+button.sort:hover { color: var(--text-primary); }
+
+/* Spread rides beside the median, small and recessive - present without
+   competing with the value it qualifies. */
+.cv {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.mono {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+}
+
+.detail {
+  padding: 14px 16px;
+  background: var(--page);
+  border-top: 1px solid var(--gridline);
+  white-space: normal;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.sample {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 70ch;
+  white-space: pre-wrap;
+}
+
+/* Charts ------------------------------------------------------------------ */
+
+.chart { position: relative; margin-top: 8px; }
+.chart svg { width: 100%; height: auto; display: block; }
+
+.chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* A legend is always present for two or more series - identity is never
+   colour alone. Direct end-labels supplement it. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+
+.tooltip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  min-width: 150px;
+}
+
+.tip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tip-value {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Horizontal bars in HTML, not SVG: each part gets its own grid column, so
+   label / bar / value can never overlap, and long labels wrap rather than
+   being clipped. */
+.bars { margin-top: 10px; }
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 34%) 1fr minmax(76px, auto);
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+  border-radius: 6px;
+}
+
+.bar-row:hover { background: var(--page); }
+
+.bar-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  overflow-wrap: anywhere;   /* wrap, never clip */
+}
+
+.bar-track { height: 20px; display: flex; align-items: center; }
+
+/* Grows from a single baseline: square where it starts, 4px rounded at the
+   data-end. Capped at 20px thick so the row keeps its air. */
+.bar-fill {
+  height: 20px;
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+}
+
+.bar-value {
+  text-align: right;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  /* Stack rather than squeeze: a 130px label column plus a track plus a value
+     does not fit on a phone, and squeezing is what caused the overlap. */
+  .bar-row {
+    grid-template-columns: 1fr auto;
+    gap: 4px 10px;
+  }
+  .bar-label { grid-column: 1 / -1; }
+}
