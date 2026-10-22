@@ -225,16 +225,23 @@ def stop(name):
     return status_all()
 
 
-def start(name, keep_other=False):
+def start(name, keep_other=False, num_parallel=None):
     """
     Start a server. By default stops the other one first - they cannot share
     16 GB without one of them silently paging over PCIe. keep_other=True leaves
     it running, which is safe for the 1.5B only (see the module docstring).
+
+    num_parallel (Ollama only) overrides OLLAMA_NUM_PARALLEL and RESTARTS
+    Ollama if it is already up, since the value is read once at launch. 8 suits
+    concurrency work; 1 is what VRAM footprints are measured at, because every
+    slot preallocates its own KV cache.
     """
     if not keep_other:
         for other in SERVERS:
             if other != name:
                 stop(other)
+    if name == "ollama" and num_parallel is not None and status(name) != "stopped":
+        stop(name)
 
     with _lock:
         existing = _procs.get(name)
@@ -245,11 +252,14 @@ def start(name, keep_other=False):
         _logs[name].append(f"-- starting {name} --")
 
         if name == "ollama":
-            env_prefix = ["cmd", "/c",
-                          f"set OLLAMA_NUM_PARALLEL={OLLAMA_NUM_PARALLEL} && "
-                          "ollama serve"]
+            # Passed as env, not `cmd /c set X=8 && ...`: cmd keeps the space
+            # before && in the value, which only worked because Ollama trims.
+            slots = str(num_parallel) if num_parallel is not None else OLLAMA_NUM_PARALLEL
+            _logs[name].append(f"-- OLLAMA_NUM_PARALLEL={slots} --")
             proc = subprocess.Popen(
-                env_prefix, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                ["ollama", "serve"],
+                env={**os.environ, "OLLAMA_NUM_PARALLEL": slots},
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 creationflags=NO_WINDOW)
         else:
             proc = subprocess.Popen(

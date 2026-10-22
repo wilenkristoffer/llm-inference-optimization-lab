@@ -38,6 +38,9 @@ export default function ServerControls() {
   // Off by default and not remembered: it is only safe for the 1.5B, and a
   // setting that silently persists into a 14B run is how the 8 tok/s happens.
   const [keepOther, setKeepOther] = useState(false);
+  // 8 for concurrency work, 1 for VRAM footprints (each slot preallocates
+  // its own KV cache). Applied on Start - Ollama reads it once at launch.
+  const [ollamaSlots, setOllamaSlots] = useState(8);
   // Avoids a stale poll response overwriting a fresh one after an action.
   const inflight = useRef(false);
 
@@ -65,7 +68,8 @@ export default function ServerControls() {
   async function act(name: string, action: "start" | "stop") {
     setBusy(name);
     try {
-      setServers(await controlServer(name, action, keepOther));
+      setServers(await controlServer(name, action, keepOther,
+                                     name === "ollama" ? ollamaSlots : undefined));
       setError(null);
     } catch (e) {
       setError((e as Error).message);
@@ -133,6 +137,19 @@ export default function ServerControls() {
               >
                 Stop
               </button>
+              {s.name === "ollama" && (
+                <label className="muted" style={{
+                  display: "flex", alignItems: "center", gap: 6, fontSize: 13,
+                }}>
+                  slots
+                  <select value={ollamaSlots}
+                          disabled={s.status !== "stopped"}
+                          onChange={(e) => setOllamaSlots(Number(e.target.value))}>
+                    <option value={8}>8 (concurrency)</option>
+                    <option value={1}>1 (VRAM footprint)</option>
+                  </select>
+                </label>
+              )}
             </div>
 
             {s.status === "starting" && s.log.length > 0 && (

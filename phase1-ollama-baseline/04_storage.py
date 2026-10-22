@@ -121,6 +121,10 @@ MIGRATIONS = {
     # A cross-check, not a measurement: Ollama reported "100% GPU" while
     # paging in Phase 3.
     "server_vram_mb": "REAL",
+    # Parallel slots the runner was launched with (llama-server -np), read
+    # from the process. The KV cache is preallocated for num_ctx x this, so
+    # footprints are only comparable at the same value.
+    "server_num_parallel": "INTEGER",
 }
 
 

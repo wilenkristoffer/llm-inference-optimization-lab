@@ -163,6 +163,43 @@ def server_vram_mb(model):
     return None
 
 
+def runner_config(model):
+    """
+    The llama-server flags Ollama actually launched this model with:
+    {"num_parallel": -np, "ctx_total": -c}, or None if it cannot be read.
+
+    Read from the running process rather than from OLLAMA_NUM_PARALLEL,
+    because the setting that matters is the one the runner got - the tray
+    app, a shell and the Backends panel can each start Ollama differently,
+    and the API reports none of it. Found by matching the model's weights
+    blob (from /api/show) against llama-server command lines. Windows only.
+
+    It matters for VRAM: Ollama preallocates KV cache for ctx_total tokens,
+    so a footprint measured at -np 8 carries 8 contexts of FP16 KV cache
+    whatever the weight quantization.
+    """
+    import re
+    import subprocess
+    try:
+        modelfile = _ollama("/api/show", {"model": model}).get("modelfile", "")
+        blob = next(line.split(None, 1)[1].strip()
+                    for line in modelfile.splitlines() if line.startswith("FROM "))
+        out = subprocess.run(
+            ["powershell", "-NoProfile", "-Command",
+             "Get-CimInstance Win32_Process -Filter \"Name='llama-server.exe'\" "
+             "| ForEach-Object { $_.CommandLine }"],
+            capture_output=True, text=True, timeout=20).stdout
+    except Exception:
+        return None
+    for cmd in out.splitlines():
+        if blob.lower() in cmd.lower():
+            np_ = re.search(r"(?:^|\s)-np\s+(\d+)", cmd)
+            ctx = re.search(r"(?:^|\s)-c\s+(\d+)", cmd)
+            return {"num_parallel": int(np_.group(1)) if np_ else None,
+                    "ctx_total": int(ctx.group(1)) if ctx else None}
+    return None
+
+
 def summarize(label, values, unit):
     """
     Median, not mean: a single GPU hiccup drags a mean around, the median

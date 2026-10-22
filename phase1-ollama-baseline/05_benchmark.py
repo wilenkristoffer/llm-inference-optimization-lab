@@ -184,6 +184,12 @@ print("\nwarm-up (discarded)...", end="", flush=True)
 warm = trials_mod.run_once(args.model, args.num_ctx)
 print(f" {warm['client_total_ms']:.0f} ms")
 server_vram = trials_mod.server_vram_mb(args.model)
+runner = trials_mod.runner_config(args.model) or {}
+num_parallel = runner.get("num_parallel")
+print(f"runner  : -np {num_parallel if num_parallel is not None else '?'}"
+      f"  -c {runner.get('ctx_total', '?')}"
+      + ("   (KV preallocated for every slot - footprint includes it)"
+         if num_parallel and num_parallel > 1 else ""))
 if baseline_vram is not None:
     spread = hw.baseline_spread_mb
     print(f"vram baseline (pre-load): {baseline_vram:,.0f} MB"
@@ -243,6 +249,7 @@ with hw:
             gpu_vram_baseline_mb=baseline_vram,
             gpu_vram_baseline_clean=clean_baseline,
             server_vram_mb=server_vram,
+            server_num_parallel=num_parallel,
             cpu_percent=hw_stats.get("cpu_percent_mean"),
             cpu_temp_c=hw_stats.get("cpu_temp_c_peak"),
             system_ram_used_mb=(ram_gb * 1024) if ram_gb else None,

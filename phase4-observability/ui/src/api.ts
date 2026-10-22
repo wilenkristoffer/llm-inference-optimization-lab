@@ -137,12 +137,21 @@ export const fetchServers = () => get<Servers>("/api/servers");
  * pages over PCIe at ~8 tok/s while still reporting "100% GPU". keepOther is
  * safe for the 1.5B on both sides, not for bigger models.
  *
+ * numParallel (Ollama only) sets OLLAMA_NUM_PARALLEL for this start. Every
+ * slot preallocates its own KV cache, so VRAM footprints are measured at 1.
+ *
  * Returns as soon as the process is spawned - poll fetchServers for readiness.
  */
 export async function controlServer(
   name: string, action: "start" | "stop", keepOther = false,
+  numParallel?: number,
 ): Promise<Servers> {
-  const query = action === "start" && keepOther ? "?keep_other=1" : "";
+  const params = new URLSearchParams();
+  if (action === "start" && keepOther) params.set("keep_other", "1");
+  if (action === "start" && numParallel !== undefined) {
+    params.set("num_parallel", String(numParallel));
+  }
+  const query = params.toString() ? `?${params}` : "";
   const response = await fetch(`${API_BASE}/api/servers/${name}/${action}${query}`,
                                { method: "POST" });
   if (!response.ok) throw new Error(`${name}/${action} failed: ${response.status}`);

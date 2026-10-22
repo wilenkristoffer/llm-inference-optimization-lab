@@ -202,7 +202,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         """
         Process control: /api/servers/<name>/<start|stop>. start takes
-        ?keep_other=1 to leave the other server running (small models only).
+        ?keep_other=1 to leave the other server running (small models only),
+        and ?num_parallel=N to (re)start Ollama with N slots.
 
         POST rather than GET because these change machine state, and a GET that
         stops a server would be triggered by anything that prefetches links.
@@ -224,8 +225,15 @@ class Handler(BaseHTTPRequestHandler):
                 # Returns as soon as the process is spawned. vLLM takes ~1 min
                 # to load, so the UI polls /api/servers for readiness rather
                 # than holding this request open.
-                keep_other = parse_qs(parsed.query).get("keep_other") == ["1"]
-                body = servers.start(name, keep_other=keep_other)
+                query = parse_qs(parsed.query)
+                keep_other = query.get("keep_other") == ["1"]
+                num_parallel = None
+                if "num_parallel" in query:
+                    num_parallel = int(query["num_parallel"][0])
+                    if not 1 <= num_parallel <= 64:
+                        raise ValueError("num_parallel must be 1-64")
+                body = servers.start(name, keep_other=keep_other,
+                                     num_parallel=num_parallel)
             else:
                 body = servers.stop(name)
             self.send_json(body)
