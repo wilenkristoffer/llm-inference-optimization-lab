@@ -60,6 +60,8 @@ def stream_arrivals(base_url, model, prompt, max_tokens):
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "stream": True, "temperature": 0, "seed": 42,
+        # vLLM defaults to 1.1 from generation_config.json; see Phase 3 client.
+        "repetition_penalty": 1.0,
         "max_tokens": max_tokens,
     }).encode("utf-8")
 

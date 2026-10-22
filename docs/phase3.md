@@ -177,6 +177,15 @@ hardware is demonstrably capable of more than vLLM's 563 ceiling, so that
 ceiling is a software limit - some GEMM or attention kernel in vLLM's ROCm path
 that tiles well up to batch 4 and falls off after.
 
+> **Resolved in Phase 5 (2026-10-22) - and it is not a ceiling.** The kernel is
+> vLLM's ROCm "skinny" GEMM (`wvSplitK`), which it uses only when a step has
+> 1-5 tokens; from 6 it falls back to the generic GEMM at half the
+> per-sequence speed. Past that cliff throughput grows linearly again, to
+> 2,052 tok/s at concurrency 32. Batch 8 sat just past the cliff, which is why
+> 4 -> 8 looked flat. Confirmed by disabling the kernel
+> (`VLLM_ROCM_USE_SKINNY_GEMM=0`), which removes the cliff. See
+> `docs/phase5.md` and correction 4 below.
+
 **Further diagnosis is blocked by an earlier decision.** Kernel-level profiling
 needs `rocprof`, which was disabled by stubbing rocprofiler to make vLLM run
 under WSL at all (see `phase3-vllm-setup.md`). That tradeoff looked free at the
@@ -192,6 +201,9 @@ time and is exactly what prevents closing this question now.
 > kernels stop scaling and llama.cpp overtakes it. This is a consumer-RDNA3
 > limitation rather than a property of vLLM: the scheduler, KV cache and
 > batching logic were all verified working through vLLM's own metrics.
+
+*Superseded by correction 4: past batch 5 vLLM keeps scaling, and "llama.cpp
+overtakes it" holds at concurrency 8 only.*
 
 Practical reading: if the workload is a handful of concurrent users, vLLM is
 clearly better here. If it is many, this particular GPU and build do not
@@ -218,6 +230,25 @@ Measured 8.1 tok/s against a PCIe-bound prediction of ~8. Detail in
 
 **3. Requests were too short to measure batching.** Covered above.
 
+**4. "A hard ceiling at batch 4" - wrong shape (found in Phase 5).** The sweep
+stopped at 8, which happened to be just past a cliff. Extended to 32 with a
+CUDA graph for every level (median of three sweeps):
+
+```
+conc        1     4     5     6     8    16    32
+aggregate 151   556   695   438   570  1091  2052   tok/s
+per-req   152   145   144    74    72    69    66
+```
+
+vLLM's ROCm path uses a hand-written skinny GEMM for steps of 1-5 tokens and
+the generic GEMM from 6. Per-sequence speed halves at that switch, then stays
+nearly flat to 32. Disabling the kernel puts batches 1-5 on the slow path too
+(batch 1: 76 tok/s), which confirms the cause. Two consequences for this
+phase's results: vLLM's single-stream lead over Ollama (153 vs 121) comes
+entirely from that kernel, and the "bandwidth halves from 4 to 8" observation
+above is the switch, not a saturation. The diagnosis needed no profiler in the
+end - the dispatch condition is plain Python in vLLM's source.
+
 ---
 
 ## Limitations of this environment
@@ -236,9 +267,11 @@ Measured 8.1 tok/s against a PCIe-bound prediction of ~8. Detail in
 
 ## Open items
 
-- Whether vLLM's batch-8 ceiling moves with `--max-num-seqs`,
-  `--max-num-batched-tokens`, or a different attention backend.
-- Whether the ceiling scales with model size (does a 3B hit it at batch 4 too?).
+- ~~Whether vLLM's batch-8 ceiling moves with `--max-num-seqs`,
+  `--max-num-batched-tokens`, or a different attention backend.~~ Resolved in
+  Phase 5: a kernel switch at batch 6, not a ceiling (correction 4).
+- Whether the cliff's size changes with model size - the threshold is a fixed
+  token count (5), but the gap between the two GEMMs may not be.
 - Store vLLM's `/metrics` per run rather than only reading them live (Phase 4).
 - `gpu_vram_used_mb` is board-wide, not model-attributable - needs fixing
   before Phase 6's quantization comparisons.

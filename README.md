@@ -53,32 +53,41 @@ concurrent requests run one at a time: aggregate throughput stayed flat at
 batching gives 1.75x on a 1.5B and 1.90x on a 14B — sublinear, because only the
 weight-streaming part of each token is shared between sequences.
 
-**vLLM extracts more bandwidth than llama.cpp on the same card.** Identical
-weights, FP16, same chat template, same OpenAI-compatible interface:
+**vLLM extracts more bandwidth than llama.cpp on the same card** - thanks to
+one kernel. Identical weights, FP16, same chat template, same
+OpenAI-compatible interface:
 
 | backend | decode | effective bandwidth | % of peak |
 |---|---|---|---|
 | Ollama | 121 tok/s | 375 GB/s | 60% |
 | vLLM | 153 tok/s | 472 GB/s | 76% |
 
-**But vLLM's batching hits a wall at 4 sequences on this GPU.** Aggregate
-throughput, 300-token requests:
+**vLLM's batching falls off a cliff at 6 sequences - then keeps scaling.**
+Aggregate throughput, 300-token requests, a CUDA graph for every level:
 
-| concurrency | vLLM | Ollama |
+| concurrency | vLLM aggregate | vLLM per request |
 |---|---|---|
-| 1 | 148.9 tok/s | 120.3 tok/s |
-| 2 | 287.0 | 194.3 |
-| 4 | **563.0** | 388.8 |
-| 8 | 563.8 | **647.9** |
+| 1 | 151 tok/s | 152 tok/s |
+| 4 | 556 | 145 |
+| 5 | **695** | 144 |
+| 6 | 438 | **74** |
+| 8 | 570 | 72 |
+| 16 | 1,091 | 69 |
+| 32 | **2,052** | 66 |
 
-vLLM serves four sequences in the time it serves one (batch step 6.65 → 6.97 ms
-— 4x the work for 5% more latency). At batch 8 its step time doubles and
-aggregate stops dead, so Ollama overtakes it. vLLM's own `/metrics` rule out
-the serving logic: all 8 sequences running, nothing queued, KV cache 1% full,
-zero preemptions. Since Ollama reaches 648 tok/s on the same card, the ceiling
-is a kernel limit in vLLM's ROCm path on RDNA3, not a hardware one. (A later
-single run at concurrency 16 reached 1,082 tok/s, so this looks like a step
-between 4 and 8 rather than a ceiling - being re-tested. See `docs/phase5.md`.)
+vLLM's ROCm path uses a hand-written "skinny" matrix-multiply kernel only when
+a decode step has 1-5 tokens, and the generic one from 6. Per-sequence speed
+halves at the switch and barely moves after it. Turning the kernel off
+(`VLLM_ROCM_USE_SKINNY_GEMM=0`) removes the cliff and drops single-stream vLLM
+to 76 tok/s - so its lead over Ollama is that kernel. The first sweep stopped at
+batch 8, just past the cliff, and read it as a hard ceiling at 4; the
+correction is kept in `docs/phase3.md`. Ollama (measured to 8) overtakes vLLM
+at concurrency 8, 648 vs 570 tok/s.
+
+**CUDA graph padding can change the kernel.** vLLM pads a batch up to the next
+captured graph size, and its default sizes go 4, 8. A batch of 5 is padded to
+8, lands on the generic kernel, and runs at 78 tok/s per request instead of
+144. Capturing 5 explicitly fixes it.
 
 **Ollama truncates silently, oldest-first, and an overflow costs half the
 window.** Past `num_ctx` it keeps roughly `num_ctx / 2` - the system prompt goes
@@ -194,7 +203,7 @@ scaling predictions. Those are kept deliberately; they are the useful part.
 
 Phases 1-5 are complete and documented: Ollama baseline and instrumentation,
 model serving and batching, a matched Ollama-vs-vLLM comparison including the
-concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics, an
+concurrency sweep and a diagnosis of vLLM's batch-size cliff down to the kernel, an
 observability API and UI over the results, and inference fundamentals -
 tokenization, prefill, truncation, prefix caching and inter-token latency.
 

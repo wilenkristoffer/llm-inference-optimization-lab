@@ -83,7 +83,7 @@ def ask(model, prompt, num_ctx):
     return call("/api/generate", {
         "model": model, "prompt": prompt, "stream": False,
         "options": {"temperature": 0, "seed": 42, "num_ctx": num_ctx,
-                    "num_predict": 40},
+                    "repeat_penalty": 1.0, "num_predict": 40},
     })
 
 

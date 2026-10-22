@@ -58,9 +58,14 @@ VLLM_SERVED_NAME = "qwen2.5-1.5b-instruct"
 VLLM_GPU_FRACTION = "0.35"
 VLLM_MAX_LEN = "4096"
 # vLLM captures a CUDA graph per batch size, 51 by default, twice over (once to
-# estimate memory). The lab never batches past 8, so capture only what it uses.
-# A batch between sizes is padded up to the next one.
-VLLM_CAPTURE_SIZES = "[1,2,4,8,16]"
+# estimate memory). A batch between sizes is padded up to the next one - and on
+# ROCm that padding can change the KERNEL: vLLM uses a hand-written "skinny"
+# GEMM (wvSplitK) only for batches of 1-5 and the generic GEMM from 6, which
+# halves per-sequence decode (144 -> 73 tok/s). With sizes [1,2,4,8,16], batch
+# 5 was padded to 8 and ran at 78 tok/s instead of 144. vLLM's default sizes do
+# the same. So 5 must be captured explicitly; the rest cover the sweep levels.
+# 13 sizes still capture in ~2 s. See docs/phase5.md.
+VLLM_CAPTURE_SIZES = "[1,2,3,4,5,6,7,8,10,12,16,24,32]"
 
 OLLAMA_NUM_PARALLEL = "8"
 
@@ -210,9 +215,10 @@ def stop(name):
                 subprocess.run(["taskkill", "/F", "/IM", image],
                                capture_output=True, creationflags=NO_WINDOW)
         else:
-            # Belt and braces: anything the terminate above did not reach.
+            # Belt and braces: anything the terminate above did not reach. The
+            # [v] stops the pattern matching this bash's own command line.
             subprocess.run(["wsl", "-d", "Ubuntu", "--",
-                            "bash", "-lc", "pkill -f 'vllm serve' || true"],
+                            "bash", "-lc", "pkill -f '[v]llm serve' || true"],
                            capture_output=True, creationflags=NO_WINDOW)
 
         _logs[name].append(f"-- stopped {name} --")

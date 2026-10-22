@@ -49,13 +49,19 @@ MAX_TOKENS = 100          # fixed, so every request does identical decode work
 
 
 def run_once(base_url, model, prompt=PROMPT, max_tokens=MAX_TOKENS,
-             temperature=0, seed=42):
+             temperature=0, seed=42, repetition_penalty=1.0):
     """
     One streaming chat request. Returns the same keys as the Phase 1
     run_once(), so the existing concurrency harness and SQLite storage work
     against this unchanged.
 
     Server-side fields are None: the OpenAI schema does not carry them.
+
+    repetition_penalty is pinned because the backends disagree by default.
+    vLLM takes 1.1 from the model's generation_config.json; Ollama applies
+    1.0 and its /v1 endpoint ignores the field entirely. At 1.0 the two
+    produce byte-identical greedy output from the same weights; at vLLM's
+    default they do not. Before 2026-10-22 every vLLM run used 1.1.
     """
     body = json.dumps({
         "model": model,
@@ -64,6 +70,7 @@ def run_once(base_url, model, prompt=PROMPT, max_tokens=MAX_TOKENS,
         "temperature": temperature,
         "seed": seed,
         "max_tokens": max_tokens,
+        "repetition_penalty": repetition_penalty,
         # Without this the final chunk carries no token counts. vLLM honours
         # it; if a backend ignores it we fall back to counting chunks.
         "stream_options": {"include_usage": True},

@@ -241,8 +241,9 @@ profiler does one capture to estimate graph memory before the real one.
 Changes in `servers.py`:
 
 - **`HF_HUB_OFFLINE=1`**, so startup no longer makes network calls.
-- **CUDA graphs for batch sizes 1, 2, 4, 8, 16** instead of 51 sizes. The lab
-  never batches past 8. Capture fell from ~16 s to ~2 s.
+- **CUDA graphs for 13 batch sizes** (1-8, 10, 12, 16, 24, 32) instead of 51.
+  Capture fell from ~16 s to ~2 s. The first version captured only 1, 2, 4, 8,
+  16 - which turned out to halve batch-5 throughput; see the cliff below.
 - **`--gpu-memory-utilization` 0.85 -> 0.35.** At 0.85 the KV cache held 364k
   tokens (89 concurrent 4k requests) for a lab that runs 8. At 0.35 it holds
   50,272 (12x).
@@ -253,7 +254,8 @@ Changes in `servers.py`:
   The UI keeps only 40 lines, which is why the first slow start could not be
   diagnosed after the fact.
 
-Result: **37 s** from click to ready, with the compile cache warm. Changing any
+Result: **37-49 s** from click to ready with the compile cache warm, against
+~75 s. The spread is in the import phase, before vLLM does any real work. Changing any
 compile setting changes vLLM's cache key, so the first start after such a
 change recompiles (+14 s) - time the second. A start beside a resident Ollama
 took 48 s in one observation.
@@ -290,31 +292,128 @@ Not paging. About 2% on Ollama - fine for convenience, not for a headline
 number. The checkbox is off by default and deliberately not remembered: a 14B
 on Ollama beside vLLM would page silently exactly as before.
 
-### An unexpected result: concurrency 16
+---
 
-The sweep was extended to 16, which Phase 3 never ran:
+## vLLM's "batch-4 ceiling" is a kernel switch at batch 6
+
+The verification sweep above was extended to 16, which Phase 3 never ran, and
+gave 1,082 tok/s - nearly double batch 8. That contradicted Phase 3's central
+concurrency finding, so it was chased down.
+
+### The fine sweep
+
+vLLM alone, a CUDA graph captured for **every** level (so no batch is padded to
+a larger one), 300-token requests, three sweeps interleaved:
 
 ```
-conc   aggregate   per request
-   4       566.2         144.2
-   8       569.2          71.8
-  16      1082.4          68.8
+conc   aggregate   per request     (median of 3 sweeps, tok/s)
+   1       151          152
+   2       279          148
+   3       422          148
+   4       556          145
+   5       695          144
+   6       438           74    <- halves here
+   7       502           73
+   8       570           72
+  10       703           72
+  12       838           71
+  16      1091           69
+  24      1560           68
+  32      2052           66
 ```
 
-Per-request rate halves from 4 to 8, then **barely moves from 8 to 16**, so
-aggregate nearly doubles. Phase 3's "hard ceiling at batch 4" is better
-described as a step between 4 and 8. Single run; not yet explained. Phase 3's
-doc and the README are left as they were until it is confirmed.
+One cliff, between 5 and 6. Either side of it, per-sequence speed barely moves
+and aggregate grows almost linearly. Batch 8 - Phase 3's last point - sits just
+past the cliff, which is what made 4 -> 8 look like a wall.
+
+### The cause
+
+vLLM's ROCm linear-layer dispatch (`model_executor/layers/utils.py`):
+
+```python
+if m > 8 and 0 < n <= 5:
+    out = ops.wvSplitK(weight, x_view, cu_count, bias)   # hand-written skinny GEMM
+...
+# otherwise: the generic torch GEMM
+```
+
+`n` is the number of tokens in the step - in decode, one per sequence. Up to 5
+sequences vLLM uses a hand-written kernel for thin matrix multiplies; from 6 it
+uses the generic GEMM.
+
+**Confirmed by switching it off.** With `VLLM_ROCM_USE_SKINNY_GEMM=0`:
+
+```
+conc        1     2     4     5     6     8    16
+per-req    76    75    73    73    73    72    69   tok/s
+```
+
+The cliff disappears: everything runs at the slow speed, and batches 6+ are
+unchanged because they never used the kernel. Phase 3 guessed "some GEMM or
+attention kernel... that tiles well up to batch 4 and falls off after", and
+noted the question was blocked without `rocprof`. It needed no profiler - the
+dispatch condition is plain Python in vLLM's source.
+
+### What this changes
+
+- **vLLM's single-stream lead over Ollama is that one kernel.** 153 tok/s with
+  it, 76 without - against Ollama's 121. On the generic path vLLM would lose
+  every single-stream comparison in this project.
+- **Past the cliff vLLM scales well.** 2,052 tok/s at 32 concurrent requests.
+  Phase 3's conclusion that llama.cpp overtakes vLLM holds at concurrency 8
+  only. Ollama was never measured above 8 (`OLLAMA_NUM_PARALLEL` is 8 here), so
+  there is no fair comparison at 16-32 yet.
+- **Graph padding can change the kernel.** vLLM pads a batch up to the next
+  captured graph size. With sizes 1, 2, 4, 8, 16 - this phase's first startup
+  fix, and also vLLM's own default sequence - batch 5 is padded to 8 and
+  measured **78 tok/s per request instead of 144**. In a stock vLLM the cliff
+  is effectively at 5, which is why batch 4 looked like the last fast point.
+  `servers.py` now captures 5 explicitly.
+
+Phase 3's doc carries a correction pointing here; its original reasoning is
+kept, since it was right about the direction and wrong about the shape.
 
 ---
 
-## Side finding: vLLM applies the model's sampling defaults
+## Repetition penalty: the backends disagreed
 
-vLLM's log warns that the model's `generation_config.json` overrides its
-defaults: `repetition_penalty 1.1`, `top_k 20`, `temperature 0.7`. The lab's
-clients pin `temperature 0` but never set `repetition_penalty`, so every vLLM
-run so far used 1.1. Irrelevant to speed. It matters for Phase 6, where output
-quality is compared across backends.
+vLLM's startup log warns that the model's `generation_config.json` overrides
+its defaults (`repetition_penalty 1.1`, `top_k 20`, `temperature 0.7`). The
+lab's clients pinned `temperature 0` but never set a repetition penalty.
+Measured with a prompt that demands repetition (write "banana" 60 times),
+greedy, FP16 1.5B on both sides:
+
+```
+setting                                 output
+ollama native, default                  banana banana banana ...  (41 words)
+ollama native, repeat_penalty 1.0       identical to default
+ollama native, repeat_penalty 1.05/1.1  HTTP 500 "token repeat limit reached"
+ollama native, repeat_penalty 1.3       'banana bananabananabanana... (Note: ...'
+ollama /v1, any penalty field           identical to default - field ignored
+vllm, default                           'banana bananabananabanabanaba...'
+vllm, repetition_penalty 1.0            byte-identical to Ollama
+vllm, repetition_penalty 1.1            identical to vLLM default
+```
+
+- **Ollama applies 1.0; vLLM applies 1.1.** Every vLLM run before 2026-10-22
+  used 1.1, every Ollama run 1.0.
+- **At 1.0 the two produce byte-identical greedy output** from the same weights.
+  Phase 4 expected cross-runtime output never to match; at least here it does.
+- **Ollama's `/v1` endpoint ignores penalty fields.** Only the native API's
+  `repeat_penalty` option reaches the sampler.
+- **Ollama has a loop guard.** At a mild penalty the model degenerates into a
+  repeating `bana` token, and Ollama aborts the generation with HTTP 500 and
+  `"prediction aborted, token repeat limit reached"`. A 500 from Ollama can
+  mean the model looped, not that the server failed.
+
+**No effect on speed.** The fine sweep was run at both settings, interleaved:
+aggregate within 3% at every level, with no consistent direction (batch 4: 550
+vs 567; batch 32: 2,065 vs 2,052). Phase 3's throughput numbers stand.
+
+**Pinned to 1.0** in the shared OpenAI client (`phase3-vllm/01_openai_client.py`),
+the Ollama native client (`phase1-ollama-baseline/03_repeated_trials.py`), and
+files 03 and 05 here. The concurrency harness takes `--repetition-penalty` to
+reproduce old runs.
 
 ---
 
@@ -336,11 +435,11 @@ quality is compared across backends.
 
 ## Open items
 
-- Confirm the concurrency-16 result and find the step: sweep 5, 6, 7, 12, 24,
-  32. Then correct Phase 3 and the README.
 - Resolve the Phase 3 TTFT explanation: cached vs uncached TTFT on both
-  backends, interleaved in one session.
-- Set `repetition_penalty` explicitly on both backends before Phase 6 compares
-  outputs.
+  backends, interleaved in one session. (Phase 9.)
+- Ollama above concurrency 8 (`OLLAMA_NUM_PARALLEL` 16/32), for a fair
+  comparison with vLLM past the cliff.
+- Whether the skinny-GEMM cliff is the same size on larger models, and whether
+  quantized vLLM models (which use different kernels) have one at all.
 - Explain the cold-case prefill in 04 being 2x the prefix-change case.
 - Inter-token latency under concurrency, where stalls would actually show.

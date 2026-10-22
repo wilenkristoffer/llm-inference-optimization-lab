@@ -39,6 +39,9 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
         "prompt": prompt,
         "stream": True,
         "options": {"temperature": temperature, "seed": seed, "num_ctx": num_ctx,
+                    # Ollama's default, pinned so a change of default cannot
+                    # move results, and to match vLLM (see Phase 3 client).
+                    "repeat_penalty": 1.0,
                     # num_predict caps output length. Pinning it makes every
                     # request do identical decode work, which is what lets us
                     # compare aggregate throughput across concurrency levels.

@@ -97,7 +97,7 @@ PROMPTS = [
 ]
 
 
-def run_level(base_url, model, concurrency):
+def run_level(base_url, model, concurrency, repetition_penalty=1.0):
     """Fire `concurrency` requests simultaneously; return them plus wall time."""
     barrier = threading.Barrier(concurrency)
     results = [None] * concurrency
@@ -110,6 +110,7 @@ def run_level(base_url, model, concurrency):
                 base_url, model,
                 prompt=PROMPTS[index % len(PROMPTS)],
                 max_tokens=MAX_TOKENS,
+                repetition_penalty=repetition_penalty,
             )
         except Exception as exc:            # one failure must not hang the rest
             errors[index] = exc
@@ -132,7 +133,7 @@ def run_level(base_url, model, concurrency):
     return done, failed, wall
 
 
-def sweep(name, cfg, levels, notes, conn):
+def sweep(name, cfg, levels, notes, conn, repetition_penalty=1.0):
     print(f"\n{'=' * 80}")
     print(f"{name}  ({cfg['model']} @ {cfg['base_url']})")
     print("=" * 80)
@@ -161,7 +162,8 @@ def sweep(name, cfg, levels, notes, conn):
         for level in levels:
             print(f"  concurrency {level:>2} ...", end="", flush=True)
             t0 = time.perf_counter()
-            done, failed, wall = run_level(cfg["base_url"], cfg["model"], level)
+            done, failed, wall = run_level(cfg["base_url"], cfg["model"], level,
+                                           repetition_penalty)
             t1 = time.perf_counter()
 
             if failed:
@@ -266,6 +268,8 @@ if __name__ == "__main__":
                         choices=["ollama", "vllm", "both"])
     parser.add_argument("--levels", default="1,2,4,8")
     parser.add_argument("--notes", default=None)
+    # 1.1 reproduces vLLM's default, which every run before 2026-10-22 used.
+    parser.add_argument("--repetition-penalty", type=float, default=1.0)
     parser.add_argument("--report", action="store_true",
                         help="print stored concurrency results and exit")
     args = parser.parse_args()
@@ -285,7 +289,8 @@ if __name__ == "__main__":
         print("cannot fit alongside it, Ollama pages over PCIe and reads ~8 t/s.")
         print("Prefer one backend at a time with the card to itself.\n")
 
-    results = [sweep(n, client.BACKENDS[n], levels, args.notes, conn)
+    results = [sweep(n, client.BACKENDS[n], levels, args.notes, conn,
+                     args.repetition_penalty)
                for n in names]
     results = [r for r in results if r]
 
