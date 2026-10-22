@@ -24,7 +24,7 @@ RAM     32 GB DDR4-3200
 OS      Windows 11 + WSL2 (Ubuntu 24.04)
 ```
 
-Serving runtimes: **Ollama 0.34** (native Windows, ROCm) and **vLLM 0.29**
+Serving runtimes: **Ollama 0.34**, later 0.40 (native Windows, ROCm) and **vLLM 0.29**
 (WSL2, ROCm 7.2.4). Python 3.11 on the Windows side, standard library only —
 no `requests`, no `numpy`, no framework.
 
@@ -76,7 +76,14 @@ vLLM serves four sequences in the time it serves one (batch step 6.65 → 6.97 m
 aggregate stops dead, so Ollama overtakes it. vLLM's own `/metrics` rule out
 the serving logic: all 8 sequences running, nothing queued, KV cache 1% full,
 zero preemptions. Since Ollama reaches 648 tok/s on the same card, the ceiling
-is a kernel limit in vLLM's ROCm path on RDNA3, not a hardware one.
+is a kernel limit in vLLM's ROCm path on RDNA3, not a hardware one. (A later
+single run at concurrency 16 reached 1,082 tok/s, so this looks like a step
+between 4 and 8 rather than a ceiling - being re-tested. See `docs/phase5.md`.)
+
+**Ollama truncates silently, oldest-first, and an overflow costs half the
+window.** Past `num_ctx` it keeps roughly `num_ctx / 2` - the system prompt goes
+first - with no error. Asked about a planted code it no longer had, the model
+confidently answered with a different one.
 
 **The KV cache is not free.** For qwen2.5:1.5b it costs ~28 KB per token, so a
 32k context needs ~917 MB — about the size of the model itself. Ollama
@@ -100,6 +107,9 @@ phase3-vllm/              OpenAI-compatible client -> matched backend benchmark
                           -> concurrency sweep -> vLLM /metrics diagnostics
 phase4-observability/     read-only JSON API over lab.db, backend process
                           control, and a React + TypeScript UI
+phase5-inference-fundamentals/
+                          tokenization -> prefill scaling -> context truncation
+                          -> prefix cache -> inter-token latency
 docs/                     per-phase technical notes, including the WSL2 + ROCm
                           setup that gets vLLM running on consumer AMD
 ```
@@ -182,13 +192,16 @@ scaling predictions. Those are kept deliberately; they are the useful part.
 
 ## Status
 
-Phases 1-4 are complete and documented: Ollama baseline and instrumentation,
+Phases 1-5 are complete and documented: Ollama baseline and instrumentation,
 model serving and batching, a matched Ollama-vs-vLLM comparison including the
-concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics, and
-an observability API and UI over the results.
+concurrency sweep and a diagnosis of vLLM's ceiling using its own metrics, an
+observability API and UI over the results, and inference fundamentals -
+tokenization, prefill, truncation, prefix caching and inter-token latency.
 
 Quantization, GPU environments, Docker, further optimization and a final
-benchmark are planned but not built. Known gaps are listed at the end of each
+benchmark are planned but not built. After those, Phase 11 adds LoRA / QLoRA
+fine-tuning of a small model and measures what serving the adapter costs - see
+`docs/phase11-plan.md`. Known gaps are listed at the end of each
 phase document — the largest are that `gpu_vram_used_mb` is board-wide rather
 than model-attributable, and that kernel profiling is unavailable in this
 environment because `rocprof` had to be disabled to get vLLM running under WSL.

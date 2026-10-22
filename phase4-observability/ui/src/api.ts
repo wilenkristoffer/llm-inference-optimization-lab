@@ -132,16 +132,18 @@ export const fetchGroups = (limit = 100) => get<Group[]>(`/api/groups?limit=${li
 export const fetchServers = () => get<Servers>("/api/servers");
 
 /**
- * Start or stop a backend. Starting is exclusive server-side: it stops the
- * other one first, because vLLM reserves its VRAM at startup and leaves Ollama
- * paging over PCIe at ~8 tok/s while still reporting "100% GPU".
+ * Start or stop a backend. Starting is exclusive server-side unless keepOther
+ * is set: it stops the other one first, because if both do not fit, Ollama
+ * pages over PCIe at ~8 tok/s while still reporting "100% GPU". keepOther is
+ * safe for the 1.5B on both sides, not for bigger models.
  *
  * Returns as soon as the process is spawned - poll fetchServers for readiness.
  */
 export async function controlServer(
-  name: string, action: "start" | "stop",
+  name: string, action: "start" | "stop", keepOther = false,
 ): Promise<Servers> {
-  const response = await fetch(`${API_BASE}/api/servers/${name}/${action}`,
+  const query = action === "start" && keepOther ? "?keep_other=1" : "";
+  const response = await fetch(`${API_BASE}/api/servers/${name}/${action}${query}`,
                                { method: "POST" });
   if (!response.ok) throw new Error(`${name}/${action} failed: ${response.status}`);
   return response.json() as Promise<Servers>;

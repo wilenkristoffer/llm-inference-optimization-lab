@@ -201,12 +201,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """
-        Process control: /api/servers/<name>/<start|stop>.
+        Process control: /api/servers/<name>/<start|stop>. start takes
+        ?keep_other=1 to leave the other server running (small models only).
 
         POST rather than GET because these change machine state, and a GET that
         stops a server would be triggered by anything that prefetches links.
         """
-        parts = urlparse(self.path).path.strip("/").split("/")
+        parsed = urlparse(self.path)
+        parts = parsed.path.strip("/").split("/")
         if len(parts) != 4 or parts[0] != "api" or parts[1] != "servers":
             self.send_json({"error": "expected /api/servers/<name>/<action>"}, 404)
             return
@@ -222,7 +224,8 @@ class Handler(BaseHTTPRequestHandler):
                 # Returns as soon as the process is spawned. vLLM takes ~1 min
                 # to load, so the UI polls /api/servers for readiness rather
                 # than holding this request open.
-                body = servers.start(name)
+                keep_other = parse_qs(parsed.query).get("keep_other") == ["1"]
+                body = servers.start(name, keep_other=keep_other)
             else:
                 body = servers.stop(name)
             self.send_json(body)

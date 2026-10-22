@@ -35,6 +35,9 @@ export default function ServerControls() {
   const [servers, setServers] = useState<Servers | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Off by default and not remembered: it is only safe for the 1.5B, and a
+  // setting that silently persists into a 14B run is how the 8 tok/s happens.
+  const [keepOther, setKeepOther] = useState(false);
   // Avoids a stale poll response overwriting a fresh one after an action.
   const inflight = useRef(false);
 
@@ -62,7 +65,7 @@ export default function ServerControls() {
   async function act(name: string, action: "start" | "stop") {
     setBusy(name);
     try {
-      setServers(await controlServer(name, action));
+      setServers(await controlServer(name, action, keepOther));
       setError(null);
     } catch (e) {
       setError((e as Error).message);
@@ -80,10 +83,17 @@ export default function ServerControls() {
     <section style={{ marginTop: 28 }}>
       <h2>Backends</h2>
       <p className="muted" style={{ margin: "4px 0 0" }}>
-        Starting one stops the other. They cannot share 16&nbsp;GB &mdash; the
+        Starting one stops the other. If both do not fit in 16&nbsp;GB, the
         loser pages over PCIe and reads ~8&nbsp;tok/s while still reporting
         &ldquo;100% GPU&rdquo;.
       </p>
+      <label className="muted" style={{
+        display: "flex", alignItems: "center", gap: 6, marginTop: 8, fontSize: 13,
+      }}>
+        <input type="checkbox" checked={keepOther}
+               onChange={(e) => setKeepOther(e.target.checked)} />
+        Keep the other one running &mdash; 1.5B models only
+      </label>
 
       {error && (
         <div className="card error" style={{ marginTop: 12 }}>
@@ -142,7 +152,8 @@ export default function ServerControls() {
       {anyStarting && (
         <p className="muted" style={{ marginTop: 10 }}>
           vLLM loads weights and profiles the KV cache before it answers &mdash;
-          usually about a minute. The dot turns green when it responds.
+          usually about a minute. The dot turns green when it responds. The
+          full timestamped log is in phase4-observability/logs/.
         </p>
       )}
     </section>
