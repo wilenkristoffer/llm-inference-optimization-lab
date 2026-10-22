@@ -283,6 +283,8 @@ identical, so scoring has to capture precision too.
 - Confirmed working: ROCm drives the RX 7800 XT correctly. `ollama ps` reports
   `100% GPU`, and decode at 222 t/s is 4x above what DDR4-3200 could physically
   deliver - so GPU execution was provable from the numbers alone.
+  (Correction, Phase 7: the RAM is DDR4-3600 running XMP, 57.6 GB/s on paper,
+  so the margin is ~3.8x rather than 4x. The conclusion stands.)
 
 ---
 

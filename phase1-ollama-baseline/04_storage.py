@@ -145,6 +145,25 @@ CREATE TABLE IF NOT EXISTS task_results (
     output_tokens       INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_task_group ON task_results(run_group, model);
+
+-- Phase 7: what the hardware can do, measured by synthetic probes rather than
+-- taken from a datasheet. One row per (probe, buffer size). The unit is not a
+-- request, so it does not belong in inference_runs.
+CREATE TABLE IF NOT EXISTS hardware_ceilings (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_group           TEXT NOT NULL,
+    timestamp_utc       TEXT NOT NULL,
+    hardware_id         TEXT,
+    probe               TEXT NOT NULL,      -- e.g. vram_read, h2d_pinned, matmul_fp16
+    environment         TEXT,               -- where it ran: wsl2-rocm, wsl2-cpu, ...
+    bytes               INTEGER,            -- working-set size; NULL for compute probes
+    best                REAL,               -- best repeat: the ceiling
+    median              REAL,               -- median repeat: what you usually get
+    unit                TEXT,               -- GB/s or TFLOPS
+    repeats             INTEGER,
+    notes               TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_ceil_group ON hardware_ceilings(run_group, probe);
 """
 
 
@@ -176,6 +195,15 @@ MIGRATIONS = {
     # from the process. The KV cache is preallocated for num_ctx x this, so
     # footprints are only comparable at the same value.
     "server_num_parallel": "INTEGER",
+    # Phase 7. Layers on the GPU as requested (num_gpu -> llama-server -ngl);
+    # NULL means not set, so the runtime chose. The model's total resident size
+    # (/api/ps size) goes beside server_vram_mb so the GPU share is derivable.
+    "num_gpu_layers": "INTEGER",
+    "server_size_mb": "REAL",
+    # The GPU library the runner loaded (ROCm, Vulkan, CPU), from server.log -
+    # the same runtime on different libraries is Phase 7's backend comparison.
+    "gpu_library": "TEXT",
+    "num_thread": "INTEGER",
 }
 
 

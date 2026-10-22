@@ -26,7 +26,7 @@ PROMPT = "Explain what a KV cache is in one short paragraph."
 
 
 def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
-             num_predict=None):
+             num_predict=None, extra_options=None):
     """
     One streaming request. Returns every metric we can observe, from both
     clocks: ours (client) and the server's.
@@ -53,7 +53,10 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
                     # num_predict caps output length. Pinning it makes every
                     # request do identical decode work, which is what lets us
                     # compare aggregate throughput across concurrency levels.
-                    **({"num_predict": num_predict} if num_predict else {})},
+                    **({"num_predict": num_predict} if num_predict else {}),
+                    # Phase 7: placement and threading (num_gpu, num_thread).
+                    # A different num_gpu reloads the model with a new -ngl.
+                    **(extra_options or {})},
     }).encode("utf-8")
 
     request = urllib.request.Request(
