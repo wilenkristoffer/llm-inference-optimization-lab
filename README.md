@@ -89,6 +89,22 @@ captured graph size, and its default sizes go 4, 8. A batch of 5 is padded to
 8, lands on the generic kernel, and runs at 78 tok/s per request instead of
 144. Capturing 5 explicitly fixes it.
 
+**Quantization damage shows up long before answers change.** Comparing each
+level's next-token predictions with full precision, token by token, over
+~1,500 positions (top-1 agreement / KL divergence):
+
+| level | Qwen2.5-3B | Qwen3.5-4B |
+|---|---|---|
+| Q8_0 | 98.7% / 0.002 | 99.3% / 0.003 |
+| Q4_K_M (Ollama default) | 93.3% / 0.058 | 94.7% / 0.030 |
+| Q3_K_M | 75.0% / 0.677 | 89.4% / 0.108 |
+| Q2_K | 0.7% / 4.83 - broken | 66.0% / 0.885 |
+
+A 60-question checkable test could not tell FP16 from Q4_K_M on either model.
+Qwen2.5-3B falls off a cliff below Q4; Qwen3.5-4B is still sound at Q3_K_M.
+Qwen2.5-3B's Q2_K collapse was traced to one tensor type: `ffn_gate` at 2
+bits. Raising it alone to 3 bits restores partly coherent output.
+
 **Ollama truncates silently, oldest-first, and an overflow costs half the
 window.** Past `num_ctx` it keeps roughly `num_ctx / 2` - the system prompt goes
 first - with no error. Asked about a planted code it no longer had, the model
@@ -119,6 +135,9 @@ phase4-observability/     read-only JSON API over lab.db, backend process
 phase5-inference-fundamentals/
                           tokenization -> prefill scaling -> context truncation
                           -> prefix cache -> inter-token latency
+phase6-quantization/      VRAM/speed ladder -> fidelity vs full precision
+                          -> checkable questions -> Q2_K collapse investigation
+                          -> locally built ladders
 docs/                     per-phase technical notes, including the WSL2 + ROCm
                           setup that gets vLLM running on consumer AMD
 ```
@@ -201,16 +220,20 @@ scaling predictions. Those are kept deliberately; they are the useful part.
 
 ## Status
 
-Phases 1-5 are complete and documented: Ollama baseline and instrumentation,
+Phases 1-6 are complete and documented: Ollama baseline and instrumentation,
 model serving and batching, a matched Ollama-vs-vLLM comparison including the
 concurrency sweep and a diagnosis of vLLM's batch-size cliff down to the kernel, an
-observability API and UI over the results, and inference fundamentals -
-tokenization, prefill, truncation, prefix caching and inter-token latency.
+observability API and UI over the results, inference fundamentals -
+tokenization, prefill, truncation, prefix caching and inter-token latency -
+and quantization: full GGUF ladders on Qwen2.5-3B/7B and Qwen3.5-4B, measured
+with a token-level fidelity method, plus a root cause for Qwen2.5-3B's Q2_K
+collapse.
 
-Quantization, GPU environments, Docker, further optimization and a final
-benchmark are planned but not built. After those, Phase 11 adds LoRA / QLoRA
-fine-tuning of a small model and measures what serving the adapter costs - see
-`docs/phase11-plan.md`. Known gaps are listed at the end of each
-phase document — the largest are that `gpu_vram_used_mb` is board-wide rather
-than model-attributable, and that kernel profiling is unavailable in this
+GPU environments, Docker, further optimization and a final benchmark are
+planned but not built. After those, Phase 11 adds LoRA / QLoRA fine-tuning of
+a small model and measures what serving the adapter costs - see
+`docs/phase11-plan.md`. Known gaps are listed at the end of each phase
+document - the largest is that kernel profiling is unavailable in this
 environment because `rocprof` had to be disabled to get vLLM running under WSL.
+Disk used by the lab's models, and when each can go, is in
+`docs/cleanup-plan.md`.

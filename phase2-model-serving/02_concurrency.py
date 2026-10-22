@@ -105,8 +105,11 @@ def run_level(model, num_ctx, concurrency):
         "aggregate_tok_s": total_out / wall,
         # Per-request decode rate: what ONE user experiences. Batching trades
         # this against the number above, and the trade is the whole point.
-        "per_req_tok_s": statistics.median(r["decode_tok_s"] for r in done),
-        "ttft_ms": statistics.median(r["ttft_ms"] for r in done),
+        # None = an aborted generation (see run_once); left out, not zeroed.
+        "per_req_tok_s": statistics.median(r["decode_tok_s"] for r in done
+                                           if r["decode_tok_s"] is not None),
+        "ttft_ms": statistics.median(r["ttft_ms"] for r in done
+                                     if r["ttft_ms"] is not None),
         "latency_ms": statistics.median(r["client_total_ms"] for r in done),
         "out_tokens": total_out,
     }

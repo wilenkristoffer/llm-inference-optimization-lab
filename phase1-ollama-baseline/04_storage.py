@@ -94,6 +94,57 @@ CREATE TABLE IF NOT EXISTS inference_runs (
 -- Indexes on what we will actually filter and group by.
 CREATE INDEX IF NOT EXISTS idx_runs_group   ON inference_runs(run_group);
 CREATE INDEX IF NOT EXISTS idx_runs_compare ON inference_runs(model, backend, quantization);
+
+-- Phase 6: fidelity of a quantized model to a reference, one row per token
+-- position of the reference text. A separate table because the unit is a
+-- token, not a request - ~2,000 rows per model, which would drown
+-- inference_runs.
+CREATE TABLE IF NOT EXISTS fidelity_positions (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_group           TEXT NOT NULL,
+    timestamp_utc       TEXT NOT NULL,
+    backend             TEXT,
+    backend_version     TEXT,
+    model               TEXT NOT NULL,      -- the model being scored
+    model_key           TEXT,
+    model_digest        TEXT,
+    quantization        TEXT,
+    reference_model     TEXT NOT NULL,      -- whose greedy text is the reference
+    prompt_index        INTEGER NOT NULL,
+    position            INTEGER NOT NULL,   -- token index within the reference
+    ref_token           TEXT,
+    aligned             INTEGER,            -- 1 if the server saw exactly the
+                                            -- expected prefix length
+    top1_match          INTEGER,            -- model's top token == reference token
+    ref_logprob         REAL,               -- model's logprob OF the reference
+                                            -- token; NULL if outside its top-k
+    ref_in_topk         INTEGER,
+    kl_topk             REAL,               -- approx KL(reference || model) over
+                                            -- the reference's top-k tokens
+    top_k               INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_fid_group ON fidelity_positions(run_group, model);
+
+-- Phase 6: one row per (model, question) of the checkable task set. The
+-- response is kept so any scoring decision can be re-checked by eye later.
+CREATE TABLE IF NOT EXISTS task_results (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_group           TEXT NOT NULL,
+    timestamp_utc       TEXT NOT NULL,
+    backend             TEXT,
+    backend_version     TEXT,
+    model               TEXT NOT NULL,
+    model_key           TEXT,
+    model_digest        TEXT,
+    quantization        TEXT,
+    question_id         TEXT NOT NULL,
+    category            TEXT,
+    correct             INTEGER,
+    reason              TEXT,               -- why it failed, when it did
+    response            TEXT,
+    output_tokens       INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_task_group ON task_results(run_group, model);
 """
 
 
@@ -213,6 +264,24 @@ def record_run(conn, **fields):
     )
     conn.commit()
     return cursor.lastrowid
+
+
+def record_rows(conn, table, rows):
+    """Insert many rows into one of the Phase 6 tables in one transaction.
+    The table name is code-supplied, never user input."""
+    if not rows:
+        return
+    now = datetime.now(timezone.utc).isoformat()
+    for row in rows:
+        row.setdefault("timestamp_utc", now)
+        if row.get("model") and not row.get("model_key"):
+            row["model_key"] = canonical_model(row["model"])
+    columns = list(rows[0])
+    conn.executemany(
+        f"INSERT INTO {table} ({', '.join(columns)}) "
+        f"VALUES ({', '.join('?' for _ in columns)})",
+        [[row.get(c) for c in columns] for row in rows])
+    conn.commit()
 
 
 if __name__ == "__main__":

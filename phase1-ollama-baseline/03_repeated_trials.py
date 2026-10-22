@@ -38,10 +38,18 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
         "model": model,
         "prompt": prompt,
         "stream": True,
+        # Thinking models (Qwen3.5) think by default: measured, 120 tokens of
+        # hidden reasoning and an EMPTY answer, which would time the thinking
+        # and score nothing. Harmless on models without a thinking mode.
+        "think": False,
         "options": {"temperature": temperature, "seed": seed, "num_ctx": num_ctx,
                     # Ollama's default, pinned so a change of default cannot
                     # move results, and to match vLLM (see Phase 3 client).
                     "repeat_penalty": 1.0,
+                    # Also pinned: Qwen3.5's model file sets presence_penalty
+                    # 1.5, which changes the winning token even at
+                    # temperature 0. Qwen2.5's default is already 0.
+                    "presence_penalty": 0, "frequency_penalty": 0,
                     # num_predict caps output length. Pinning it makes every
                     # request do identical decode work, which is what lets us
                     # compare aggregate throughput across concurrency levels.
@@ -57,6 +65,7 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
     t_first = t_last = None
     pieces = []
     final = {}
+    error = None
 
     with urllib.request.urlopen(request) as response:
         for line in response:
@@ -64,6 +73,12 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
                 continue
             now = time.perf_counter()
             chunk = json.loads(line)
+            # A generation aborted mid-stream (e.g. Ollama's loop guard,
+            # "token repeat limit reached") ends with an error chunk instead
+            # of the final done chunk - so there are no server counts at all.
+            # Found on 3B Q2_K, which had been stored as 0 tokens at -1.8 tok/s.
+            if chunk.get("error"):
+                error = chunk["error"]
             text = chunk.get("response")
             if text:
                 if t_first is None:
@@ -82,12 +97,15 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
     cached = final.get("prompt_eval_cached_count") or 0
     out_tokens = final.get("eval_count") or 0
     uncached = in_tokens - cached
-    generation = t_last - t_first
+    generation = (t_last - t_first) if t_first is not None else 0
     prefill_ms = ms(final.get("prompt_eval_duration"))
 
     return {
+        # Set when the server aborted the generation; every server-side field
+        # is then absent, and the rates below are None rather than invented.
+        "error": error,
         # client clock
-        "ttft_ms": (t_first - t_sent) * 1000,
+        "ttft_ms": (t_first - t_sent) * 1000 if t_first is not None else None,
         "client_total_ms": (t_done - t_sent) * 1000,
         # server clock
         "load_ms": ms(final.get("load_duration")),
@@ -100,7 +118,10 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
         "output_tokens": out_tokens,
         "total_tokens": in_tokens + out_tokens,
         # derived. prefill rate counts only tokens actually processed.
-        "decode_tok_s": (out_tokens - 1) / generation if generation > 0 else 0,
+        # (n - 1) gaps between n tokens. Needs at least two tokens AND the
+        # server's count; None otherwise - never a 0 that averages into a chart.
+        "decode_tok_s": ((out_tokens - 1) / generation
+                         if final and out_tokens >= 2 and generation > 0 else None),
         "prefill_tok_s": (uncached / (prefill_ms / 1000))
                          if prefill_ms and uncached > 0 else None,
         "response": "".join(pieces),
@@ -208,7 +229,16 @@ def summarize(label, values, unit):
     Coefficient of variation (stdev as a % of the mean) is the honest noise
     figure. Under ~2% is tight. But check the absolute range too - cv inflates
     badly on small numbers, as it does for TTFT here.
+
+    None values (aborted generations) are left out and counted, not averaged.
     """
+    missing = sum(1 for v in values if v is None)
+    values = [v for v in values if v is not None]
+    if not values:
+        print(f"{label:22s} no valid values ({missing} aborted)")
+        return
+    if missing:
+        label = f"{label} ({missing} aborted)"
     med = statistics.median(values)
     lo, hi = min(values), max(values)
     if len(values) > 1:
