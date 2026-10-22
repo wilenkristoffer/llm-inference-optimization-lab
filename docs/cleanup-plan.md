@@ -16,7 +16,12 @@ them, but did not pull them. Same for `~/.jdks`, `~/.m2`, `~/.npm` and
 
 ---
 
-## Stage 1 - after the Phase 6 write-up (~28 GB)
+## Stage 1 - after the Phase 6 write-up (~28 GB) - DONE 2026-10-22
+
+Done, together with the Qwen3.5-4B local ladder below: 16 models removed, C:
+went from 172 GB to 217 GB free (45 GB). No level was kept back - the
+configurations Phase 6 favoured (7B Q4_K_M, Qwen3.5-4B) are kept anyway, as
+pre-existing or Stage 2 models.
 
 Ladder levels that exist only to draw the quality/size/speed curve.
 
