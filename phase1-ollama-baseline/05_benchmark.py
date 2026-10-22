@@ -92,6 +92,11 @@ def show_history(conn):
                ROUND(AVG(gpu_percent), 0)         AS gpu_pct,
                ROUND(AVG(gpu_clock_mhz), 0)       AS gpu_mhz,
                ROUND(MAX(gpu_vram_used_mb), 0)    AS vram_mb,
+               -- Only from a clean (evicted) baseline; otherwise NULL, because
+               -- a dirty delta looks like a footprint and is not one.
+               ROUND(MAX(CASE WHEN gpu_vram_baseline_clean = 1
+                         THEN gpu_vram_used_mb - gpu_vram_baseline_mb END), 0)
+                                                  AS model_mb,
                MIN(timestamp_utc)                 AS started
         FROM inference_runs
         GROUP BY run_group
@@ -103,15 +108,19 @@ def show_history(conn):
         return
 
     print(f"{'model':<15} {'quant':<8} {'ctx':>5} {'n':>3} "
-          f"{'dec t/s':>8} {'ttft':>7} {'gpu%':>6} {'MHz':>6} {'vramMB':>8}  started")
-    print("-" * 95)
+          f"{'dec t/s':>8} {'ttft':>7} {'gpu%':>6} {'MHz':>6} {'vramMB':>8} "
+          f"{'modelMB':>8}  started")
+    print("-" * 104)
     for r in rows:
+        # Every column, not only hardware: this lists ALL run groups, and
+        # later harnesses (prefill, prefix cache) leave other fields NULL too.
         dash = lambda v: "-" if v is None else v
-        print(f"{r['model']:<15} {str(r['quantization']):<8} "
-              f"{r['context_length']:>5} {r['trials']:>3} "
-              f"{r['avg_decode']:>8} {r['best_ttft']:>7} "
+        print(f"{dash(r['model']):<15} {str(r['quantization']):<8} "
+              f"{dash(r['context_length']):>5} {r['trials']:>3} "
+              f"{dash(r['avg_decode']):>8} {dash(r['best_ttft']):>7} "
               f"{dash(r['gpu_pct']):>6} {dash(r['gpu_mhz']):>6} "
-              f"{dash(r['vram_mb']):>8}  {r['started'][:19]}")
+              f"{dash(r['vram_mb']):>8} {dash(r['model_mb']):>8}  "
+              f"{r['started'][:19]}")
 
 
 parser = argparse.ArgumentParser()
@@ -119,6 +128,9 @@ parser.add_argument("--model", default="qwen2.5:1.5b")
 parser.add_argument("--trials", type=int, default=7)
 parser.add_argument("--num-ctx", type=int, default=4096)
 parser.add_argument("--notes", default=None)
+parser.add_argument("--no-evict", action="store_true",
+                    help="keep resident models; the VRAM baseline is then not "
+                         "clean and (used - baseline) is not this model's size")
 parser.add_argument("--history", action="store_true", help="list past runs and exit")
 args = parser.parse_args()
 
@@ -136,23 +148,48 @@ print(f"digest  : {meta['model_digest']}")
 print(f"backend : ollama {meta['backend_version']}")
 print(f"group   : {run_group}")
 
+# vLLM reserves its VRAM for the process lifetime. Beside it, a model that
+# does not fit still "loads" - WDDM pages it to system RAM and every number
+# from here on is a PCIe benchmark (Phase 3: 8.1 tok/s instead of 121).
+try:
+    with urllib.request.urlopen("http://127.0.0.1:8000/v1/models", timeout=1.5):
+        sys.exit("vLLM is running on :8000 and holds VRAM. Stop it first "
+                 "(Backends panel, or phase4-observability/servers.py).")
+except OSError:
+    pass
+
+# Evict BEFORE the baseline: a model left resident by an earlier run would be
+# counted as "desktop", and (peak - baseline) would read near zero.
+clean_baseline = 0
+if not args.no_evict:
+    evicted = trials_mod.evict_all()
+    clean_baseline = 1
+    print(f"evicted : {', '.join(evicted) if evicted else 'nothing was loaded'}")
+
 # Constructed BEFORE the warm-up, because its availability probe doubles as
-# the VRAM baseline - and the warm-up is what loads the model. One sampler for
-# the whole loop, sliced per trial: starting and stopping a thread around each
-# request would cost more than it measures, and a 350 ms trial would catch
-# barely one sample.
-hw = sampler_mod.HardwareSampler(interval=0.15)
+# the VRAM baseline - and the warm-up is what loads the model. settle=True
+# waits for VRAM to stop moving after the eviction. One sampler for the whole
+# loop, sliced per trial: starting and stopping a thread around each request
+# would cost more than it measures, and a 350 ms trial would catch barely one
+# sample.
+hw = sampler_mod.HardwareSampler(interval=0.15, settle=not args.no_evict)
 if not hw.available:
     print()
     print("WARNING: LibreHardwareMonitor unreachable - every hardware column")
     print("  will be NULL. Start it ELEVATED, then Options > Remote Web Server.")
+    clean_baseline = None   # no baseline at all, so not a clean one either
 baseline_vram = hw.baseline_vram_mb()
 
 print("\nwarm-up (discarded)...", end="", flush=True)
 warm = trials_mod.run_once(args.model, args.num_ctx)
 print(f" {warm['client_total_ms']:.0f} ms")
+server_vram = trials_mod.server_vram_mb(args.model)
 if baseline_vram is not None:
-    print(f"vram baseline (pre-load): {baseline_vram:,.0f} MB")
+    spread = hw.baseline_spread_mb
+    print(f"vram baseline (pre-load): {baseline_vram:,.0f} MB"
+          + (f"  (settled, range {spread:.0f} MB)" if spread is not None else ""))
+if server_vram is not None:
+    print(f"vram ollama reports     : {server_vram:,.0f} MB for this model")
 
 print("trials: ", end="", flush=True)
 results = []
@@ -204,6 +241,8 @@ with hw:
             gpu_temp_c=hw_stats.get("gpu_temp_c_peak"),
             gpu_vram_used_mb=hw_stats.get("gpu_vram_used_mb_peak"),
             gpu_vram_baseline_mb=baseline_vram,
+            gpu_vram_baseline_clean=clean_baseline,
+            server_vram_mb=server_vram,
             cpu_percent=hw_stats.get("cpu_percent_mean"),
             cpu_temp_c=hw_stats.get("cpu_temp_c_peak"),
             system_ram_used_mb=(ram_gb * 1024) if ram_gb else None,
@@ -217,6 +256,11 @@ print("\n" + "=" * 78)
 trials_mod.summarize("time to first token", [r["ttft_ms"] for r in results], "ms")
 trials_mod.summarize("decode rate", [r["decode_tok_s"] for r in results], "tok/s")
 trials_mod.summarize("total wall clock", [r["client_total_ms"] for r in results], "ms")
+peak = hw.summary().get("gpu_vram_used_mb_peak")
+if peak is not None and baseline_vram is not None:
+    label = "model footprint" if clean_baseline else "NEW allocation (not clean)"
+    print(f"  {label:<25} {peak - baseline_vram:,.0f} MB measured (peak - baseline)"
+          + (f", {server_vram:,.0f} MB claimed by ollama" if server_vram else ""))
 print("=" * 78)
 print(f"stored {len(results)} rows in group {run_group}\n")
 

@@ -112,6 +112,15 @@ MIGRATIONS = {
     # Canonical identity for "the same weights", across backends that name
     # them differently. Derived, not typed in - see canonical_model().
     "model_key": "TEXT",
+    # 1 if the baseline was taken with NO model resident (evicted and
+    # confirmed), so (used - baseline) is this model's footprint. 0 if
+    # something was loaded; NULL for rows from before this was tracked. Only
+    # rows with 1 answer "how much VRAM does this model need".
+    "gpu_vram_baseline_clean": "INTEGER",
+    # The server's own claim of the model's VRAM (Ollama /api/ps size_vram).
+    # A cross-check, not a measurement: Ollama reported "100% GPU" while
+    # paging in Phase 3.
+    "server_vram_mb": "REAL",
 }
 
 

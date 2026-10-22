@@ -107,6 +107,62 @@ def run_once(model, num_ctx, prompt=PROMPT, temperature=0, seed=42,
     }
 
 
+# --- Model residency (added in Phase 6) -------------------------------------
+#
+# A VRAM baseline taken while a model is still loaded from an earlier run
+# includes that model, and "peak - baseline" then reads near zero. These let a
+# harness evict first and confirm nothing is resident before it measures.
+
+OLLAMA_BASE = OLLAMA_URL.rsplit("/api/", 1)[0]
+
+
+def _ollama(path, payload=None, timeout=30):
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    request = urllib.request.Request(
+        OLLAMA_BASE + path, data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST" if data else "GET")
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def loaded_models():
+    """What Ollama has resident right now: [{name, size, size_vram, ...}]."""
+    return _ollama("/api/ps").get("models", [])
+
+
+def evict_all(timeout=20):
+    """
+    Unload every resident model and wait until /api/ps confirms it. Returns
+    the names evicted. keep_alive=0 with no prompt is Ollama's documented way
+    to unload; it returns before the memory is freed, hence the wait.
+    """
+    names = [m["name"] for m in loaded_models()]
+    for name in names:
+        _ollama("/api/generate", {"model": name, "keep_alive": 0})
+    deadline = time.monotonic() + timeout
+    while loaded_models():
+        if time.monotonic() > deadline:
+            raise RuntimeError(f"Ollama still reports loaded models after "
+                               f"{timeout}s: {[m['name'] for m in loaded_models()]}")
+        time.sleep(0.25)
+    return names
+
+
+def server_vram_mb(model):
+    """
+    Ollama's OWN account of this model's VRAM (weights + KV cache + compute
+    graph), or None if it is not loaded. This is a claim, not a measurement:
+    Phase 3 saw `ollama ps` report "100% GPU" while the model was paging over
+    PCIe. Recorded beside the board reading so the two can be checked against
+    each other.
+    """
+    for m in loaded_models():
+        if m.get("name") == model or m.get("model") == model:
+            return m.get("size_vram", 0) / 2**20
+    return None
+
+
 def summarize(label, values, unit):
     """
     Median, not mean: a single GPU hiccup drags a mean around, the median

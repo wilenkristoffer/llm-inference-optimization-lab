@@ -96,6 +96,35 @@ def read_sensors(url=LHM_URL, timeout=3):
     return found
 
 
+def settled_vram_mb(url=LHM_URL, window=6, interval=0.3, tolerance_mb=64,
+                    timeout=15):
+    """
+    Board VRAM once it has stopped moving: the median of the last `window`
+    readings, taken when their range is within `tolerance_mb`. Returns
+    (median, range) or (None, None).
+
+    A single reading is not a baseline. VRAM is released asynchronously after
+    an eviction, and the desktop and browser move it by tens of MB on their
+    own - a model's footprint measured against one unlucky reading is off by
+    that much. The range is returned so the noise floor is on record.
+    """
+    readings = []
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        value = (read_sensors(url) or {}).get("gpu_vram_used_mb")
+        if value is not None:
+            readings.append(value)
+        recent = readings[-window:]
+        if len(recent) == window and max(recent) - min(recent) <= tolerance_mb:
+            return statistics.median(recent), max(recent) - min(recent)
+        time.sleep(interval)
+    recent = readings[-window:]
+    if not recent:
+        return None, None
+    # Never settled: return it anyway, with the range showing why to distrust it.
+    return statistics.median(recent), max(recent) - min(recent)
+
+
 class HardwareSampler:
     """
     Polls sensors on a background thread for the duration of a `with` block.
@@ -105,10 +134,14 @@ class HardwareSampler:
     almost nothing and still catches a 350 ms request.
     """
 
-    def __init__(self, interval=0.25, url=LHM_URL):
+    def __init__(self, interval=0.25, url=LHM_URL, settle=False):
         self.interval = interval
         self.url = url
         self.samples = []
+        # settle=True replaces the single-reading VRAM baseline with a settled
+        # one (see settled_vram_mb). Off by default so existing harnesses keep
+        # their behaviour; Phase 6 turns it on after evicting.
+        self.baseline_spread_mb = None
         # The availability probe doubles as a BASELINE reading. Construct the
         # sampler before the workload starts and `baseline` records what the
         # board looked like beforehand - which is how VRAM becomes
@@ -121,6 +154,11 @@ class HardwareSampler:
         # "how much VRAM this model needs". For that, evict first.
         self.baseline = read_sensors(url) or {}
         self.available = bool(self.baseline)
+        if settle and self.available:
+            vram, spread = settled_vram_mb(url)
+            if vram is not None:
+                self.baseline["gpu_vram_used_mb"] = vram
+                self.baseline_spread_mb = spread
         self._stop = threading.Event()
         self._thread = None
 
