@@ -34,6 +34,12 @@ child open in THIS process instead of backgrounding it inside the guest.
 
 NOTE: this API executes processes. It binds to 127.0.0.1 only and has no auth.
 That is fine for a local lab tool and would not be for anything reachable.
+
+IN A CONTAINER (Phase 8) there is no Windows or WSL to spawn into, so
+LAB_SERVER_CONTROL=0 turns start/stop off and this only reports health. The
+health URLs come from OLLAMA_URL / VLLM_URL, which point at
+host.docker.internal there. Docker Desktop proxies that to the host's
+loopback, so Ollama is reachable even though it binds 127.0.0.1 only.
 """
 
 import json
@@ -89,16 +95,20 @@ VLLM_GUEST_CMD = (
 # be diagnosed after the fact instead of reproduced. Gitignored (*.log).
 LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
 
+CONTROL = os.environ.get("LAB_SERVER_CONTROL", "1") != "0"
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
+VLLM_URL = os.environ.get("VLLM_URL", "http://127.0.0.1:8000")
+
 SERVERS = {
     "ollama": {
         "label": "Ollama",
-        "health": "http://127.0.0.1:11434/api/version",
+        "health": f"{OLLAMA_URL}/api/version",
         "port": 11434,
         "where": "native Windows",
     },
     "vllm": {
         "label": "vLLM",
-        "health": "http://127.0.0.1:8000/v1/models",
+        "health": f"{VLLM_URL}/v1/models",
         "port": 8000,
         "where": "WSL2",
     },
@@ -192,6 +202,7 @@ def status_all():
             "port": cfg["port"],
             "status": state,
             "managed": name in _procs and _procs[name].poll() is None,
+            "control": CONTROL,
             "log": list(_logs[name])[-12:],
         }
     return out

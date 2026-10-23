@@ -89,6 +89,8 @@ export interface ServerState {
   port: number;
   status: ServerStatus;
   managed: boolean;
+  /** False when the API runs in a container and can only report health. */
+  control: boolean;
   log: string[];
 }
 

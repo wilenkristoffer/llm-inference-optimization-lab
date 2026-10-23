@@ -82,6 +82,8 @@ export default function ServerControls() {
 
   const list = Object.values(servers);
   const anyStarting = list.some((s) => s.status === "starting");
+  // Same for every server: it is a property of where the API runs.
+  const control = list.every((s) => s.control);
 
   return (
     <section style={{ marginTop: 28 }}>
@@ -98,6 +100,12 @@ export default function ServerControls() {
                onChange={(e) => setKeepOther(e.target.checked)} />
         Keep the other one running &mdash; 1.5B models only
       </label>
+      {!control && (
+        <p className="muted" style={{ margin: "8px 0 0" }}>
+          The API is running in a container, so it can report health but not
+          start or stop the servers. Start them natively.
+        </p>
+      )}
 
       {error && (
         <div className="card error" style={{ marginTop: 12 }}>
@@ -127,13 +135,13 @@ export default function ServerControls() {
             <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
               <button
                 onClick={() => act(s.name, "start")}
-                disabled={busy !== null || s.status !== "stopped"}
+                disabled={!control || busy !== null || s.status !== "stopped"}
               >
                 {busy === s.name ? "working..." : "Start"}
               </button>
               <button
                 onClick={() => act(s.name, "stop")}
-                disabled={busy !== null || s.status === "stopped"}
+                disabled={!control || busy !== null || s.status === "stopped"}
               >
                 Stop
               </button>

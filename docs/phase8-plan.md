@@ -106,6 +106,38 @@ over the 15-25 GB prediction. Build on top of it: 132 s.
   Under Compose the containers handle that and the API only checks health.
   Keep the native path working.
 
+### Stage 1 result (2026-10-23): done
+
+Images: `lab/api` 177 MB (`python:3.12-slim`, stdlib only) and `lab/ui`
+93 MB (Node build, served by nginx). Dockerfiles are in `phase8-docker/api/`
+and `phase8-docker/ui/`; build commands are in each file's header.
+
+```
+docker run -d --name lab-api -p 127.0.0.1:8010:8010 -v <repo>\lab.db:/data/lab.db:ro lab/api
+docker run -d --name lab-ui  -p 127.0.0.1:8080:80 lab/ui
+```
+
+Changes to `phase4-observability/`. The native defaults are unchanged, and
+the native API was re-checked:
+- `api.py`: `LAB_DB` and `API_HOST` env vars. Opens the database
+  **read-only** (`mode=ro`), natively too, since the API never writes.
+- `servers.py`: `OLLAMA_URL` and `VLLM_URL` for the health checks.
+  `LAB_SERVER_CONTROL=0` turns start/stop off; POST then returns 409.
+  `/api/servers` reports `control`.
+- UI: Start/Stop are disabled with a one-line note when `control` is false.
+
+Verified:
+- Both native servers answer from a container through `host.docker.internal`.
+  That includes Ollama, which binds `127.0.0.1` only, because Docker Desktop
+  proxies to the host loopback.
+- Rows written natively are visible in the container at once
+  (1,373 -> 1,378, tested on a copy of lab.db).
+
+Known limit: SQLite file locks don't cross the Windows/VM boundary, so a read
+that lands in the middle of a native write could, rarely, fail or see a
+partial page. That's acceptable for a dashboard that polls; it would not be
+for a writer. Containers must never write to lab.db.
+
 ## Stage 2 - vLLM image (only if Stage 0 passed)
 
 - Dockerfile that repeats the `~/vllm-env` recipe: ROCm 7.2.4 userspace,
@@ -114,6 +146,66 @@ over the 15-25 GB prediction. Build on top of it: 132 s.
 - HF model cache as a named volume or bind mount, so models are not downloaded
   again.
 - Record image size and build time.
+
+### Stage 2 result (2026-10-23): done
+
+`phase8-docker/vllm/`: Dockerfile, `requirements.lock` (the native venv's
+exact versions) and `freeze.sh`, which regenerates the lock. The base is
+`rocm/dev-ubuntu-24.04:7.2.4-complete`, the same ROCm userspace as native.
+
+```
+docker run -d --name lab-vllm --device /dev/dxg -v /usr/lib/wsl:/usr/lib/wsl:ro \
+  --ipc=host --shm-size 8G -p 127.0.0.1:8000:8000 \
+  -v /home/work/.cache/huggingface:/root/.cache/huggingface:ro \
+  -v lab-cache:/root/.cache lab/vllm
+```
+
+Run from Ubuntu, so that the HF cache bind-mounts from the distro. Serve flags
+are the image's CMD, the same as `VLLM_GUEST_CMD`. Override them at run time;
+changing them needs no rebuild.
+
+Problems, each fixed at the cause:
+1. **The vLLM wheel index moves.** `wheels.vllm.ai/rocm/` serves only the
+   latest nightly (torch 2.13 and aiter 0.1.24 by now), so the lock didn't
+   resolve. The pinned index is `wheels.vllm.ai/rocm/0.29.0/rocm723/`.
+2. **`pip freeze` reported the wrong amdsmi** (1.2.2 instead of 26.2.2). The
+   ROCDXG deb ships a `.pth` that puts `/opt/rocm-wsl/share/amd_smi` on
+   `sys.path`, and freeze read that copy. `freeze.sh` uses `--path` so it reads
+   only the venv's own packages.
+3. **The base image got re-downloaded (7 GB).** A base pulled only by `FROM`
+   lives in the build cache, and Docker Desktop trims that to 20 GB
+   (`defaultKeepStorage`); it was at 64 GB. `docker pull` the base once so
+   it's a tagged image, which is never collected. The pip step uses a cache
+   mount, so wheels survive rebuilds.
+4. **torch couldn't load `libmpi_cxx.so.40`.** The torch wheel links to system
+   libs that it doesn't ship and that the ROCm base doesn't have: OpenMPI, TBB,
+   libjpeg, libdw (`libopenmpi3t64 libtbb12 libjpeg-turbo8 libdw1t64`). Native
+   Ubuntu had them from earlier installs. They're installed in their own step
+   after pip, so that rebuild took 31 s.
+5. **Every fresh container compiled a C++ addon (about 18 s).** tvm-ffi
+   builds `libtorch_c_dlpack_addon_torch212-rocm.so` on first import (only
+   when a GPU is present, so it can't be baked in at build time) and caches it
+   in `~/.cache/tvm-ffi`. Natively that persists. The named volume on
+   `/root/.cache` now holds it, along with vLLM's torch.compile cache and
+   comgr's kernel cache. Warm start went from 75 s to 52-55 s.
+
+Image: 45.5 GB on disk, 10.9 GB content. Base pull 659 s. First full build
+about 17 min (pip 630 s, mostly downloads; layer export 308 s). Rebuilds of
+steps after pip take seconds.
+
+Native vs container, interleaved in one session, 3 rounds each:
+
+| metric | native | container | diff |
+|---|---|---|---|
+| warm start to `/v1/models` | 44.3 / 43.0 / 42.1, mean 43.1 s | 51.3 / 52.6 / 57.4, mean 53.8 s | +10.7 s |
+| decode batch 1 (tok/s) | 144.7 / 148.7 / 147.6, mean 147.0 | 144.5 / 144.0 / 147.3, mean 145.3 | -1.2% |
+| decode batch 32 (tok/s) | 2002 / 2020 / 2037, mean 2020 | 1934 / 2000 / 2017, mean 1984 | -1.8% |
+
+Decode is within the 2% prediction. The container came out slightly lower in
+all 6 pairs, so it may be a real, small cost rather than pure noise. The cold
+first start (empty cache volume) is 105-113 s, mostly torch.compile (17.7 s)
+and the addon build. The remaining ~11 s warm-start gap isn't explained yet:
+per process, imports are only ~1 s slower with warm files.
 
 ## Stage 3 - Compose file
 

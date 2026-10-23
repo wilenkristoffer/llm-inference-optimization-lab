@@ -29,6 +29,7 @@ Usage:
 import argparse
 import json
 import os
+import pathlib
 import sqlite3
 import statistics
 import sys
@@ -40,11 +41,16 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import servers  # noqa: E402
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "lab.db")
+# LAB_DB is set in the container, where lab.db is a bind mount at /data.
+DB_PATH = os.environ.get(
+    "LAB_DB", os.path.join(os.path.dirname(__file__), "..", "lab.db"))
 
 
 def connect():
-    conn = sqlite3.connect(DB_PATH)
+    # Read-only: this API never writes, and in the container the file is
+    # mounted :ro while native benchmark scripts keep writing to it.
+    conn = sqlite3.connect(f"{pathlib.Path(DB_PATH).resolve().as_uri()}?mode=ro",
+                           uri=True)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -215,6 +221,10 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         _, _, name, action = parts
+        if not servers.CONTROL:
+            self.send_json({"error": "server control is off here (container): "
+                            "start and stop the model servers natively"}, 409)
+            return
         if name not in servers.SERVERS or action not in ("start", "stop"):
             self.send_json({"error": f"unknown server or action: {name}/{action}",
                             "servers": sorted(servers.SERVERS)}, 400)
@@ -268,6 +278,9 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8010)
+    # 127.0.0.1 natively. The container needs 0.0.0.0 to be reachable at all;
+    # Docker then publishes it on the host's 127.0.0.1 only.
+    parser.add_argument("--host", default=os.environ.get("API_HOST", "127.0.0.1"))
     args = parser.parse_args()
 
     if not os.path.exists(DB_PATH):
@@ -280,8 +293,8 @@ if __name__ == "__main__":
     conn.close()
     print(f"lab.db: {s['total_runs']} runs in {s['run_groups']} groups, "
           f"{s['models']} models, {s['backends']} backends")
-    print(f"serving on http://127.0.0.1:{args.port}")
+    print(f"serving on http://{args.host}:{args.port}")
     for route in sorted(ROUTES):
         print(f"  {route}")
     # ThreadingHTTPServer so a slow query cannot block the whole UI.
-    ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
+    ThreadingHTTPServer((args.host, args.port), Handler).serve_forever()
