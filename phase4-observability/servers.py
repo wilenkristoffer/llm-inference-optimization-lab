@@ -98,6 +98,8 @@ LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
 CONTROL = os.environ.get("LAB_SERVER_CONTROL", "1") != "0"
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 VLLM_URL = os.environ.get("VLLM_URL", "http://127.0.0.1:8000")
+# Shown in the UI. Compose sets it, since there vLLM is a container, not WSL2.
+VLLM_WHERE = os.environ.get("VLLM_WHERE", "WSL2")
 
 SERVERS = {
     "ollama": {
@@ -110,7 +112,7 @@ SERVERS = {
         "label": "vLLM",
         "health": f"{VLLM_URL}/v1/models",
         "port": 8000,
-        "where": "WSL2",
+        "where": VLLM_WHERE,
     },
 }
 

@@ -216,6 +216,48 @@ per process, imports are only ~1 s slower with warm files.
   for vLLM to finish its ~37 s startup.
 - Ports published on `127.0.0.1` only.
 
+### Stage 3 result (2026-10-23): done
+
+`phase8-docker/compose.yaml`, project name `lab`. Run it from Ubuntu:
+
+```
+cd /mnt/h/iwow/Development/llm-inference-optimization-lab/phase8-docker
+docker compose up -d --wait     # UI on http://127.0.0.1:8080
+```
+
+- `vllm`: the Stage 2 run flags as Compose keys. The healthcheck is
+  `/health` with a 180 s start period, since a cold start takes about 110 s.
+- `api`: `depends_on: vllm: service_healthy`. It reaches vLLM as
+  `http://vllm:8000` on the Compose network and Ollama through
+  `host.docker.internal`. lab.db is mounted read-only.
+- `ui`: `depends_on: api: service_healthy`. It's healthy once nginx serves `/`.
+- Volume `lab-cache` has a fixed `name:`, so it's the same volume the Stage 2
+  `docker run`s filled.
+- Ports are the native ones (8000, 8010, 8080), so stop the native servers
+  first.
+- Run from Ubuntu because the HF cache bind-mounts from `${HOME}/.cache/huggingface`;
+  Windows has no such HOME. lab.db mounts from `/mnt/h` without problems.
+
+Verified: `up -d --wait` brings all three services to healthy in about 70 s
+on a warm cache. `/api/servers` reports both servers ready, the chat request
+answers "Stockholm", and the UI returns 200.
+
+Change to `phase4-observability/servers.py`: a `VLLM_WHERE` env var (default
+`WSL2`) for the UI's location label. Compose sets it to `container`.
+
+**Gotcha: unchanged rebuilds of `lab/vllm` take about 11 min.** A
+`docker compose up --build api` also builds vllm, because api depends on it.
+Every step up to the pip install was cached, but the pip step re-ran: 362 s of
+installing with zero downloads (422 wheels from the cache mount), then 247 s
+of layer export and 83 s of unpacking. The cause is the builder GC policy
+that Docker Desktop derives from `defaultKeepStorage: 20GB`:
+`docker buildx inspect` shows the whole cache capped at 20 GiB (it's at
+107 GB) and cache mounts capped at 2.76 GiB. The roughly 11 GB pip layer is
+the first one trimmed, and the pip wheel cache is over its cap too. To fix it,
+raise `defaultKeepStorage` (Docker Desktop > Settings > Docker Engine), then
+restart Docker Desktop. Until then, rebuild one service alone:
+`docker compose build api && docker compose up -d --no-deps api`.
+
 ## Stage 4 - Measure container cost
 
 Run native and container interleaved in a single session, because results

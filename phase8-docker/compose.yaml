@@ -1,0 +1,94 @@
+# The lab stack: vLLM (GPU), the Phase 4 API and UI. Ollama stays native and
+# is reached through host.docker.internal.
+#
+# Run from the Ubuntu distro, not PowerShell: the HF cache lives in the distro
+# (${HOME}/.cache/huggingface), and Windows has no such HOME.
+#   cd /mnt/h/iwow/Development/llm-inference-optimization-lab/phase8-docker
+#   docker compose up -d        # UI on http://127.0.0.1:8080
+#   docker compose down
+#
+# Pull the vLLM base once before the first build (see vllm/Dockerfile):
+#   docker pull rocm/dev-ubuntu-24.04:7.2.4-complete
+# `up` uses the existing lab/* images. `up --build <svc>` also rebuilds the
+# services <svc> depends on, vllm included, so rebuild one service alone:
+#   docker compose build api && docker compose up -d --no-deps api
+#
+# Ports are the native ones, so stop native vLLM (8000) and the native API
+# (8010) first.
+
+name: lab
+
+services:
+  vllm:
+    image: lab/vllm
+    build:
+      context: .
+      dockerfile: vllm/Dockerfile
+    # The GPU under WSL: the DirectX device plus the host's driver libs.
+    devices:
+      - /dev/dxg
+    ipc: host
+    shm_size: 8g
+    ports:
+      - 127.0.0.1:8000:8000
+    volumes:
+      - /usr/lib/wsl:/usr/lib/wsl:ro
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface:ro
+      # tvm-ffi addon, torch.compile and comgr caches. Without it every fresh
+      # container spends ~18 s compiling the addon again.
+      - lab-cache:/root/.cache
+    # Serve flags are the image's CMD; override with `command:` here.
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      # Warm start ~54 s; a cold one (empty lab-cache) ~110 s.
+      start_period: 180s
+      start_interval: 2s
+
+  api:
+    image: lab/api
+    build:
+      context: ../phase4-observability
+      dockerfile: ../phase8-docker/api/Dockerfile
+    ports:
+      - 127.0.0.1:8010:8010
+    environment:
+      VLLM_URL: http://vllm:8000
+      VLLM_WHERE: container
+    volumes:
+      # Read-only: SQLite locks don't cross the Windows/VM boundary, so a
+      # container must never write lab.db.
+      - ../lab.db:/data/lab.db:ro
+    depends_on:
+      vllm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/api/summary', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+      start_interval: 1s
+
+  ui:
+    image: lab/ui
+    build:
+      context: ../phase4-observability/ui
+      dockerfile: ../../phase8-docker/ui/Dockerfile
+    ports:
+      - 127.0.0.1:8080:80
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  # Fixed name, so it's the same volume the Stage 2 `docker run`s filled.
+  lab-cache:
+    name: lab-cache
