@@ -365,6 +365,118 @@ def prompt_tokens(prompt, base=LLAMA_URL):
     return _post(base + "/tokenize", {"content": text, "parse_special": True})["tokens"]
 
 
+# --- side Ollama and message-level clients (Stage 3) --------------------------
+
+class OllamaSide:
+    """with OllamaSide(11435, num_parallel=4) as s: stream_ollama(s.base, ...)
+
+    Phase 7's side_server.py pattern, on any port: the user's Ollama on 11434
+    is left alone, and NUM_PARALLEL is per instance. Ollama 0.40.9 serves
+    qwen2.5 by starting llama-server itself (-np, -b/-ub 1024, the default
+    RAM prompt cache); the command line it used is read back from the log."""
+
+    def __init__(self, port, num_parallel=1, label=None):
+        self.port, self.num_parallel = port, num_parallel
+        self.base = f"http://127.0.0.1:{port}"
+        self.log_path = os.path.join(LOG_DIR, f"ollama-side-{label or port}.log")
+
+    def __enter__(self):
+        os.makedirs(LOG_DIR, exist_ok=True)
+        env = {k: v for k, v in os.environ.items()
+               if k not in ("HIP_VISIBLE_DEVICES", "GGML_VK_VISIBLE_DEVICES", "OLLAMA_LLM_LIBRARY")}
+        env.update({"OLLAMA_HOST": f"127.0.0.1:{self.port}",
+                    "OLLAMA_NUM_PARALLEL": str(self.num_parallel),
+                    "OLLAMA_KEEP_ALIVE": "-1", "GGML_VK_VISIBLE_DEVICES": "-1"})
+        self._log = open(self.log_path, "w", encoding="utf-8")
+        self.proc = subprocess.Popen(["ollama", "serve"], env=env, stdout=self._log,
+                                     stderr=subprocess.STDOUT, creationflags=NO_WINDOW)
+        _wait_healthy(self.base, self.proc, 60, self.log_path, path="/api/version")
+        return self
+
+    def __exit__(self, *exc):
+        if self.proc.poll() is None:
+            # /T takes the llama-server child too (Phase 4, servers.py).
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(self.proc.pid)],
+                           capture_output=True, creationflags=NO_WINDOW)
+            self.proc.wait(timeout=10)
+        self._log.close()
+
+    def runner_cmd(self):
+        with open(self.log_path, encoding="utf-8", errors="replace") as f:
+            m = re.findall(r'msg="starting llama-server" cmd="([^"]*)"', f.read())
+        return m[-1].replace("\\\\", "\\") if m else None
+
+
+def stream_ollama(base, model, messages, max_tokens, num_ctx, timeout=600):
+    """Native /api/chat, streamed for a client-side TTFT. The final chunk has
+    prompt_eval_cached_count: tokens served from the KV cache, either the
+    slot's own or one restored from the RAM prompt cache."""
+    body = {"model": model, "messages": messages, "stream": True,
+            "options": {"temperature": 0, "seed": 42, "repeat_penalty": 1.0,
+                        "num_predict": max_tokens, "num_ctx": num_ctx}}
+    req = urllib.request.Request(base + "/api/chat", json.dumps(body).encode(),
+                                 {"Content-Type": "application/json"})
+    t_sent = time.perf_counter()
+    t_first, pieces, final = None, [], {}
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        for raw in resp:
+            chunk = json.loads(raw)
+            text = chunk.get("message", {}).get("content")
+            if text and t_first is None:
+                t_first = time.perf_counter()
+            if text:
+                pieces.append(text)
+            if chunk.get("done"):
+                final = chunk
+    t_done = time.perf_counter()
+    return {"response": "".join(pieces),
+            "input_tokens": final.get("prompt_eval_count"),
+            "cached_input_tokens": final.get("prompt_eval_cached_count"),
+            "output_tokens": final.get("eval_count"),
+            "ttft_ms": (t_first - t_sent) * 1000 if t_first else None,
+            "client_total_ms": (t_done - t_sent) * 1000,
+            "load_ms": final.get("load_duration", 0) / 1e6,
+            "prefill_ms": final.get("prompt_eval_duration", 0) / 1e6,
+            "decode_ms": final.get("eval_duration", 0) / 1e6}
+
+
+def stream_openai(base, model, messages, max_tokens, timeout=600, **extra):
+    """/v1/chat/completions, streamed, for llama-server and vLLM. Cached
+    tokens come from llama-server's final-chunk timings (cache_n) or vLLM's
+    usage.prompt_tokens_details (needs --enable-prompt-tokens-details)."""
+    body = {"model": model, "messages": messages, "max_tokens": max_tokens,
+            "temperature": 0, "seed": 42, "stream": True,
+            "stream_options": {"include_usage": True}, **extra}
+    req = urllib.request.Request(base + "/v1/chat/completions", json.dumps(body).encode(),
+                                 {"Content-Type": "application/json"})
+    t_sent = time.perf_counter()
+    t_first, pieces, usage, timings = None, [], {}, {}
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        for raw in resp:
+            line = raw.decode("utf-8", "replace").strip()
+            if not line.startswith("data:") or line == "data: [DONE]":
+                continue
+            chunk = json.loads(line[5:])
+            usage = chunk.get("usage") or usage
+            timings = chunk.get("timings") or timings
+            for ch in chunk.get("choices", []):
+                text = (ch.get("delta") or {}).get("content")
+                if text:
+                    t_first = t_first or time.perf_counter()
+                    pieces.append(text)
+    t_done = time.perf_counter()
+    details = usage.get("prompt_tokens_details") or {}
+    cached = timings.get("cache_n", details.get("cached_tokens"))
+    return {"response": "".join(pieces),
+            "input_tokens": usage.get("prompt_tokens"),
+            "cached_input_tokens": cached,
+            "output_tokens": usage.get("completion_tokens"),
+            "ttft_ms": (t_first - t_sent) * 1000 if t_first else None,
+            "client_total_ms": (t_done - t_sent) * 1000,
+            "prefill_ms": timings.get("prompt_ms"),
+            "decode_ms": timings.get("predicted_ms")}
+
+
 # --- shared ------------------------------------------------------------------
 
 def _post(url, body, timeout=600):
@@ -373,13 +485,13 @@ def _post(url, body, timeout=600):
     return json.load(urllib.request.urlopen(req, timeout=timeout))
 
 
-def _wait_healthy(base, proc, timeout_s, log_path):
+def _wait_healthy(base, proc, timeout_s, log_path, path="/health"):
     t0 = time.time()
     while time.time() - t0 < timeout_s:
         if proc.poll() is not None:
             raise RuntimeError(f"server exited ({proc.returncode}); see {log_path}")
         try:
-            urllib.request.urlopen(base + "/health", timeout=1).read()
+            urllib.request.urlopen(base + path, timeout=1).read()
             return
         except OSError:
             time.sleep(1)

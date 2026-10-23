@@ -1,6 +1,6 @@
 # Phase 9 plan - Inference optimization
 
-Status: **planned 2026-10-23; Stage 0 done the same day.** The rest is a
+Status: **planned 2026-10-23; Stages 0-3 done the same day.** Stage 4 is a
 plan, not results.
 Predictions are written down so the measurements can prove them wrong.
 
@@ -623,6 +623,159 @@ Predictions:
   own KV cache, and a request that lands in a different slot from last time
   misses. vLLM's prefix cache is shared across sequences, so it shouldn't
   have this problem.
+
+**Update before running (2026-10-23).** A probe showed that Ollama 0.40.9
+serves qwen2.5 by starting llama-server itself:
+`-c 8192 -np 1 -b 1024 -ub 1024 --flash-attn auto --context-shift --keep 4`,
+with llama-server's default 8 GiB **RAM prompt cache**. llama-server picks a
+slot by longest-common-prefix similarity (threshold 0.1) and falls back to
+LRU. It saves an idle slot to RAM before reusing it, and restores a saved
+prompt when that prompt matches better. In the probe, a prompt evicted from
+the only slot came back with 2,244 of 2,250 tokens cached, at a cost of about
+38 ms. That breaks two assumptions behind the predictions above, so they are
+revised:
+
+- **NUM_PARALLEL > 1 does not lose hits for one conversation.** The slot is
+  chosen by prefix match, not round-robin. With two interleaved
+  conversations, np 4 keeps both resident. np 1 swaps them through the RAM
+  cache (a few tens of ms per swap), and llama-server with `--cache-ram 0`
+  re-prefills everything past the shared tool definitions.
+- **An edit costs prefill from the edit point on, not the full cold TTFT.**
+  TTFT ~ fixed + (N - p) / prefill rate. Only an edit at the very top is
+  fully cold: ~250 ms on Ollama and ~190 ms on vLLM for N ~ 2,000 on the
+  1.5b. On the 14b (~1,100 tok/s) it is ~1.9 s.
+- **Multi-turn history is reused almost entirely.** On llama.cpp the excess
+  uncached tokens are 0-2 per turn (re-tokenizing the model's own answer, the
+  end-of-turn token). On vLLM they are up to 15, because only full 16-token
+  blocks are cached.
+- The agent's 23% hit rate is not explained by Ollama's slot handling in
+  this version. The agent ran an older Ollama, so this is unproven either
+  way. Something in its prompts varying near the start is still the main
+  suspect.
+
+Script: `phase9-optimization/06_prefix_cache.py`. Every block runs on all
+four 1.5b backends in turn: side Ollama np 1, side Ollama np 4, llama-server
+with Ollama's flags but `--cache-ram 0`, and vLLM. Then the 14b runs on
+Ollama np 1.
+
+### Stage 3 result (2026-10-23)
+
+Run groups `p9-prefix-20261023-1508` (1.5b, 4 backends, 432 rows) and
+`p9-prefix-20261023-1511` (14b, Ollama np 1, 108 rows), 6 reps each, with
+the backend order rotated per rep.
+
+**How to read the tables:**
+- TTFT is client-side and streamed: what a caller waits for.
+- Each cell is a median over 6 reps.
+- Cached and uncached token counts are the server's own.
+- The system prompt is 2,205 tokens: an agent preamble, 8 tool definitions
+  (805 tokens in all, shared by both sessions) and reference notes.
+
+#### Where the timestamp goes (1.5b; ms, cached / input tokens)
+
+| block | vLLM | Ollama np 1 | Ollama np 4 | llama-server, no RAM cache |
+|---|---|---|---|---|
+| warm (timestamp in the user turn) | 48 (2176/2205) | 42 (2186/2205) | 49 | **18** |
+| timestamp at the top (ts-0) | 275 (16/2236) | 288 (3/2236) | 295 | 248 |
+| ts-0.25 | 213 | 238 | 253 | 197 |
+| ts-0.5 | 113 | 188 | 187 | 147 |
+| ts-0.75 | 86 | 108 | 94 | 77 |
+| ts-1 (end of system prompt) | 55 | 40 | 41 | 20 |
+
+The same on the **14b** (Ollama np 1):
+
+| block | ms |
+|---|---|
+| warm | 90 |
+| ts-0 | 2,051 |
+| ts-0.25 | 1,681 |
+| ts-0.5 | 1,269 |
+| ts-0.75 | 621 |
+| ts-1 | 114 |
+
+#### Two conversations taking turns (ms, uncached tokens)
+
+| step | vLLM | Ollama np 1 | Ollama np 4 | llama-server, no RAM cache | 14b Ollama np 1 |
+|---|---|---|---|---|---|
+| A0 | 58 (31) | 39 (27) | 36 (27) | 36 (27) | 84 |
+| B0 | 56 (29) | 95 (20) | 83 (20) | 181 (1656) | 283 |
+| A1 | 48 (31) | 73 (18) | 77 (18) | 171 (1402) | 295 |
+| B1 | 54 | 76 | 75 | 181 (1656) | 273 |
+| A2 | 55 | 72 | 76 | 181 (1402) | 269 |
+| B2 | 51 | 80 | 70 | 184 (1656) | 257 |
+
+B0 is cold only in rep 0. In later reps it is still cached from the rep
+before (see the dry run: 215-219 ms on every backend).
+
+#### Multi-turn conversation (6 turns, each adding a ~360-430 token tool result)
+
+From t1 on, every llama.cpp backend re-prefills exactly the new turn plus
+**1 token** (min = max = 1 over all reps). vLLM re-prefills the new turn plus
+a median of **10** tokens (1-16). TTFT per turn: 1.5b 59-111 ms on all
+backends, 14b 386-535 ms.
+
+#### Findings
+
+1. **Where the timestamp goes is the biggest lever.** On the 14b, a
+   timestamp on the first line of the system prompt makes every turn cost
+   **2.05 s** to first token. In the user turn it costs **0.09 s**, which
+   is **23x** less. The cost is linear in the tokens after the edit, as
+   revised: on llama-server, 0.107 ms per uncached token (9,400 tok/s) plus
+   ~10 ms on the 1.5b. The original prediction (one changed token near the
+   start costs the full cold TTFT) is confirmed for the top of the prompt,
+   and the revised one (an edit costs from the edit point on) for the rest.
+2. **Prediction broken: `NUM_PARALLEL` > 1 neither loses nor gains cache hits
+   for sequential requests.** Ollama np 4 matches np 1 in every block. The
+   llama-server log shows why: every request went to slot 1. Conversation
+   B's prompt shares the 805 tool-definition tokens with A's, which is a
+   prefix similarity of 0.33. That clears the 0.1 threshold, so B takes A's
+   slot instead of an empty one, and A goes to the RAM cache. The other three
+   slots stay empty. Whether np 4 helps *concurrent* requests is Stage 4.
+3. **The RAM prompt cache does the work.** An evicted conversation comes back
+   with all but ~18 tokens cached.
+   - **1.5b:** ~35-40 ms per swap (A1 - A0), against 135-145 ms more to
+     re-prefill without the cache.
+   - **14b:** a swap costs ~190 ms (273-295 vs 84) against ~1.5 s to
+     re-prefill.
+   - **What it costs:** the swap copies the slot to RAM and copies the saved
+     prompt back: 62 MiB each way on the 1.5b, about 430 MB each way on the
+     14b. Counting both copies, that is 3.5-4.5 GB/s, a fraction of
+     PCIe 4.0 x16's ~25 GB/s. Not investigated.
+   - **Why it matters for an agent:** an agent with a subagent, on the
+     default Ollama, pays this swap on every switch. vLLM pays nothing (its
+     cache is shared and on the GPU, 48-58 ms flat).
+4. **Ollama's own layer adds ~20-25 ms per request.** Warm: Ollama 42 ms
+   against 18 ms for llama-server with Ollama's flags, and the server-side
+   prompt eval is identical (12.6 ms on both, from the logs). It does not
+   grow with prompt length: still +10-25 ms at 4.5k tokens in the
+   multi-turn block. It matches Phase 5's 21.7 ms Ollama fixed cost, which
+   is now located: it is outside the inference engine.
+5. **Prediction broken: vLLM is not faster here.**
+   - **Cold:** 275 ms against llama-server's 248 (predicted ~190). Its
+     prefill is 0.118 ms per token, about 8,500 tok/s, against Phase 5's
+     11,600 for shorter prompts.
+   - **Warm:** 48 ms, against a predicted ~15. It is also not linear in the
+     uncached tokens: ts-0.5 to ts-0.75 costs only 27 ms for ~500 tokens. Not
+     investigated; prefill of a short suffix on a 2k cached prefix may run
+     outside the CUDA graphs.
+   - **Where vLLM wins:** taking turns between conversations (flat ~50 ms)
+     and needing no Ollama-style threshold.
+6. **Multi-turn reuse works on every backend.** The 1-token excess on
+   llama.cpp is the end-of-turn token after the model's answer, which is
+   rebuilt by the template. vLLM's up-to-16 excess is its 16-token block
+   granularity, as predicted. Neither is a cost worth acting on.
+7. **The cold numbers match the predictions:** Ollama ts-0 is 288 ms against
+   the predicted ~250, and the 14b's 2.05 s against ~1.9 s.
+
+**For the agent** (`lab-findings-for-agentic-work`):
+- Keep the system prompt and tool definitions byte-stable.
+- Put anything per-turn (time, ids, counters) in the last message.
+- `OLLAMA_NUM_PARALLEL` won't help a sequential agent's cache. On the
+  current Ollama, the RAM prompt cache already makes subagent switches cheap.
+- The 23% hit rate in the old agent log is still unexplained by the server.
+  This Ollama hit 99% of the prompt on every sequential pattern tested. The
+  log predates Ollama 0.40, so check the agent's prompts for something that
+  varies near the start.
 
 ---
 
