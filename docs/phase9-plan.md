@@ -1,6 +1,7 @@
 # Phase 9 plan - Inference optimization
 
-Status: **planned 2026-10-23, not started.** This is a plan, not results.
+Status: **planned 2026-10-23; Stage 0 done the same day.** The rest is a
+plan, not results.
 Predictions are written down so the measurements can prove them wrong.
 
 The brief lists context length, concurrency, batching, KV cache and model
@@ -74,6 +75,67 @@ Prediction: llama.cpp works as-is. vLLM `ngram` works. vLLM `draft_model`
 works but may need `--enforce-eager` or a different attention backend on
 ROCm, and EAGLE needs trained heads that don't exist for Qwen2.5-3B (skip
 it).
+
+### Stage 0 result (2026-10-23): everything runs
+
+One prompt (palindrome function plus three tests, chat template, greedy, 256
+tokens), 3-5 runs per configuration. The scripts were throwaway probes; Stage 1
+rebuilds them properly.
+
+| backend | config | decode | acceptance | output vs baseline | distinct texts |
+|---|---|---|---|---|---|
+| llama.cpp | 14b, f16 KV, flash attn | 52.3 tok/s | | | 1 of 5 |
+| llama.cpp | 14b + 0.5b draft, K=3 | 70.3 tok/s (**1.34x**) | 0.79-0.81 | identical | 1 of 5 |
+| llama.cpp | 14b, q8_0 KV | 50.4 tok/s (-4%) | | run 0 identical | **3 of 3** |
+| llama.cpp | 14b, q4_0 KV | 49.5 tok/s (-5%) | | differs at char 163 | 3 of 3 |
+| vLLM | 1.5B FP16 | 150 tok/s | | | 1 of 5 |
+| vLLM | 1.5B + ngram, K=3 | 135 tok/s (0.90x) | 0.47 | identical | 1 of 5 |
+| vLLM | 3B FP16 | 75.1 tok/s | | | 1 of 5 |
+| vLLM | 3B + 0.5B draft, K=3 | 113.1 tok/s (**1.51x**) | 0.83 | identical | 1 of 5 |
+
+vLLM figures are client wall time including a ~30-token prefill, so slightly
+low; llama.cpp's are its own decode timings.
+
+What it shows:
+1. **Running llama.cpp directly needs two things Ollama normally provides.**
+   `GGML_BACKEND_PATH=<ollama>\lib\ollama\rocm_v7_1\ggml-hip.dll` (plus that
+   directory on PATH): without it llama-server finds no GPU at all. And
+   `--spec-type draft-simple`: in this build `-md` only *loads* the draft, and
+   the spec type defaults to `none`. The first run had a draft loaded and
+   unused; the giveaway was 254 graph reuses for 256 tokens, one target pass
+   per token.
+2. **The direct server beats Ollama on the same blob: 52.3 vs 44 tok/s for the
+   14b.** Flash attention forced on and no Ollama runner in between. The
+   Stage 1 baseline is therefore this server without a draft, never Phase 1's
+   44, or speculation would get credit for the 19% that is just the server.
+3. **Speculation is lossless on both backends**: byte-identical text to the
+   non-speculative run. The draft's acceptance counts vary between runs
+   (180/222 vs 178/228) while the text doesn't, which is the mechanism
+   working as designed.
+4. **Greedy decoding is deterministic here** on both backends (1 distinct text
+   of 5). Phase 7's 3-4 distinct texts came through Ollama's API, not from
+   llama-server. A quantized KV cache breaks that: q8_0 gave 3 distinct texts
+   from 3 identical requests.
+5. **The llama.cpp speedup is well below the formula.** At a = 0.8, K = 3,
+   c = 0.11 it predicts about 2.2x; measured 1.34x. Either the draft costs much
+   more than its share of bytes suggests (small models use bandwidth badly:
+   Phase 1's ladder), or the verify pass of 4 tokens costs more than one
+   decode step. Stage 1 separates the two by timing the draft alone and the
+   verify step.
+6. **vLLM draft_model beats the 3B prediction** (1.51x against ~1.1x): that
+   estimate used llama.cpp's Q4 sizes. In FP16 the 0.5B is 1 GB against the
+   3B's 6 GB. vLLM falls back to its V1 model runner for `draft_model`; no
+   `--enforce-eager` was needed.
+7. **ngram is a loss on code written from scratch** (0.90x at 47% acceptance),
+   as predicted: there is nothing in the prompt to copy. Extraction is its
+   real test.
+8. **Quantized KV is slower at short context** (-4/-5%): dequantizing costs
+   time, and 300 tokens of KV is too little to save bandwidth. Stage 2 tests
+   whether that reverses at depth.
+
+Side note: WSL dropped its service connection once (`Wsl/Service/0x8007274c`)
+during a 14b run on Windows and recovered by itself; the download running in
+the distro survived.
 
 ---
 
