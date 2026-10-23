@@ -1,7 +1,8 @@
 # Phase 8 plan - Docker and Compose
 
-Status: **planned 2026-10-22, not started.** This is a plan, not results.
-Predictions are written down so the measurements can prove them wrong.
+Status: **complete 2026-10-23.** Write-up: `phase8.md`. The stage results
+below were recorded as each stage finished; the predictions are kept as
+written.
 
 Goal: run the lab's stack (model servers, Phase 4 API and UI) with
 `docker compose up`, and measure what containers cost compared with the native
