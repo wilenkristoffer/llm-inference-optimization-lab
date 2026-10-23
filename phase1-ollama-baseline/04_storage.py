@@ -204,6 +204,19 @@ MIGRATIONS = {
     # the same runtime on different libraries is Phase 7's backend comparison.
     "gpu_library": "TEXT",
     "num_thread": "INTEGER",
+    # Phase 9, speculative decoding. spec_method is NULL for a plain run;
+    # 'draft', 'ngram' or 'jacobi' otherwise. spec_k is tokens guessed per
+    # pass (the Jacobi window). draft_tokens / draft_accepted are the
+    # backend's own counters, and target_passes the forward passes of the big
+    # model - tokens per pass is output_tokens / target_passes.
+    "spec_method": "TEXT",
+    "spec_k": "INTEGER",
+    "draft_model": "TEXT",
+    "draft_tokens": "INTEGER",
+    "draft_accepted": "INTEGER",
+    "target_passes": "INTEGER",
+    # Which prompt set a row belongs to (phase9-optimization/workloads.py).
+    "workload": "TEXT",
 }
 
 

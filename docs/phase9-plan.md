@@ -108,14 +108,30 @@ What it shows:
    14b.** Flash attention forced on and no Ollama runner in between. The
    Stage 1 baseline is therefore this server without a draft, never Phase 1's
    44, or speculation would get credit for the 19% that is just the server.
-3. **Speculation is lossless on both backends**: byte-identical text to the
-   non-speculative run. The draft's acceptance counts vary between runs
+3. **Speculation matched the non-speculative text** on both backends in these
+   runs (but see point 4: identical text is not guaranteed even without it). The draft's acceptance counts vary between runs
    (180/222 vs 178/228) while the text doesn't, which is the mechanism
    working as designed.
-4. **Greedy decoding is deterministic here** on both backends (1 distinct text
-   of 5). Phase 7's 3-4 distinct texts came through Ollama's API, not from
-   llama-server. A quantized KV cache breaks that: q8_0 gave 3 distinct texts
-   from 3 identical requests.
+4. ~~Greedy decoding is deterministic here.~~ **Corrected the same day: it
+   isn't, it just looked it on the 14b.** The 14b gave 1 distinct text of 5,
+   but the plain 3b on the same server gave 2 of 4 (diverging at character
+   1010), with no draft involved. Greedy on this stack flips near-tie tokens
+   between identical requests; the 14b had no near-tie in those 256 tokens.
+   A quantized KV cache makes it more frequent (q8_0: 3 of 3 distinct).
+   Measured on the 3b, first divergence from plain run 0:
+
+   | config | decode | divergence per run |
+   |---|---|---|
+   | plain | 148.5 tok/s | same, 1010, same, same |
+   | draft K=3 | 131.1 tok/s (0.88x) | same, same, 1076, 1010 |
+   | draft K=8 | 116.7 tok/s (0.79x) | 513, 127, 127, 502 |
+
+   K=3 diverges where the plain run diverges on its own; K=8 diverges
+   earlier, since a longer verify batch rounds differently from a single
+   token. So "byte-identical" is not the test for lossless: Stage 1 compares
+   the distribution of divergence points against plain-vs-plain, as planned.
+   Also found: llama-server ignores per-request `speculative.n_max` (n_max 0
+   still drafted), so K is fixed per server start.
 5. **The llama.cpp speedup is well below the formula.** At a = 0.8, K = 3,
    c = 0.11 it predicts about 2.2x; measured 1.34x. Either the draft costs much
    more than its share of bytes suggests (small models use bandwidth badly:
@@ -189,6 +205,213 @@ Predictions:
 5. VRAM: the draft adds its weights plus its own KV cache, about 0.6 GB for
    the 0.5B in llama.cpp.
 
+**Side experiment: Jacobi decoding** (added 2026-10-23 at the user's request).
+Can a plain model produce several tokens per pass with no draft at all? Guess
+the next n tokens, run the model once over all of them, replace each guess
+with the model's prediction for that position, repeat. The first position is
+always right after a pass, and a later one becomes right once the guesses
+before it have settled. It converges to exactly the greedy output, so it is
+lossless, and the speedup is the number of tokens that settle per pass.
+Implemented by hand in PyTorch (HF transformers, KV cache cropped to the
+accepted prefix) on the 1.5B in WSL, window n = 2 / 4 / 8 / 16, same
+workloads. Compared with HF greedy in the same framework, not with vLLM.
+
+Prediction: 1.05-1.3 tokens per pass for a model never trained for it, and
+little or no wall-clock gain, because a pass over n+1 tokens costs more than
+one over 1 in eager PyTorch. Most gain on extraction, where copied spans
+settle together. This is the "why is decoding one at a time" demonstration:
+the model can't predict token 3 well until token 2 is real.
+
+### Stage 1 result, llama.cpp (2026-10-23)
+
+`phase9-optimization/01_spec_llamacpp.py`, run group
+`p9-spec-llamacpp-20261023-1233`, 639 rows, 27 min. Draft qwen2.5:0.5b, all
+Q4_K_M, llama-server a37cc4610 run directly. Every config ran 9 prompts x 2;
+plain ran first and last per target (drift +0.9% / +1.8% / -0.7%). The draft
+alone: 260 tok/s, 3.85 ms per token.
+
+Best speedup per workload (K in brackets):
+
+| target | plain | code | extraction | prose |
+|---|---|---|---|---|
+| 14b | 52.1 tok/s | **1.58x** (8) | **1.99x** (8), 102.6 tok/s | 1.09x (1) |
+| 7b | 96.5 tok/s | 1.05x (8) | 1.49x (8) | a loss at every K |
+| 3b | 154.8 tok/s | a loss at every K | 1.10x (8) | a loss at every K |
+
+One pass over n new tokens (cached 300-token prefix), ms:
+
+| n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 12 | 16 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 14b | 19.8 | 22.4 | 25.4 | 29.4 | 34.6 | 38.6 | 44.8 | 48.0 | **36.0** | 36.2 | 36.3 |
+| 7b | 10.9 | 12.4 | 13.9 | 16.1 | 18.4 | 20.5 | 24.0 | 24.7 | **18.5** | 18.5 | 18.7 |
+| 3b | 6.9 | 8.3 | 8.8 | 9.9 | 10.8 | 11.8 | 13.0 | 14.0 | **13.2** | 13.4 | 13.5 |
+
+Findings:
+1. **Where the Stage 0 shortfall came from: checking is not free here.** The
+   formula assumes checking K+1 tokens costs one decode step. In llama.cpp
+   the cost rises about linearly up to 8 tokens (14b: 4 tokens = 1.5 steps,
+   8 = 2.4), then drops at 9, where it switches from a per-token vector kernel
+   to a matrix kernel. With the measured check cost, each pass adds up to
+   check + draft + 3-7 ms of other overhead. That budget explains the measured
+   speed; e.g. 14b K=4 extraction: 34.6 + 15.0 + 5.1 = 54.7 ms per pass for
+   4.55 tokens = 83 tok/s, as measured.
+2. **K=8 wins, as the curve predicted.** K=8 checks 9 tokens, the first size on
+   the cheap kernel, so on the 14b it checks 9 for less than K=6 checks 7.
+   It is the best K for code and extraction on every target. This is the
+   mirror image of the vLLM prediction (best K at most 4, skinny GEMM covers
+   1-5): **the best K is set by the backend's kernel switch points, not only
+   by acceptance.**
+3. **Acceptance comes in runs, so the textbook formula misjudges long K.** At K=8
+   the 14b accepts 56% of drafted code tokens, which as an independent
+   per-token rate predicts 2.3 tokens per pass; measured 5.3. A draft is
+   either right for a long stretch (boilerplate, copied text) or wrong early.
+   The formula column under-predicts code at K=8 (0.87x against 1.58x) for
+   this reason. Tokens per pass, not acceptance, is the number to use.
+4. **The draft must be cheap relative to the target.** c = 0.20 on the 14b,
+   0.37 on the 7b, 0.60 on the 3b. The 0.5b Q4 runs at 260 tok/s, far below
+   its size share (Phase 1's ladder: small models use bandwidth badly). On
+   the 3b, drafting 8 tokens takes 29.5 ms per pass against 6.5 ms for a
+   plain step, so only near-perfect acceptance (extraction, 0.95) breaks even.
+5. **Prose is a loss above K=1-2 on every target**: acceptance 0.18-0.63,
+   falling with K.
+6. **Speculation changed the greedy text in this backend.** All 36 plain runs
+   were repeatable: 1 distinct text per prompt, 4 runs each, all 3 targets.
+   Speculative runs diverged on most code and prose runs (median character
+   200-440 of ~1,170) and almost never on extraction. The divergences are
+   near-tie flips: `-> None:` vs `-> None`, "The air is crisp" vs "The sky,
+   a canvas". The cause fits finding 1: the check pass computes logits on a
+   different kernel from the single-token step, and different rounding can
+   flip a near tie. The text stays fluent, but it is not the plain model's
+   text, so "lossless" holds for the distribution, not the bytes. This also
+   contradicts Stage 0 finding 4 (plain greedy not repeatable). The Stage 0
+   probe ran differently (`/completion` with a raw prompt, no
+   `--flash-attn on`, no seed), and which of those caused it wasn't
+   isolated. Under this harness plain greedy is repeatable.
+7. **VRAM**: the draft adds 502 MB (14b, 7b) and 518 MB (3b), per-process
+   counter. That's within the 0.6 GB prediction.
+
+Predictions scored: the 14b at K=4 with a = 0.7 was predicted at 1.9x;
+code measured 1.43x and extraction 1.61x. The 7b at 1.5x matched only on
+extraction. The 3b ~1.1x matched extraction at K=8; code and prose were
+losses. The acceptance order was extraction > code > prose, not
+code > extraction as predicted.
+
+### Stage 1 result, vLLM (2026-10-23)
+
+`phase9-optimization/02_spec_vllm.py`, run group `p9-spec-vllm-20261023-1300`,
+852 rows. vLLM 0.29, FP16, target Qwen2.5-3B-Instruct, draft 0.5B; ngram with
+prompt lookup 2-4 and K=4. Capture sizes 1-16 plus larger, so no step was
+padded. Plain 3B first and last: drift -0.1%.
+
+Single stream, speedup over the plain server:
+
+| config | code | extraction | prose |
+|---|---|---|---|
+| 3B plain | 75.6 tok/s | 75.9 tok/s | 75.5 tok/s |
+| draft K=1 | 1.14x | 1.00x | 0.97x |
+| draft K=2 | 1.38x | 1.24x | 1.05x |
+| draft K=3 | 1.56x | 1.53x | **1.09x** |
+| draft K=4 | **1.72x**, 129.8 tok/s | **1.65x** | 1.03x |
+| draft K=5 | 0.55x | 0.65x | 0.31x |
+| draft K=6 | 0.60x | 0.72x | 0.32x |
+| draft K=8 | 0.66x | 0.89x | 0.30x |
+| 3B ngram | 0.90x | 1.49x | 0.80x |
+| 1.5B ngram (vs 1.5B plain, 151.5 tok/s) | 0.90x | 1.51x | 0.81x |
+
+Aggregate tok/s with c requests in flight (all nine prompts mixed), and the
+ratio to the plain server at the same c:
+
+| config | c=1 | c=4 | c=16 | c=32 |
+|---|---|---|---|---|
+| 3B plain | 73 | 248 | 176 | 331 |
+| draft K=3 | 116 (1.59x) | 116 (0.47x) | 288 (1.64x) | 630 (1.90x) |
+| draft K=4 | 125 (1.71x) | 122 (0.49x) | 315 (1.79x) | 605 (1.83x) |
+| draft K=5 | 44 (0.60x) | 137 (0.55x) | 331 (1.88x) | 593 (1.79x) |
+| 3B ngram | 72 (0.99x) | 65 (0.26x) | 155 (0.88x) | 320 (0.96x) |
+| 1.5B plain | 149 | 559 | 1053 | 1973 |
+| 1.5B ngram | 140 (0.94x) | 273 (0.49x) | 734 (0.70x) | 1239 (0.63x) |
+
+Findings:
+1. **The K=5 cliff is real** (prediction 1). K=4 is the best K, and K=5 runs
+   at a third of K=4's speed, with more tokens per pass (4.9 vs 4.3 on code).
+   A check of 5+1 = 6 tokens leaves the skinny GEMM. llama.cpp's best K is 8
+   for the mirror-image reason: the kernel switch points set the best K.
+   The switch is the cause, but the cliff's size is inflated by finding 4:
+   the generic path K=5-8 lands on includes the mis-tuned gate_up GEMM. The
+   Stage 4 tuned-GEMM re-run includes single-stream K=5/6/8 to measure the
+   cliff on a properly tuned kernel.
+2. **vLLM gains more than llama.cpp on the same-sized target.** 3B: vLLM 1.72x
+   code, against llama.cpp's loss on code at every K. In FP16 the 0.5B draft
+   is 1 GB against 6 GB. Its share of each pass is smaller than the Q4 0.5b's
+   share against a Q4 3b, and the skinny GEMM checks 2-5 tokens for little
+   more than 1.
+3. **ngram only pays on extraction**: 1.49-1.51x, the low end of the 1.5-2.5x
+   prediction. It loses on code and prose (0.80-0.90x, predicted ~1.0x). The
+   draft model beats it even on extraction (1.65x).
+4. **The concurrency prediction failed for the 3B, and the reason is a
+   mis-tuned GEMM, not speculation.** Plain 3B aggregate *drops* from 248
+   tok/s at c=4 to 176 at c=16. Root cause, measured in PyTorch with the
+   3B's layer shapes (`scratchpad gemm_shapes.py`): the merged gate_up
+   projection, 2048 -> 22016, takes 960-1,500 us per call at any row count on
+   the generic path (rocBLAS; hipBLASLt 500-740 us). That's 60-180 GB/s on a
+   624 GB/s card, and 4-5x slower than two 11008-wide halves. The 1.5B's
+   1536 -> 17920 is fine. With `PYTORCH_TUNABLEOP_ENABLED=1` the same GEMM
+   takes ~170 us (~530 GB/s), so a good kernel exists and the library's
+   default choice is the fault. Above 5 tokens per step every plain 3B step
+   is therefore dominated by a GEMM whose cost hardly depends on the row
+   count, and speculation's extra check tokens ride along for free. That's
+   why speculation "wins" 1.6-1.9x at c=16-32. At c=4 the opposite happens:
+   plain (4 tokens) stays on the skinny GEMM while every speculative config
+   (4 x (K+1) >= 8 tokens) falls onto the slow path, hence 0.25-0.65x. The
+   1.5B, whose generic path scales, shows the predicted shape: ngram loses
+   more as c grows (0.94x -> 0.63x). **So the 3B concurrency numbers measure
+   the broken kernel and must be re-run with tuned GEMMs before anything is
+   concluded from them.** That's added to Stage 4.
+5. **In vLLM speculation does not change the text more than plain does.**
+   Plain-vs-plain diverged on 1 of 3 code and prose runs (vLLM's greedy isn't
+   repeatable, unlike llama-server under the same harness). Speculative runs
+   diverged on 0-2 of 6, the same rate.
+6. Startup 52-56 s per config once the compile cache was warm (90-94 s for
+   the first two).
+
+Predictions scored: 1 (cliff at K>=5) confirmed. 2 (ngram 1.5-2.5x on
+extraction, ~1.0x on prose) at the low end, and prose was a loss. 3
+(speculation becomes a loss with concurrency) confirmed on the 1.5B; on the
+3B it's confounded by finding 4. 4 (acceptance order) was extraction > code >
+prose, as in llama.cpp.
+
+### Stage 1 side experiment result, Jacobi decoding (2026-10-23)
+
+`phase9-optimization/03_jacobi.py`, run group `p9-jacobi-20261023-1348`, 90
+rows. HF transformers 5.17 eager, Qwen2.5-1.5B-Instruct FP16 in WSL, 9 prompts
+x 2 reps, every window interleaved per prompt. w = 0 is plain greedy in the
+same loop.
+
+| window | code | extraction | prose | guesses right |
+|---|---|---|---|---|
+| 0 (plain) | 36.9 tok/s | 36.7 tok/s | 37.1 tok/s | |
+| 2 | 1.00x, 1.05 tok/pass | 1.02x, 1.11 | 0.98x, 1.06 | 2.5-5.7% |
+| 4 | 1.00x, 1.06 | **1.07x, 1.13** | 0.99x, 1.06 | 1.5-3.2% |
+| 8 | 0.99x, 1.06 | 1.06x, 1.14 | 0.97x, 1.06 | 0.7-1.8% |
+| 16 | 1.00x, 1.06 | 1.06x, 1.14 | 0.98x, 1.05 | 0.3-0.9% |
+
+Findings:
+1. **The model can't guess ahead of itself** (prediction: 1.05-1.3 tokens per
+   pass; measured 1.05-1.14). Fewer than 6% of guesses turn out right, and
+   a wider window adds nothing past w = 4. Each extra correct token comes
+   from a short copied span settling, which is why extraction leads. This is
+   the answer to "why one token at a time": a model trained only on next
+   tokens doesn't know token 3 until token 2 is real. A draft model is
+   another model trained on the same task, which is why it gets 0.8-0.95.
+2. **The wall-clock gain is ~0** (best 1.07x), as predicted. Here a pass
+   costs 27-30 ms whatever its width. That's HF eager overhead: the same
+   1.5B decodes at 151 tok/s in vLLM against 37 here, so the GPU work is
+   hidden. In an efficient backend the pass cost grows with width (the
+   llama.cpp curve above), and Jacobi would be a loss. 1.14 tokens per pass
+   is the ceiling it could reach anywhere.
+3. Prose texts diverged on 2-4 of 6 runs against 0 of 3 for plain: the wider
+   pass rounds differently, as in llama.cpp (finding 6 there).
+
 ---
 
 ## Stage 2 - Context length and the KV cache
@@ -261,6 +484,18 @@ Predictions:
 - **The cliff on a bigger model**: the vLLM batch sweep on the 3B.
   Prediction: still at 6 (it's the kernel's switch, not the model's), but
   smaller in relative terms, because the 3B uses bandwidth better.
+  *Update after Stage 1:* the 3B's cliff is much bigger, not smaller. Plain
+  3B aggregate falls from 248 tok/s at c=4 to 176 at c=16, because its
+  gate_up GEMM (2048 -> 22016) gets a bad default kernel (Stage 1 vLLM
+  finding 4).
+- **Tuned GEMMs (added after Stage 1).** Re-run the 3B plain and
+  speculative concurrency sweep with PyTorch TunableOp
+  (`PYTORCH_TUNABLEOP_ENABLED=1`, tuned offline first so CUDA graph capture
+  only reads the table). In isolation it took the 3B gate_up from
+  ~1,000-1,500 us to ~170 us. Prediction: plain 3B at c=32 goes from 331 to
+  ~1,000+ tok/s, and speculation's c=16-32 "win" shrinks to a loss, as on
+  the 1.5B. Also check whether it lifts the 1.5B past 1,973 tok/s at c=32
+  (its gate_up went from ~110-150 us to ~60 us in the same test).
 
 ---
 
