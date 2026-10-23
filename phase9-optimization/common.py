@@ -83,12 +83,14 @@ def _llama_env():
     return env
 
 
-def process_vram_mb(pid):
+def process_vram_mb(pid, counter="Dedicated Usage"):
     """Dedicated VRAM held by one Windows process, from the GPU Process Memory
     performance counter. Per process, so unlike LibreHardwareMonitor's
     board-wide figure it needs no evict-and-settle baseline. None if the
-    counter has no instance for the pid."""
-    ps = (f"(Get-Counter '\\GPU Process Memory(pid_{pid}_*)\\Dedicated Usage' "
+    counter has no instance for the pid. counter="Shared Usage" gives what the
+    process holds in system memory instead - WDDM's overflow when VRAM is
+    full (Phase 7: Windows pages rather than failing the allocation)."""
+    ps = (f"(Get-Counter '\\GPU Process Memory(pid_{pid}_*)\\{counter}' "
           "-ErrorAction SilentlyContinue).CounterSamples | "
           "Measure-Object CookedValue -Sum | ForEach-Object Sum")
     out = subprocess.run(["powershell", "-NoProfile", "-Command", ps],
@@ -120,7 +122,7 @@ class LlamaServer:
     text vLLM's HF template produces.
     """
 
-    def __init__(self, target, draft=None, k=None, ctx=4096, extra=()):
+    def __init__(self, target, draft=None, k=None, ctx=4096, extra=(), label=None):
         self.target, self.draft, self.k = target, draft, k
         self.args = [os.path.join(OLLAMA_LIB, "llama-server.exe"),
                      "-m", os.path.join(BLOBS, GGUF[target]), "-ngl", "99",
@@ -133,6 +135,8 @@ class LlamaServer:
                 self.args += ["--spec-draft-n-max", str(k)]
         self.args += list(extra)
         tag = f"{target}+{draft}-k{k}" if draft else target
+        if label:
+            tag += "-" + label
         self.log_path = os.path.join(LOG_DIR, "llama-" + re.sub(r"[^\w.+-]", "_", tag) + ".log")
         self.proc = None
 
@@ -151,15 +155,15 @@ class LlamaServer:
             self.proc.wait(timeout=10)
         self._log.close()
 
-    def chat(self, prompt, max_tokens=workloads.MAX_TOKENS):
+    def chat(self, prompt, max_tokens=workloads.MAX_TOKENS, timeout=600, **extra):
         """Non-streaming, so the server's own timings and draft counters come
         back with the response. Decode tok/s is llama.cpp's, which excludes
-        prefill."""
+        prefill. extra goes into the request body (e.g. ignore_eos=True)."""
         body = {"messages": workloads.messages(prompt), "max_tokens": max_tokens,
                 "temperature": 0, "seed": 42, "repeat_penalty": 1.0,
-                "cache_prompt": False}
+                "cache_prompt": False, **extra}
         t0 = time.perf_counter()
-        r = _post(LLAMA_URL + "/v1/chat/completions", body)
+        r = _post(LLAMA_URL + "/v1/chat/completions", body, timeout)
         total = (time.perf_counter() - t0) * 1000
         t = r["timings"]
         n = t["predicted_n"]
@@ -206,7 +210,7 @@ def vllm_version():
 class VllmServer:
     """with VllmServer("qwen2.5-3b-instruct", spec={...}) as s: s.chat(...)"""
 
-    def __init__(self, model, spec=None, gpu_fraction=0.6, max_len=4096):
+    def __init__(self, model, spec=None, gpu_fraction=0.6, max_len=4096, extra=()):
         self.model, self.spec = model, spec
         flags = [HF[model], "--served-model-name", model, "--dtype", "float16",
                  "--max-model-len", str(max_len),
@@ -216,6 +220,7 @@ class VllmServer:
                  "--host", "0.0.0.0", "--port", "8000"]
         if spec:
             flags += ["--speculative-config", json.dumps(spec)]
+        flags += list(extra)
         self.guest_cmd = ("source ~/vllm-env/bin/activate && export HF_HUB_OFFLINE=1 && "
                           "exec vllm serve " + " ".join(shlex.quote(f) for f in flags))
         tag = model + (f"-{spec['method']}-k{spec['num_speculative_tokens']}" if spec else "")
@@ -255,7 +260,7 @@ class VllmServer:
                 rf"^{re.escape(name)}(?:{{[^}}]*}})? ([0-9.e+]+)$", text, re.M))
         return out
 
-    def chat(self, prompt, max_tokens=workloads.MAX_TOKENS):
+    def chat(self, prompt, max_tokens=workloads.MAX_TOKENS, **extra):
         """Streaming, so decode can be separated from prefill: vLLM's OpenAI
         API carries no server timings. Decode tok/s = (n - 1) / (last - first
         content chunk); with speculation several tokens arrive per chunk, which
@@ -263,7 +268,7 @@ class VllmServer:
         body = {"model": self.model, "messages": workloads.messages(prompt),
                 "max_tokens": max_tokens, "temperature": 0, "seed": 42,
                 "repetition_penalty": 1.0, "stream": True,
-                "stream_options": {"include_usage": True}}
+                "stream_options": {"include_usage": True}, **extra}
         req = urllib.request.Request(VLLM_URL + "/v1/chat/completions",
                                      json.dumps(body).encode(),
                                      {"Content-Type": "application/json"})
@@ -304,6 +309,60 @@ def _pkill_vllm():
                     "pkill -f '[v]llm serve' || true"],
                    capture_output=True, creationflags=NO_WINDOW)
     time.sleep(2)
+
+
+# --- long prompts (Stage 2) ---------------------------------------------------
+
+# A fixed commit, so the corpus never changes under the measurements.
+CORPUS_COMMIT = "d3f7e5d"
+CORPUS_DOCS = ["phase1", "phase2", "phase3-vllm-setup", "phase3", "phase4", "phase5",
+               "phase6-plan", "phase6", "phase7-plan", "phase7", "phase8-plan", "phase8"]
+LONG_HEADER = "Below are notes from a series of experiments.\n\n"
+LONG_QUESTION = "\n\nSummarize the main findings above as a numbered list."
+
+
+def corpus_text(source):
+    """The lab's own write-ups ("docs", ~45k tokens) or its Python ("code",
+    ~100k tokens) as of CORPUS_COMMIT. Real text, so attention sees a real
+    distribution rather than repeated filler."""
+    root = os.path.dirname(HERE)
+    if source == "docs":
+        paths = [f"docs/{d}.md" for d in CORPUS_DOCS]
+    else:
+        names = subprocess.run(["git", "ls-tree", "-r", "--name-only", CORPUS_COMMIT],
+                               cwd=root, capture_output=True, text=True).stdout.split()
+        paths = sorted(n for n in names if re.match(r"^phase\d[^/]*/[^/]+\.py$", n))
+    parts = []
+    for p in paths:
+        text = subprocess.run(["git", "show", f"{CORPUS_COMMIT}:{p}"], cwd=root,
+                              capture_output=True, encoding="utf-8").stdout
+        parts.append(f"=== {p} ===\n{text}")
+    return "\n\n".join(parts)
+
+
+def long_prompt(depth, source, base=LLAMA_URL, _cache={}):
+    """A user message whose chat-templated prompt is `depth` tokens: header,
+    the corpus cut in token space, the question. Needs a running llama-server
+    for its tokenizer (the same Qwen2.5 tokenizer at every size). The cut is
+    detokenized, so a re-tokenization can differ by a token at the seam; the
+    rows record the real input_tokens."""
+    def tok(text, special=False):
+        return _post(base + "/tokenize", {"content": text, "parse_special": special})["tokens"]
+    if source not in _cache:
+        empty = _post(base + "/apply-template",
+                      {"messages": workloads.messages(LONG_HEADER + LONG_QUESTION)})["prompt"]
+        _cache[source] = (len(tok(empty, True)), tok(corpus_text(source)))
+    overhead, corpus = _cache[source]
+    if depth - overhead > len(corpus):
+        raise ValueError(f"{source} corpus has {len(corpus)} tokens, need {depth - overhead}")
+    cut = _post(base + "/detokenize", {"tokens": corpus[:depth - overhead]})["content"]
+    return LONG_HEADER + cut + LONG_QUESTION
+
+
+def prompt_tokens(prompt, base=LLAMA_URL):
+    """The exact token ids llama-server's chat endpoint would see for prompt."""
+    text = _post(base + "/apply-template", {"messages": workloads.messages(prompt)})["prompt"]
+    return _post(base + "/tokenize", {"content": text, "parse_special": True})["tokens"]
 
 
 # --- shared ------------------------------------------------------------------

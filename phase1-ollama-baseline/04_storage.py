@@ -217,6 +217,19 @@ MIGRATIONS = {
     "target_passes": "INTEGER",
     # Which prompt set a row belongs to (phase9-optimization/workloads.py).
     "workload": "TEXT",
+    # Phase 9, KV cache. kv_cache_type is the K/V element type (f16, q8_0,
+    # q4_0); NULL means the backend default. server_shared_mb is the server
+    # process's GPU memory in SHARED (system) memory - on Windows, what WDDM
+    # paged out because dedicated VRAM ran out. Non-zero means slow.
+    "kv_cache_type": "TEXT",
+    "server_shared_mb": "REAL",
+}
+
+# The same for fidelity_positions (Phase 9: KV cache quantization scored on
+# long prompts, so the depth and the KV type are part of what is scored).
+FIDELITY_MIGRATIONS = {
+    "kv_cache_type": "TEXT",
+    "context_depth": "INTEGER",     # prompt tokens before the scored text
 }
 
 
@@ -270,12 +283,14 @@ def canonical_model(name):
 
 
 def _migrate(conn):
-    existing = {row["name"]
-                for row in conn.execute("PRAGMA table_info(inference_runs)")}
-    for name, coltype in MIGRATIONS.items():
-        if name not in existing:
-            conn.execute(f"ALTER TABLE inference_runs ADD COLUMN {name} {coltype}")
-            print(f"[migration] added column {name}")
+    for table, columns in (("inference_runs", MIGRATIONS),
+                           ("fidelity_positions", FIDELITY_MIGRATIONS)):
+        existing = {row["name"]
+                    for row in conn.execute(f"PRAGMA table_info({table})")}
+        for name, coltype in columns.items():
+            if name not in existing:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {coltype}")
+                print(f"[migration] added column {table}.{name}")
     conn.commit()
 
 

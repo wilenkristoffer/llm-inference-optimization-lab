@@ -444,6 +444,164 @@ Part B: KV cache quantization, Ollama `OLLAMA_FLASH_ATTENTION=1` +
 - Prediction: the 14B at q8_0 fits a full 32k context on the GPU, and at f16
   it stops at about 18k.
 
+### Stage 2 result (2026-10-23)
+
+`phase9-optimization/04_context.py` (speed and VRAM, run group
+`p9-context-20261023-1401`, 73 rows) and `05_kv_fidelity.py` (quality, run
+group `p9-kvfid-20261023-1434`, 10,240 scored positions in
+`fidelity_positions`).
+
+**Change from the plan: llama-server directly, not Ollama.** It's the same
+engine, but Ollama takes the KV type only as a service-wide environment
+variable (`OLLAMA_KV_CACHE_TYPE`), and the direct server is the faster
+baseline (Stage 0). Each (model, depth, KV type) gets its own server with
+`-c` = depth + 512 and `-ctk/-ctv`.
+
+**Other method notes:**
+- **Prompts:** the lab's own docs, as of commit d3f7e5d, cut in token space to
+  each depth, followed by "Summarize the main findings above as a numbered
+  list." Each run generates 128 tokens with `ignore_eos`, 2 reps.
+- **Interleaving:** the loop order is model -> depth -> KV type, and depth
+  512 f16 runs again at the end of each model. Drift start -> end: +4.6% on
+  the 1.5b, +0.6% on the 14b.
+- **VRAM** is the server process's Dedicated Usage counter. Shared Usage
+  shows paging: about 100-160 MB is normal, and anything over 500 MB is
+  treated as paged.
+- **vLLM:** Qwen2.5-1.5B FP16, the same prompt texts, prefix caching off.
+
+#### Decode speed against context (tok/s; % vs the 512-token depth)
+
+| config | 512 | 2k | 8k | 16k | 31.7k | formula at 31.7k |
+|---|---|---|---|---|---|---|
+| 1.5b f16 | 222 | 217 | 206 | 188 (-15%) | 165 (-26%) | 117 (-47%) |
+| 1.5b q8_0 | 208 | 196 | 177 | 154 (-26%) | 125 (-40%) | 140 |
+| 1.5b q4_0 | 196 | 184 | 156 | 131 (-33%) | 99 (-50%) | 156 |
+| 14b f16 | 50.2 | 48.6 | 38.7 | 29.8 (-41%) | **6.1, paged** | |
+| 14b q8_0 | 49.9 | 47.4 | 41.2 | 35.0 (-30%) | 26.1 (-48%) | 36.7 |
+| 14b q4_0 | 47.2 | 45.8 | 36.7 | 29.6 (-37%) | 21.3 (-55%) | 39.7 |
+| vLLM 1.5B FP16 | 151 | 148 | 136 | 126 (-17%) | 114 (-25%) | 118 (-22%) |
+
+The plain formula only fits vLLM. A better model is step time = fixed part
++ a cost per token of context. A straight-line fit of decode ms/token
+against context gives:
+
+| config | step at 0 ctx | + per 1k ctx | KV bytes read per second |
+|---|---|---|---|
+| 1.5b f16 | 4.45 ms | 0.049 ms | 580 GB/s |
+| 1.5b q8_0 | 4.80 ms | 0.098 ms | 155 GB/s |
+| 1.5b q4_0 | 5.01 ms | 0.159 ms | 51 GB/s |
+| 14b f16 | 18.8 ms | 0.870 ms | 226 GB/s |
+| 14b q8_0 | 19.5 ms | 0.576 ms | 181 GB/s |
+| 14b q4_0 | 20.2 ms | 0.825 ms | 67 GB/s |
+| vLLM 1.5B f16 | 6.63 ms | 0.068 ms | 422 GB/s |
+
+#### VRAM per token of context (slope of the process's dedicated VRAM over `-c`)
+
+| model | f16 | q8_0 | q4_0 |
+|---|---|---|---|
+| 1.5b (predicted) | 29.8 KB (28.7) | 16.3 KB (15.2) | 9.1 KB (8.1) |
+| 14b (predicted) | 198.0 KB (196.6) | 107.4 KB (104.4) | 58.2 KB (55.3) |
+
+The ~1-3 KB/token above the KV itself is llama.cpp's compute buffer growing
+with `-c`.
+
+#### Quality (teacher-forced against the f16-KV greedy text, 256 tokens, top-20)
+
+| model, KV | 2k docs | 2k code | 16k docs | 16k code | 31.7k docs | 31.7k code |
+|---|---|---|---|---|---|---|
+| 1.5b q8_0 | 97.3% / 0.0044 | 94.9% / 0.0030 | 97.7% / 0.0028 | 96.5% / 0.0036 | 96.5% / 0.0053 | 98.4% / 0.0056 |
+| 1.5b q8_0 K + q4_0 V | 96.1% / 0.0092 | 96.1% / 0.0084 | 96.5% / 0.0053 | 97.3% / 0.0108 | 95.7% / 0.0110 | 96.9% / 0.0103 |
+| 1.5b **q4_0** | **2.3% / 3.77** | **1.6% / 3.92** | **2.3% / 4.54** | **1.2% / 3.85** | **1.2% / 4.15** | **3.1% / 4.13** |
+| 14b q8_0 | 98.0% / 0.0011 | 98.8% / 0.0008 | 98.4% / 0.0018 | 98.8% / 0.0018 | - | - |
+| 14b q8_0 K + q4_0 V | 98.0% / 0.0038 | 97.7% / 0.0023 | 96.5% / 0.0037 | 98.4% / 0.0039 | - | - |
+| 14b q4_0 | 94.5% / 0.0149 | 96.1% / 0.0095 | 94.1% / 0.0159 | 91.8% / 0.0212 | - | - |
+
+Cells are top-1 / KL. The f16 self-test scored 100% top-1 in all 10 (model,
+depth, source) cells. Scale, from Phase 6 on the 3B: Q8_0 weights give KL
+0.0016, Q6_K 0.0056, Q5_K_M 0.0168, Q4_K_M 0.058.
+
+#### Findings
+
+1. **q4_0 K breaks the small Qwen2.5 models outright.** Top-1 is 1-3% and
+   perplexity 33-71. Output is gibberish even on a six-word prompt with no
+   context at all. V at q4_0 is harmless (K f16 + V q4_0 gives the normal
+   answer), and the 14b tolerates q4_0 K.
+
+   **Likely cause:** Qwen2.5's K projection has large biases. q4_0 stores
+   blocks of 32 values with one shared scale. One channel of a few hundred
+   sets that scale, and 4 bits then can't represent the small channels next
+   to it.
+
+   **Evidence:** severity follows each model's largest K bias, read from the
+   GGUFs (`attn_k.bias`). The 7b was predicted to break *before* it was run:
+
+   | model | largest K bias | q4_0 K, short prompt | q4_0 K, 2k prompt |
+   |---|---|---|---|
+   | 7b | 414 | broken | broken |
+   | 1.5b | 316 | broken | broken |
+   | 0.5b | 214 | fine | broken |
+   | 3b | 92 | fine | degraded |
+   | 14b | 33 | fine | fine |
+
+   This is consistent with the cause and predicted it correctly, but is not
+   proven causally (that would need, e.g., the bias subtracted before
+   quantizing).
+
+   **Practical consequence:** `OLLAMA_KV_CACHE_TYPE=q4_0` silently ruins
+   qwen2.5:1.5b and 7b. Nothing errors.
+2. **q8_0 KV costs about as much quality as Q8_0-Q6_K weights.** KL is
+   0.001-0.006 and top-1 95-99%, with no clear growth from 2k to 31.7k.
+   Prediction (barely measurable): confirmed. q4_0 on the 14b costs KL
+   0.01-0.02, about Q5_K_M weights. It's visible, as predicted, and it grows
+   with depth on code (0.0095 -> 0.0212). q8_0 K + q4_0 V sits in between
+   (0.002-0.011) and works on every model.
+3. **Prediction broken: quantized KV is not faster on the 1.5b.** It is
+   slower at every depth (-7% to -40% vs f16). The per-token cost of context
+   doubles at q8_0 and triples at q4_0, although the bytes read halve and
+   quarter. That makes quantized-KV attention compute-bound here, at an
+   effective 51-155 GB/s against f16's 580 GB/s, near the 624 GB/s peak. The
+   fixed part of the step also rises (4.45 -> 5.01 ms). The dequantization
+   inside the flash-attention kernel is the likely cost, but the kernel was
+   not profiled.
+4. **On the 14b, q8_0 does win from 8k on:** +6% at 8k, +18% at 16k, and at
+   31.7k it is the only config that fits. That's because the 14b's f16
+   attention is itself slow, at 226 GB/s against the 1.5b's 580. **Open:** I
+   don't know why the same kernel reads the 14b's KV at less than half the
+   rate. The GQA ratios are similar (5 vs 6 query heads per KV head). One
+   unconfirmed idea: the 1.5b's per-layer KV fits the 64 MB Infinity Cache at
+   these depths (17 MB at 16k), so repeated per-head reads hit it; the 14b's
+   doesn't (66 MB at 16k). But the 14b is already slow at 8k (33 MB). Not
+   tested.
+5. **The formula is wrong in both directions for llama.cpp.**
+   - **1.5b, too pessimistic:** -26% measured vs -47% predicted at 31.7k.
+     Its weights stream at only ~220 GB/s (a fixed per-step cost dominates;
+     see [[decode-bandwidth-efficiency-ladder]] in memory), while its f16 KV
+     reads run near peak. So context adds less than the byte ratio says.
+   - **14b, too optimistic:** -41% vs -26% predicted at 16k, from the slow
+     attention above.
+   - **vLLM (FP16 weights, near bandwidth-bound) matches:** -25% vs -22%.
+6. **The fit prediction: q8_0 fits the 14b at 32k (12.1 GB). Confirmed.** At
+   f16 the 14b fits 16k (11.95 GB) and pages at 31.7k: 1.7 GB went to shared
+   memory, decode fell to 6.1 tok/s (-88%), and prefill fell to 248 tok/s
+   (31.7k tokens took 128 s). The process got at most ~13.3 GB dedicated.
+   With the 198 KB/token slope that puts the f16 limit at roughly 22k, not
+   the predicted 18k. That figure is extrapolated, not run; the prediction
+   had assumed the full 16 GB minus a smaller reserve.
+7. **vLLM pays more per token at short context but less as it grows.** It
+   starts at 151 tok/s against llama.cpp's 222 (its FP16 weights are 3x the
+   bytes), and loses 25% by 31.7k. Its TTFT at 31.7k is 10.0 s against
+   llama.cpp's 6.8 s prefill.
+8. **A method finding that matters for Stage 3.** On llama-server, logits
+   depend on how the prompt is cut into 512-token prefill chunks. Reusing a
+   cached prefix moves the chunk boundaries, so the last prompt token goes
+   through a different kernel. Its logprobs move by ~0.04 nats, enough to
+   flip greedy near-ties. The first fidelity run's self-test fell to 98%
+   from this, until every prompt was prefilled from position 0. So **prefix
+   caching on llama.cpp is not bit-exact against a cold prefill**: the same
+   effect as speculation's wider passes (Stage 1, finding 6), from a
+   different place. The RAM prompt cache (`--cache-ram`) is not involved;
+   turning it off changes nothing.
+
 ---
 
 ## Stage 3 - Prefix caching, measured properly
