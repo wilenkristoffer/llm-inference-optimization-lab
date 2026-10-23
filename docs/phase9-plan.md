@@ -1,7 +1,7 @@
 # Phase 9 plan - Inference optimization
 
-Status: **planned 2026-10-23; Stages 0-3 done the same day.** Stage 4 is a
-plan, not results.
+Status: **complete 2026-10-23.** Write-up: `phase9.md`. The stage results
+below hold the full tables.
 Predictions are written down so the measurements can prove them wrong.
 
 The brief lists context length, concurrency, batching, KV cache and model
@@ -807,6 +807,212 @@ backends, 14b 386-535 ms.
   ~1,000+ tok/s, and speculation's c=16-32 "win" shrinks to a loss, as on
   the 1.5B. Also check whether it lifts the 1.5B past 1,973 tok/s at c=32
   (its gate_up went from ~110-150 us to ~60 us in the same test).
+
+### Update before running (2026-10-23)
+
+Scripts: `07_tune_gemms.py` tunes every GEMM vLLM sends to torch (6+ token
+steps at each CUDA graph size, plus lm_head at every row count to 48) for the
+0.5B, 1.5B and 3B offline. `02_spec_vllm.py --tuned` re-runs Stage 1's vLLM
+sweep with the table. `08_concurrency.py` holds the Ollama sweep, the
+`--max-num-seqs` cap and the mixed-load ITL test.
+
+Two predictions change after Stage 3 and a look at the code:
+
+- **Mixed load, Ollama.** Stage 3 showed Ollama runs llama-server with
+  `-b 1024`. llama-server fills each batch with the running decodes first
+  and tops it up with up to 1,024 prompt tokens. So a 4,000-token prompt
+  does not stall the streams for one ~0.5 s block. It costs about 4 steps of
+  ~130 ms. That is chunked prefill too, with a 1,024-token chunk.
+- **Mixed load, what chunking buys.** The chunk size should set the largest
+  gap, not the total delay. The card has to do ~0.45 s of prefill either
+  way. Predictions for the steady streams' largest gap:
+  - vLLM at 512 tokens: ~60 ms;
+  - Ollama at 1,024: ~130 ms;
+  - vLLM's default 2,048: ~240 ms, worse than Ollama;
+  - vLLM at 8,192: one ~470 ms stall.
+
+  The excess (total extra delay per stream) should be ~450 ms in every
+  case.
+
+The other predictions:
+
+- **Ollama sweep:** NUM_PARALLEL 16 gives ~850 tok/s and 32 gives ~1,000,
+  against vLLM's ~1,100 and ~2,000.
+- **Tuned 1.5B:** gate_up is ~60% of the 1.5B's layer weights. Cutting it
+  from ~130 to ~60 us saves ~2 ms of a ~15 ms step at c=32, so aggregate
+  should rise from ~1,973 to ~2,250 tok/s.
+- **`--max-num-seqs 8` at c=32:** four waves. Aggregate near the c=8 level,
+  median latency about 2.5x the uncapped run.
+- **Tuned 3B, plain:** c=32 goes from 331 to ~1,000 tok/s.
+- **Tuned 3B, speculation:** it loses to plain at c=16-32. Single-stream
+  K=5 goes from 0.55x to ~1.6x, and K=6 and K=8 land at ~1.4-1.5x, because
+  the cliff at a 6-token verify pass comes from the untuned kernel.
+
+### Stage 4 result (2026-10-23)
+
+Run groups:
+- `p9-conc-20261023-1557`: the sweep, 7 backends, 3 batches per level, 1,107
+  rows;
+- `p9-conc-20261023-1606`: mixed load, 4 backends, 3 reps, 108 rows. The raw
+  chunk times are in `logs/p9-conc-20261023-1606-mixed.json`;
+- `p9-spec-vllm-tuned-20261023-1610`: Stage 1's vLLM sweep re-run with tuned
+  GEMMs, 426 rows.
+
+The tuning table (`07_tune_gemms.py`) covers 483 shapes for the 0.5B, 1.5B
+and 3B. It took 23 minutes, once, and lives at
+`~/tunableop/qwen250.csv` in WSL.
+
+**Two things to know when reading the tables:**
+- Backends ran one at a time, each with the card to itself.
+- Ollama serves Q4_K_M and vLLM serves FP16 (vLLM has no GGUF path here), so
+  Ollama reads about a third of the weight bytes per token. That is why it
+  wins at c=1.
+
+#### The sweep: Qwen2.5-1.5B (aggregate tok/s, median of 3 batches)
+
+| backend | c=1 | c=4 | c=8 | c=16 | c=32 |
+|---|---|---|---|---|---|
+| vLLM, default GEMMs | 151 | 562 | 553 | 1,059 | 2,004 |
+| vLLM, tuned GEMMs | 151 | 565 | **820** | **1,733** | **3,056** |
+| Ollama NUM_PARALLEL 8 | 227 | 601 | 712 | 720 | 716 |
+| Ollama NUM_PARALLEL 16 | 230 | 605 | 713 | 953 | 1,006 |
+| Ollama NUM_PARALLEL 32 | 230 | 601 | 710 | 962 | 1,125 |
+| vLLM tuned, `--max-num-seqs 8` | | | | | 833 |
+| vLLM tuned, `--max-num-seqs 16` | | | | | 1,754 |
+
+Median request latency at c=32 (256 tokens out):
+- vLLM tuned: 2.6 s; vLLM default: 3.9 s;
+- Ollama np32: 7.0 s, at 38 tok/s per stream;
+- `--max-num-seqs 8`: 5.8 s; `--max-num-seqs 16`: 3.2 s.
+
+#### Tuned GEMMs on the 3B (aggregate tok/s; Stage 1's untuned run in brackets)
+
+| config | c=1 | c=4 | c=16 | c=32 |
+|---|---|---|---|---|
+| 3B plain | 75 (73) | 266 (248) | **1,013 (176)** | **1,897 (331)** |
+| + 0.5B draft, K=3 | 120 (116) | 299 (116) | 680 (288) | 982 (630) |
+| + 0.5B draft, K=4 | 128 (125) | 313 (122) | 572 (315) | 648 (605) |
+| + 0.5B draft, K=5 | 125 (44) | 275 (137) | 493 (331) | 696 (593) |
+
+Single-stream speedup over the plain 3B, tuned:
+
+| K | code | extraction | prose |
+|---|---|---|---|
+| 3 | 1.61x | 1.55x | 1.11x |
+| 4 | **1.77x** | 1.73x | 1.05x |
+| 5 | 1.67x (Stage 1: 0.55x) | 1.78x | 0.90x |
+| 6 | 1.67x | 1.94x | 0.88x |
+| 8 | 1.53x | **2.02x** | 0.69x |
+
+#### One decode step's GEMMs, simulated (`07_tune_gemms.py --step`, ms)
+
+Every layer has its own weights here, so nothing is served from the 64 MB
+Infinity Cache.
+
+| rows | 1.5B default | 1.5B tuned | 3B default | 3B tuned |
+|---|---|---|---|---|
+| 8 | 12.4 | 7.9 | 82.7 | 12.6 |
+| 32 | 13.2 | 8.0 | 90.0 | 12.8 |
+
+#### Mixed load: 8 streams decoding, one 3,865-token prompt arrives (medians)
+
+| backend | prefill chunk | long-prompt TTFT | base ITL | largest gap | excess per stream |
+|---|---|---|---|---|---|
+| vLLM `--max-num-batched-tokens 512` | 512 | 470 ms | 9.2 ms | **69 ms** | 375 ms |
+| Ollama NUM_PARALLEL 9 | 2,048 (`-b`) | 469 ms | 9.8 ms | 210 ms | 409 ms |
+| vLLM 2,048 (the default) | 2,048 | 473 ms | 9.2 ms | 234 ms | 420 ms |
+| vLLM 8,192 | whole prompt | 431 ms | 9.2 ms | 381 ms | 390 ms |
+
+#### Findings
+
+1. **Tuning the GEMMs is the biggest win in Phase 9, and it applies to
+   plain serving, not just speculation.**
+   - The 1.5B gains 48-64% at c=8-32 and reaches 3,056 tok/s at c=32.
+   - The 3B gains 5.7x at c=32: 331 to 1,897 tok/s.
+   - c=1 and c=4 don't move, because 1-5 token steps use vLLM's own skinny
+     kernels, not torch.
+   - Both predictions were too low (~2,250 and ~1,000 tok/s).
+
+   *Root cause:* the default rocBLAS/hipBLASLt choice is poor for every
+   skinny FP16 shape on gfx1101, not only the 3B's gate_up. On the 3B,
+   lm_head takes 2.8-4.2 ms per call by default and 1.1 ms tuned.
+   Stage 1's single-GEMM test understated the 1.5B because one reused
+   weight stays in the Infinity Cache. The step simulation, with distinct
+   weights, accounts for the measured step times:
+   - 1.5B at c=32: ~16 ms untuned and ~10.5 ms tuned, from the aggregate.
+     The simulation's GEMMs alone save 5.2 ms (13.2 to 8.0).
+   - 3B: ~97 ms to ~17 ms. The simulation's GEMMs save 77 ms (90 to 13).
+
+   Tuned, the 3B's GEMMs stream 6.2 GB in 12.8 ms, ~480 GB/s (77% of 624).
+   The 1.5B's stream 3.1 GB in 8.0 ms, ~390 GB/s.
+
+   *Costs:* a one-off 23-minute tune. Startup time doesn't change (44 s
+   against 42 s). The table is tied to the exact PyTorch, ROCm, hipBLASLt
+   and rocBLAS versions, so a venv upgrade means re-tuning.
+
+   *Gotcha:* the `PYTORCH_TUNABLEOP_FILENAME` reader inserts the device
+   ordinal (`qwen25.csv` is opened as `qwen250.csv`). The env var also
+   overrides `torch.cuda.tunable.enable(False)`.
+
+2. **The batch-6 cliff shrinks but doesn't vanish.** The 1.5B's per-stream
+   rate goes from 144 tok/s at c=4 to 107 at c=8, where it fell to 72
+   untuned. Skinny kernels are still faster than tuned generic GEMMs at 1-5
+   rows.
+
+3. **The K=5 cliff was the untuned kernel too.** Tuned, K=5 gives 1.67x on
+   code instead of 0.55x, and extraction keeps rising to 2.02x at K=8.
+   - The best K now depends on the workload, as on llama.cpp: K=4 for code
+     (1.77x), K=8 for extraction, and K=3 at most for prose.
+   - K=3 and K=4 barely changed (1.72x to 1.77x on code), because their
+     verify passes of 4-5 tokens never left the skinny path. That is a
+     check that tuning only moved what it should.
+
+4. **Speculation under load: Stage 1's "win" at c=16-32 is gone,** as
+   predicted. Tuned, the best draft config gives 0.67x at c=16 and 0.52x at
+   c=32. It still helps at c=4 (1.03-1.18x for K=3-6; K=8 loses) and alone
+   (1.6-1.7x). Stage 1 only looked good because the plain 3B baseline was
+   broken past 5 tokens.
+
+5. **Ollama at NUM_PARALLEL 16/32:** 953-962 tok/s at c=16 and 1,125 at
+   c=32, slightly above the prediction (~850 and ~1,000).
+   - It beats untuned vLLM at c=8 (712 vs 553), but tuned vLLM leads from
+     c=8 on, by 2.7x at c=32 with a 2.7x lower median latency. Ollama
+     does that while reading a third of the bytes.
+   - Slots beyond the request count cost nothing in throughput: np32 at
+     c=8 equals np8 at c=8. They cost only KV memory, since `-c` is
+     num_ctx x np (131,072 tokens at np32).
+   - Ollama also raises `-b`/`-ub` from 1,024 to 2,048 once the total
+     context is large: np16 and up here, and np9 at num_ctx 8192.
+
+6. **`--max-num-seqs` is a queue, nothing more.** At c=32:
+   - a cap of 8 gives the c=8 throughput (833 tok/s) at 2.2x the latency
+     (5.8 s against 2.6 s; predicted 2.5x);
+   - a cap of 16 gives the c=16 throughput at 1.2x.
+
+   Per-stream speed hardly improves (107-116 against 102 tok/s). On this
+   card, cap it only to bound memory.
+
+7. **Mixed load: the chunk size sets the worst gap, not the total delay.**
+   - Every backend adds 375-420 ms per stream, about the prompt's prefill
+     time.
+   - The largest gap follows the chunk: 69 ms at 512, 210-234 ms at 2,048,
+     381 ms when the whole prompt goes in one step. The predictions were
+     ~60, ~240 and ~470 ms; the 8,192 case is lower because 3,865 tokens
+     take less than a full chunk.
+   - The plan's first prediction, that Ollama stalls the streams for the
+     whole prefill, was wrong. Ollama behaves like vLLM at 2,048, because
+     llama-server puts the running decodes into every prefill batch.
+   - A 512-token chunk cuts the worst stall 3.4x and costs the long
+     prompt's TTFT 9% (470 vs 431 ms). Prefill-heavy throughput at 512
+     was not measured.
+
+**For the user's agent:**
+- If it ever runs on vLLM on this card, TunableOp is not optional: +50% at
+  8-32 parallel calls on the 1.5B, 5.7x on the 3B.
+- Speculation helps a single agent loop (1.6-2.0x on extraction-like tool
+  output). It hurts once more than about 4 calls run at once.
+- On Ollama, set NUM_PARALLEL at least to the fan-out. Extra slots are
+  free except for VRAM.
 
 ---
 

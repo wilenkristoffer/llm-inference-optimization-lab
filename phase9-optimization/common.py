@@ -200,6 +200,14 @@ CAPTURE_SIZES = list(range(1, 17)) + [20, 24, 28, 32, 40, 48, 64, 80, 96, 128,
                                       144, 160, 192, 224, 256, 288]
 
 
+# Stage 4: read the table 07_tune_gemms.py wrote, never tune inside the server
+# (CUDA graph capture cannot tune). The reader inserts the device ordinal, so
+# this opens /home/work/tunableop/qwen250.csv.
+TUNABLEOP_FILE = "/home/work/tunableop/qwen25.csv"
+TUNABLEOP_ENV = {"PYTORCH_TUNABLEOP_ENABLED": "1", "PYTORCH_TUNABLEOP_TUNING": "0",
+                 "PYTORCH_TUNABLEOP_FILENAME": TUNABLEOP_FILE}
+
+
 def vllm_version():
     out = subprocess.run(["wsl", "-d", "Ubuntu", "--", "bash", "-lc",
                           "~/vllm-env/bin/python -c 'import vllm; print(vllm.__version__)'"],
@@ -210,7 +218,10 @@ def vllm_version():
 class VllmServer:
     """with VllmServer("qwen2.5-3b-instruct", spec={...}) as s: s.chat(...)"""
 
-    def __init__(self, model, spec=None, gpu_fraction=0.6, max_len=4096, extra=()):
+    def __init__(self, model, spec=None, gpu_fraction=0.6, max_len=4096, extra=(),
+                 env=None, label=None):
+        """env: extra variables exported for `vllm serve` inside WSL (Stage 4
+        passes TUNABLEOP_ENV). label: suffix for the log name."""
         self.model, self.spec = model, spec
         flags = [HF[model], "--served-model-name", model, "--dtype", "float16",
                  "--max-model-len", str(max_len),
@@ -221,9 +232,12 @@ class VllmServer:
         if spec:
             flags += ["--speculative-config", json.dumps(spec)]
         flags += list(extra)
-        self.guest_cmd = ("source ~/vllm-env/bin/activate && export HF_HUB_OFFLINE=1 && "
+        exports = " ".join(f"{k}={shlex.quote(v)}" for k, v in (env or {}).items())
+        self.guest_cmd = ("source ~/vllm-env/bin/activate && export HF_HUB_OFFLINE=1 "
+                          + exports + " && "
                           "exec vllm serve " + " ".join(shlex.quote(f) for f in flags))
         tag = model + (f"-{spec['method']}-k{spec['num_speculative_tokens']}" if spec else "")
+        tag += f"-{label}" if label else ""
         self.log_path = os.path.join(LOG_DIR, f"vllm-{tag}.log")
 
     def __enter__(self):
@@ -407,10 +421,11 @@ class OllamaSide:
         return m[-1].replace("\\\\", "\\") if m else None
 
 
-def stream_ollama(base, model, messages, max_tokens, num_ctx, timeout=600):
+def stream_ollama(base, model, messages, max_tokens, num_ctx, timeout=600, times=None):
     """Native /api/chat, streamed for a client-side TTFT. The final chunk has
     prompt_eval_cached_count: tokens served from the KV cache, either the
-    slot's own or one restored from the RAM prompt cache."""
+    slot's own or one restored from the RAM prompt cache. A `times` list gets
+    the perf_counter arrival time of every content chunk (Stage 4 ITL)."""
     body = {"model": model, "messages": messages, "stream": True,
             "options": {"temperature": 0, "seed": 42, "repeat_penalty": 1.0,
                         "num_predict": max_tokens, "num_ctx": num_ctx}}
@@ -426,6 +441,8 @@ def stream_ollama(base, model, messages, max_tokens, num_ctx, timeout=600):
                 t_first = time.perf_counter()
             if text:
                 pieces.append(text)
+                if times is not None:
+                    times.append(time.perf_counter())
             if chunk.get("done"):
                 final = chunk
     t_done = time.perf_counter()
@@ -435,15 +452,17 @@ def stream_ollama(base, model, messages, max_tokens, num_ctx, timeout=600):
             "output_tokens": final.get("eval_count"),
             "ttft_ms": (t_first - t_sent) * 1000 if t_first else None,
             "client_total_ms": (t_done - t_sent) * 1000,
+            "t_sent": t_sent,
             "load_ms": final.get("load_duration", 0) / 1e6,
             "prefill_ms": final.get("prompt_eval_duration", 0) / 1e6,
             "decode_ms": final.get("eval_duration", 0) / 1e6}
 
 
-def stream_openai(base, model, messages, max_tokens, timeout=600, **extra):
+def stream_openai(base, model, messages, max_tokens, timeout=600, times=None, **extra):
     """/v1/chat/completions, streamed, for llama-server and vLLM. Cached
     tokens come from llama-server's final-chunk timings (cache_n) or vLLM's
-    usage.prompt_tokens_details (needs --enable-prompt-tokens-details)."""
+    usage.prompt_tokens_details (needs --enable-prompt-tokens-details).
+    `times` as in stream_ollama."""
     body = {"model": model, "messages": messages, "max_tokens": max_tokens,
             "temperature": 0, "seed": 42, "stream": True,
             "stream_options": {"include_usage": True}, **extra}
@@ -464,6 +483,8 @@ def stream_openai(base, model, messages, max_tokens, timeout=600, **extra):
                 if text:
                     t_first = t_first or time.perf_counter()
                     pieces.append(text)
+                    if times is not None:
+                        times.append(time.perf_counter())
     t_done = time.perf_counter()
     details = usage.get("prompt_tokens_details") or {}
     cached = timings.get("cache_n", details.get("cached_tokens"))
@@ -473,6 +494,7 @@ def stream_openai(base, model, messages, max_tokens, timeout=600, **extra):
             "output_tokens": usage.get("completion_tokens"),
             "ttft_ms": (t_first - t_sent) * 1000 if t_first else None,
             "client_total_ms": (t_done - t_sent) * 1000,
+            "t_sent": t_sent,
             "prefill_ms": timings.get("prompt_ms"),
             "decode_ms": timings.get("predicted_ms")}
 

@@ -23,6 +23,10 @@ Usage (from Windows; vLLM runs in WSL, only this side writes lab.db):
     python 02_spec_vllm.py                       # full sweep, ~40 min
     python 02_spec_vllm.py --configs 3b,3b-k3 --reps 1 --conc 1,4
     python 02_spec_vllm.py --report [--group p9-spec-vllm-...]
+    python 02_spec_vllm.py --tuned --configs 3b,3b-k3,...   # Stage 4 re-run
+
+--tuned (Stage 4) starts every server with PyTorch TunableOp reading the GEMM
+table from 07_tune_gemms.py; group p9-spec-vllm-tuned-*, notes tuned=1.
 """
 
 import argparse
@@ -62,13 +66,15 @@ def _row(r, **extra):
         gpu_library="ROCm", hardware_id=common.HARDWARE_ID, **extra)
 
 
-def run_config(conn, group, version, name, reps, concurrency):
+def run_config(conn, group, version, name, reps, concurrency, tuned=False):
     target, spec = CONFIGS[name]
     k = spec["num_speculative_tokens"] if spec else None
     meta = dict(run_group=group, backend_version=version, model=target,
                 spec_method=spec["method"] if spec else None, spec_k=k,
                 draft_model=spec.get("model") if spec else None)
-    with common.VllmServer(target, spec=spec) as s:
+    tag = " tuned=1" if tuned else ""
+    with common.VllmServer(target, spec=spec, env=common.TUNABLEOP_ENV if tuned else None,
+                           label="tuned" if tuned else None) as s:
         print(f"{name}: up in {s.startup_s:.0f} s", flush=True)
         s.chat("Say hello.", max_tokens=8)              # warm-up, not stored
         for rep in range(reps):
@@ -84,7 +90,7 @@ def run_config(conn, group, version, name, reps, concurrency):
                     draft_accepted=accepted if spec else None,
                     target_passes=r["output_tokens"] - accepted if spec else None,
                     load_ms=s.startup_s * 1000, concurrency=1,
-                    notes=f"prompt={pid} phase={name}"))
+                    notes=f"prompt={pid} phase={name}{tag}"))
                 acc = f" acc {accepted}/{drafted}" if spec else ""
                 print(f"  {name} rep{rep} {workload}/{pid}: "
                       f"{r['decode_tokens_per_s']:.1f} tok/s n={r['output_tokens']}{acc}",
@@ -107,20 +113,20 @@ def run_config(conn, group, version, name, reps, concurrency):
                     r, trial_index=10000 + c * 100 + j, prompt=prompt, workload=workload,
                     concurrency=c, batch_wall_ms=wall, load_ms=s.startup_s * 1000,
                     notes=(f"prompt={pid} phase={name}-conc "
-                           f"batch_drafted={drafted} batch_accepted={accepted}")))
+                           f"batch_drafted={drafted} batch_accepted={accepted}{tag}")))
             total = sum(r["output_tokens"] for r in results)
             print(f"  {name} concurrency {c}: {total / wall * 1000:.0f} tok/s aggregate, "
                   f"{statistics.median(r['decode_tokens_per_s'] for r in results):.1f} "
                   f"per stream", flush=True)
 
 
-def sweep(names, reps, concurrency):
+def sweep(names, reps, concurrency, tuned=False):
     conn = common.storage.connect()
-    group = "p9-spec-vllm-" + datetime.now().strftime("%Y%m%d-%H%M")
+    group = ("p9-spec-vllm-tuned-" if tuned else "p9-spec-vllm-") + datetime.now().strftime("%Y%m%d-%H%M")
     version = common.vllm_version()
     print(f"run_group {group}, {version}")
     for name in names:
-        run_config(conn, group, version, name, reps, concurrency)
+        run_config(conn, group, version, name, reps, concurrency, tuned)
     print(f"done: {group}")
 
 
@@ -218,12 +224,13 @@ def main():
     ap.add_argument("--conc", default=",".join(map(str, CONCURRENCY)))
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--group")
+    ap.add_argument("--tuned", action="store_true")
     a = ap.parse_args()
     if a.report:
         report(a.group)
     else:
         sweep(a.configs.split(","), a.reps,
-              [int(c) for c in a.conc.split(",") if c])
+              [int(c) for c in a.conc.split(",") if c], a.tuned)
 
 
 if __name__ == "__main__":
