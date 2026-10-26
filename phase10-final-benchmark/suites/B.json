@@ -1,0 +1,1919 @@
+{
+ "suite": "B",
+ "seed": 20261026,
+ "items": [
+  {
+   "id": "B-001",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Linnea,\n\nThanks for your order ORD-872620, placed on 8 September 2026. It replaces your cancelled order ORD-462112.\n\n- 4 x USB-C cable at 864 SEK each\n- 4 x headset at 1240 SEK each\n\nSubtotal: 8416 SEK\nShipping: 99 SEK\nTotal: 8515 SEK\n\nDeliver to: Linnea Strand, Vasagatan 9\nExpected delivery: September 14, 2026. We will email linnea.strand@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-872620",
+    "customer_name": "Linnea Strand",
+    "customer_email": "linnea.strand@example.se",
+    "total_sek": 8515,
+    "delivery_date": "2026-09-14",
+    "item_count": 8
+   }
+  },
+  {
+   "id": "B-002",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-30730 was opened on May 6, 2026 by Gustav Forsberg (gustav.forsberg@example.se), with Gustav Lindqvist (gustav.lindqvist@example.se) in copy. Priority was set to P3 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 367 users are affected. This looks related to INC-18800, closed last quarter, which affected 372 users.",
+   "answer": {
+    "ticket_id": "INC-30730",
+    "priority": "P3",
+    "product": "MailGuard",
+    "reporter_email": "gustav.forsberg@example.se",
+    "reported_date": "2026-05-06",
+    "affected_users": 367
+   }
+  },
+  {
+   "id": "B-003",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026304, issued August 9, 2026, was for 48,022.33 EUR. We received a partial payment of 15,483.54 EUR, so 32,538.79 EUR is still outstanding. Please pay the outstanding amount by September 8, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026304",
+    "amount_due": 32538.79,
+    "currency": "EUR",
+    "due_date": "2026-09-08",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-004",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: elin.dahl@example.se\n\nOrder ORD-128784 for Elin Dahl: 3 x office chair at 1890 SEK each, total 5670 SEK. Delivery is planned for September 7, 2026.\n\n----- Later message -----\nFrom: elin.dahl@example.se\n\nHi, please change order ORD-128784 to 2 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 10th of September 2026.\n\n----- Reply -----\nConfirmed, ORD-128784 is updated as you asked. The total is now 3780 SEK.",
+   "answer": {
+    "order_id": "ORD-128784",
+    "customer_email": "elin.dahl@example.se",
+    "quantity": 2,
+    "total_sek": 3780,
+    "delivery_date": "2026-09-10"
+   }
+  },
+  {
+   "id": "B-005",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Karl,\n\nThanks for your order ORD-367601, placed on 11th of January 2026. It replaces your cancelled order ORD-528569.\n\n- 3 x USB-C cable at 1734 SEK each\n- 3 x keyboard at 1958 SEK each\n\nSubtotal: 11076 SEK\nShipping: 0 SEK\nTotal: 11076 SEK\n\nDeliver to: Karl Blom, Kungsgatan 64\nExpected delivery: January 18, 2026. We will email karl.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-367601",
+    "customer_name": "Karl Blom",
+    "customer_email": "karl.blom@example.se",
+    "total_sek": 11076,
+    "delivery_date": "2026-01-18",
+    "item_count": 6
+   }
+  },
+  {
+   "id": "B-006",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-69226 was opened on 28th of April 2026 by Viktor Nyberg (viktor.nyberg@example.se), with Maria Berg (maria.berg@example.se) in copy. Priority was set to P3 after triage. Customers using CloudSync report that sync stops after about ten minutes; the team estimates 822 users are affected. This looks related to INC-68737, closed last quarter, which affected 850 users.",
+   "answer": {
+    "ticket_id": "INC-69226",
+    "priority": "P3",
+    "product": "CloudSync",
+    "reporter_email": "viktor.nyberg@example.se",
+    "reported_date": "2026-04-28",
+    "affected_users": 822
+   }
+  },
+  {
+   "id": "B-007",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026467, issued 27 October 2026, was for 3,154.14 NOK. We received a partial payment of 332.15 NOK, so 2,821.99 NOK is still outstanding. Please pay the outstanding amount by 11 November 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026467",
+    "amount_due": 2821.99,
+    "currency": "NOK",
+    "due_date": "2026-11-11",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-008",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: maria.berg@example.se\n\nOrder ORD-118958 for Maria Berg: 6 x monitor at 2490 SEK each, total 14940 SEK. Delivery is planned for January 26, 2026.\n\n----- Later message -----\nFrom: maria.berg@example.se\n\nHi, please change order ORD-118958 to 3 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on January 29, 2026.\n\n----- Reply -----\nConfirmed, ORD-118958 is updated as you asked. The total is now 7470 SEK.",
+   "answer": {
+    "order_id": "ORD-118958",
+    "customer_email": "maria.berg@example.se",
+    "quantity": 3,
+    "total_sek": 7470,
+    "delivery_date": "2026-01-29"
+   }
+  },
+  {
+   "id": "B-009",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Frida,\n\nThanks for your order ORD-775473, placed on September 14, 2026. It replaces your cancelled order ORD-132015.\n\n- 1 x webcam at 1938 SEK each\n- 4 x keyboard at 1111 SEK each\n- 3 x keyboard at 1090 SEK each\n- 1 x headset at 1887 SEK each\n\nSubtotal: 11539 SEK\nShipping: 99 SEK\nTotal: 11638 SEK\n\nDeliver to: Frida Berg, Vasagatan 58\nExpected delivery: 17th of September 2026. We will email frida.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-775473",
+    "customer_name": "Frida Berg",
+    "customer_email": "frida.berg@example.se",
+    "total_sek": 11638,
+    "delivery_date": "2026-09-17",
+    "item_count": 9
+   }
+  },
+  {
+   "id": "B-010",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-74701 was opened on August 5, 2026 by Johan Forsberg (johan.forsberg@example.se), with Nils Hedlund (nils.hedlund@example.se) in copy. Priority was set to P1 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 581 users are affected. This looks related to INC-81813, closed last quarter, which affected 711 users.",
+   "answer": {
+    "ticket_id": "INC-74701",
+    "priority": "P1",
+    "product": "ShipTrack",
+    "reporter_email": "johan.forsberg@example.se",
+    "reported_date": "2026-08-05",
+    "affected_users": 581
+   }
+  },
+  {
+   "id": "B-011",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026072, issued 4 January 2026, was for 100,890.72 SEK. We received a partial payment of 22,474.09 SEK, so 78,416.63 SEK is still outstanding. Please pay the outstanding amount by 14th of January 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026072",
+    "amount_due": 78416.63,
+    "currency": "SEK",
+    "due_date": "2026-01-14",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-012",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: nils.sjoberg@example.se\n\nOrder ORD-679416 for Nils Sjoberg: 4 x office chair at 1890 SEK each, total 7560 SEK. Delivery is planned for March 16, 2026.\n\n----- Later message -----\nFrom: nils.sjoberg@example.se\n\nHi, please change order ORD-679416 to 8 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 26th of March 2026.\n\n----- Reply -----\nConfirmed, ORD-679416 is updated as you asked. The total is now 15120 SEK.",
+   "answer": {
+    "order_id": "ORD-679416",
+    "customer_email": "nils.sjoberg@example.se",
+    "quantity": 8,
+    "total_sek": 15120,
+    "delivery_date": "2026-03-26"
+   }
+  },
+  {
+   "id": "B-013",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Sara,\n\nThanks for your order ORD-400863, placed on 22 November 2026. It replaces your cancelled order ORD-564243.\n\n- 1 x headset at 1253 SEK each\n- 1 x headset at 1185 SEK each\n- 1 x USB-C cable at 1299 SEK each\n\nSubtotal: 3737 SEK\nShipping: 79 SEK\nTotal: 3816 SEK\n\nDeliver to: Sara Nyberg, Vasagatan 47\nExpected delivery: 29 November 2026. We will email sara.nyberg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-400863",
+    "customer_name": "Sara Nyberg",
+    "customer_email": "sara.nyberg@example.se",
+    "total_sek": 3816,
+    "delivery_date": "2026-11-29",
+    "item_count": 3
+   }
+  },
+  {
+   "id": "B-014",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-75802 was opened on June 23, 2026 by Frida Nyberg (frida.nyberg@example.se), with Linnea Lindqvist (linnea.lindqvist@example.se) in copy. Priority was set to P1 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 146 users are affected. This looks related to INC-54452, closed last quarter, which affected 343 users.",
+   "answer": {
+    "ticket_id": "INC-75802",
+    "priority": "P1",
+    "product": "DataVault",
+    "reporter_email": "frida.nyberg@example.se",
+    "reported_date": "2026-06-23",
+    "affected_users": 146
+   }
+  },
+  {
+   "id": "B-015",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026537, issued 2 June 2026, was for 97,728.88 NOK. We received a partial payment of 24,410.55 NOK, so 73,318.33 NOK is still outstanding. Please pay the outstanding amount by June 12, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026537",
+    "amount_due": 73318.33,
+    "currency": "NOK",
+    "due_date": "2026-06-12",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-016",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: lars.wallin@example.se\n\nOrder ORD-899851 for Lars Wallin: 2 x docking station at 1590 SEK each, total 3180 SEK. Delivery is planned for 23 April 2026.\n\n----- Later message -----\nFrom: lars.wallin@example.se\n\nHi, please change order ORD-899851 to 5 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on May 1, 2026.\n\n----- Reply -----\nConfirmed, ORD-899851 is updated as you asked. The total is now 7950 SEK.",
+   "answer": {
+    "order_id": "ORD-899851",
+    "customer_email": "lars.wallin@example.se",
+    "quantity": 5,
+    "total_sek": 7950,
+    "delivery_date": "2026-05-01"
+   }
+  },
+  {
+   "id": "B-017",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-361277, placed on October 18, 2026. It replaces your cancelled order ORD-645446.\n\n- 4 x USB-C cable at 1978 SEK each\n- 3 x USB-C cable at 1926 SEK each\n\nSubtotal: 13690 SEK\nShipping: 0 SEK\nTotal: 13690 SEK\n\nDeliver to: Nils Berg, Vasagatan 49\nExpected delivery: October 21, 2026. We will email nils.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-361277",
+    "customer_name": "Nils Berg",
+    "customer_email": "nils.berg@example.se",
+    "total_sek": 13690,
+    "delivery_date": "2026-10-21",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-018",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-24853 was opened on 28th of January 2026 by Ida Holm (ida.holm@example.se), with Linnea Dahl (linnea.dahl@example.se) in copy. Priority was set to P3 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 325 users are affected. This looks related to INC-68808, closed last quarter, which affected 594 users.",
+   "answer": {
+    "ticket_id": "INC-24853",
+    "priority": "P3",
+    "product": "TeamBoard",
+    "reporter_email": "ida.holm@example.se",
+    "reported_date": "2026-01-28",
+    "affected_users": 325
+   }
+  },
+  {
+   "id": "B-019",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026521, issued 16th of June 2026, was for 122,693.67 SEK. We received a partial payment of 33,630.52 SEK, so 89,063.15 SEK is still outstanding. Please pay the outstanding amount by July 16, 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026521",
+    "amount_due": 89063.15,
+    "currency": "SEK",
+    "due_date": "2026-07-16",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-020",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: elin.sandberg@example.se\n\nOrder ORD-489256 for Elin Sandberg: 3 x monitor at 2490 SEK each, total 7470 SEK. Delivery is planned for 8th of August 2026.\n\n----- Later message -----\nFrom: elin.sandberg@example.se\n\nHi, please change order ORD-489256 to 2 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 14th of August 2026.\n\n----- Reply -----\nConfirmed, ORD-489256 is updated as you asked. The total is now 4980 SEK.",
+   "answer": {
+    "order_id": "ORD-489256",
+    "customer_email": "elin.sandberg@example.se",
+    "quantity": 2,
+    "total_sek": 4980,
+    "delivery_date": "2026-08-14"
+   }
+  },
+  {
+   "id": "B-021",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-405647, placed on 23rd of October 2026. It replaces your cancelled order ORD-364395.\n\n- 2 x webcam at 441 SEK each\n- 4 x headset at 1582 SEK each\n\nSubtotal: 7210 SEK\nShipping: 99 SEK\nTotal: 7309 SEK\n\nDeliver to: Nils Wallin, Vasagatan 12\nExpected delivery: October 28, 2026. We will email nils.wallin@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-405647",
+    "customer_name": "Nils Wallin",
+    "customer_email": "nils.wallin@example.se",
+    "total_sek": 7309,
+    "delivery_date": "2026-10-28",
+    "item_count": 6
+   }
+  },
+  {
+   "id": "B-022",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-29622 was opened on 30th of June 2026 by Elin Hedlund (elin.hedlund@example.se), with Gustav Ekstrom (gustav.ekstrom@example.se) in copy. Priority was set to P2 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 156 users are affected. This looks related to INC-69868, closed last quarter, which affected 169 users.",
+   "answer": {
+    "ticket_id": "INC-29622",
+    "priority": "P2",
+    "product": "MailGuard",
+    "reporter_email": "elin.hedlund@example.se",
+    "reported_date": "2026-06-30",
+    "affected_users": 156
+   }
+  },
+  {
+   "id": "B-023",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026283, issued June 9, 2026, was for 112,676.02 SEK. We received a partial payment of 26,096.14 SEK, so 86,579.88 SEK is still outstanding. Please pay the outstanding amount by 9 July 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026283",
+    "amount_due": 86579.88,
+    "currency": "SEK",
+    "due_date": "2026-07-09",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-024",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: karl.hedlund@example.se\n\nOrder ORD-199801 for Karl Hedlund: 2 x office chair at 1890 SEK each, total 3780 SEK. Delivery is planned for August 22, 2026.\n\n----- Later message -----\nFrom: karl.hedlund@example.se\n\nHi, please change order ORD-199801 to 4 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on August 26, 2026.\n\n----- Reply -----\nConfirmed, ORD-199801 is updated as you asked. The total is now 7560 SEK.",
+   "answer": {
+    "order_id": "ORD-199801",
+    "customer_email": "karl.hedlund@example.se",
+    "quantity": 4,
+    "total_sek": 7560,
+    "delivery_date": "2026-08-26"
+   }
+  },
+  {
+   "id": "B-025",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Oskar,\n\nThanks for your order ORD-203781, placed on February 1, 2026. It replaces your cancelled order ORD-320806.\n\n- 1 x USB-C cable at 1197 SEK each\n- 3 x mouse at 750 SEK each\n- 4 x monitor stand at 1198 SEK each\n- 2 x monitor stand at 1472 SEK each\n\nSubtotal: 11183 SEK\nShipping: 79 SEK\nTotal: 11262 SEK\n\nDeliver to: Oskar Dahl, Storgatan 47\nExpected delivery: 10 February 2026. We will email oskar.dahl@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-203781",
+    "customer_name": "Oskar Dahl",
+    "customer_email": "oskar.dahl@example.se",
+    "total_sek": 11262,
+    "delivery_date": "2026-02-10",
+    "item_count": 10
+   }
+  },
+  {
+   "id": "B-026",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-12280 was opened on August 28, 2026 by Nils Strand (nils.strand@example.se), with Elin Ekstrom (elin.ekstrom@example.se) in copy. Priority was set to P4 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 282 users are affected. This looks related to INC-95237, closed last quarter, which affected 431 users.",
+   "answer": {
+    "ticket_id": "INC-12280",
+    "priority": "P4",
+    "product": "TeamBoard",
+    "reporter_email": "nils.strand@example.se",
+    "reported_date": "2026-08-28",
+    "affected_users": 282
+   }
+  },
+  {
+   "id": "B-027",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026982, issued 11th of January 2026, was for 89,164.28 EUR. We received a partial payment of 18,207.13 EUR, so 70,957.15 EUR is still outstanding. Please pay the outstanding amount by February 10, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026982",
+    "amount_due": 70957.15,
+    "currency": "EUR",
+    "due_date": "2026-02-10",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-028",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: ida.lindqvist@example.se\n\nOrder ORD-330428 for Ida Lindqvist: 4 x desk lamp at 449 SEK each, total 1796 SEK. Delivery is planned for 26th of November 2026.\n\n----- Later message -----\nFrom: ida.lindqvist@example.se\n\nHi, please change order ORD-330428 to 3 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 2nd of December 2026.\n\n----- Reply -----\nConfirmed, ORD-330428 is updated as you asked. The total is now 1347 SEK.",
+   "answer": {
+    "order_id": "ORD-330428",
+    "customer_email": "ida.lindqvist@example.se",
+    "quantity": 3,
+    "total_sek": 1347,
+    "delivery_date": "2026-12-02"
+   }
+  },
+  {
+   "id": "B-029",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Lars,\n\nThanks for your order ORD-204776, placed on 3rd of April 2026. It replaces your cancelled order ORD-520979.\n\n- 2 x headset at 1701 SEK each\n- 1 x USB-C cable at 611 SEK each\n\nSubtotal: 4013 SEK\nShipping: 49 SEK\nTotal: 4062 SEK\n\nDeliver to: Lars Sjoberg, Vasagatan 29\nExpected delivery: April 9, 2026. We will email lars.sjoberg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-204776",
+    "customer_name": "Lars Sjoberg",
+    "customer_email": "lars.sjoberg@example.se",
+    "total_sek": 4062,
+    "delivery_date": "2026-04-09",
+    "item_count": 3
+   }
+  },
+  {
+   "id": "B-030",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-36862 was opened on 18th of February 2026 by Lars Wallin (lars.wallin@example.se), with Linnea Lund (linnea.lund@example.se) in copy. Priority was set to P3 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 789 users are affected. This looks related to INC-59333, closed last quarter, which affected 950 users.",
+   "answer": {
+    "ticket_id": "INC-36862",
+    "priority": "P3",
+    "product": "DataVault",
+    "reporter_email": "lars.wallin@example.se",
+    "reported_date": "2026-02-18",
+    "affected_users": 789
+   }
+  },
+  {
+   "id": "B-031",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026794, issued 8 July 2026, was for 75,175.46 EUR. We received a partial payment of 7,032.37 EUR, so 68,143.09 EUR is still outstanding. Please pay the outstanding amount by July 23, 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026794",
+    "amount_due": 68143.09,
+    "currency": "EUR",
+    "due_date": "2026-07-23",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-032",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: axel.berg@example.se\n\nOrder ORD-355743 for Axel Berg: 6 x desk lamp at 449 SEK each, total 2694 SEK. Delivery is planned for 18th of February 2026.\n\n----- Later message -----\nFrom: axel.berg@example.se\n\nHi, please change order ORD-355743 to 7 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 1st of March 2026.\n\n----- Reply -----\nConfirmed, ORD-355743 is updated as you asked. The total is now 3143 SEK.",
+   "answer": {
+    "order_id": "ORD-355743",
+    "customer_email": "axel.berg@example.se",
+    "quantity": 7,
+    "total_sek": 3143,
+    "delivery_date": "2026-03-01"
+   }
+  },
+  {
+   "id": "B-033",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Linnea,\n\nThanks for your order ORD-262275, placed on 2nd of May 2026. It replaces your cancelled order ORD-294628.\n\n- 2 x monitor stand at 1228 SEK each\n- 4 x keyboard at 1831 SEK each\n- 1 x monitor stand at 1566 SEK each\n- 4 x keyboard at 1353 SEK each\n\nSubtotal: 16758 SEK\nShipping: 99 SEK\nTotal: 16857 SEK\n\nDeliver to: Linnea Forsberg, Vasagatan 49\nExpected delivery: May 4, 2026. We will email linnea.forsberg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-262275",
+    "customer_name": "Linnea Forsberg",
+    "customer_email": "linnea.forsberg@example.se",
+    "total_sek": 16857,
+    "delivery_date": "2026-05-04",
+    "item_count": 11
+   }
+  },
+  {
+   "id": "B-034",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-20754 was opened on 15 December 2026 by Nils Dahl (nils.dahl@example.se), with Maja Wallin (maja.wallin@example.se) in copy. Priority was set to P4 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 64 users are affected. This looks related to INC-11737, closed last quarter, which affected 227 users.",
+   "answer": {
+    "ticket_id": "INC-20754",
+    "priority": "P4",
+    "product": "ShipTrack",
+    "reporter_email": "nils.dahl@example.se",
+    "reported_date": "2026-12-15",
+    "affected_users": 64
+   }
+  },
+  {
+   "id": "B-035",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026109, issued 22 October 2026, was for 61,224.14 EUR. We received a partial payment of 16,222.87 EUR, so 45,001.27 EUR is still outstanding. Please pay the outstanding amount by 6 December 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026109",
+    "amount_due": 45001.27,
+    "currency": "EUR",
+    "due_date": "2026-12-06",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-036",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: linnea.berg@example.se\n\nOrder ORD-202948 for Linnea Berg: 5 x docking station at 1590 SEK each, total 7950 SEK. Delivery is planned for April 8, 2026.\n\n----- Later message -----\nFrom: linnea.berg@example.se\n\nHi, please change order ORD-202948 to 3 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on April 11, 2026.\n\n----- Reply -----\nConfirmed, ORD-202948 is updated as you asked. The total is now 4770 SEK.",
+   "answer": {
+    "order_id": "ORD-202948",
+    "customer_email": "linnea.berg@example.se",
+    "quantity": 3,
+    "total_sek": 4770,
+    "delivery_date": "2026-04-11"
+   }
+  },
+  {
+   "id": "B-037",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Frida,\n\nThanks for your order ORD-722882, placed on November 18, 2026. It replaces your cancelled order ORD-956958.\n\n- 4 x keyboard at 1799 SEK each\n- 3 x keyboard at 529 SEK each\n- 4 x USB-C cable at 796 SEK each\n- 2 x monitor stand at 1316 SEK each\n\nSubtotal: 14599 SEK\nShipping: 79 SEK\nTotal: 14678 SEK\n\nDeliver to: Frida Lund, Kungsgatan 5\nExpected delivery: 22nd of November 2026. We will email frida.lund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-722882",
+    "customer_name": "Frida Lund",
+    "customer_email": "frida.lund@example.se",
+    "total_sek": 14678,
+    "delivery_date": "2026-11-22",
+    "item_count": 13
+   }
+  },
+  {
+   "id": "B-038",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-66706 was opened on 18 April 2026 by Oskar Blom (oskar.blom@example.se), with Viktor Nyberg (viktor.nyberg@example.se) in copy. Priority was set to P4 after triage. Customers using CloudSync report that sync stops after about ten minutes; the team estimates 670 users are affected. This looks related to INC-78609, closed last quarter, which affected 800 users.",
+   "answer": {
+    "ticket_id": "INC-66706",
+    "priority": "P4",
+    "product": "CloudSync",
+    "reporter_email": "oskar.blom@example.se",
+    "reported_date": "2026-04-18",
+    "affected_users": 670
+   }
+  },
+  {
+   "id": "B-039",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026966, issued October 23, 2026, was for 99,095.11 SEK. We received a partial payment of 12,027.14 SEK, so 87,067.97 SEK is still outstanding. Please pay the outstanding amount by 7th of December 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026966",
+    "amount_due": 87067.97,
+    "currency": "SEK",
+    "due_date": "2026-12-07",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-040",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: maja.blom@example.se\n\nOrder ORD-821529 for Maja Blom: 4 x monitor at 2490 SEK each, total 9960 SEK. Delivery is planned for 22nd of January 2026.\n\n----- Later message -----\nFrom: maja.blom@example.se\n\nHi, please change order ORD-821529 to 3 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 2nd of February 2026.\n\n----- Reply -----\nConfirmed, ORD-821529 is updated as you asked. The total is now 7470 SEK.",
+   "answer": {
+    "order_id": "ORD-821529",
+    "customer_email": "maja.blom@example.se",
+    "quantity": 3,
+    "total_sek": 7470,
+    "delivery_date": "2026-02-02"
+   }
+  },
+  {
+   "id": "B-041",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Erik,\n\nThanks for your order ORD-639552, placed on 21 January 2026. It replaces your cancelled order ORD-274034.\n\n- 3 x monitor stand at 242 SEK each\n- 3 x monitor stand at 767 SEK each\n- 3 x mouse at 643 SEK each\n- 1 x monitor stand at 1611 SEK each\n\nSubtotal: 6567 SEK\nShipping: 99 SEK\nTotal: 6666 SEK\n\nDeliver to: Erik Berg, Vasagatan 3\nExpected delivery: 28 January 2026. We will email erik.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-639552",
+    "customer_name": "Erik Berg",
+    "customer_email": "erik.berg@example.se",
+    "total_sek": 6666,
+    "delivery_date": "2026-01-28",
+    "item_count": 10
+   }
+  },
+  {
+   "id": "B-042",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-68725 was opened on July 5, 2026 by Erik Nyberg (erik.nyberg@example.se), with Johan Holm (johan.holm@example.se) in copy. Priority was set to P2 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 101 users are affected. This looks related to INC-23674, closed last quarter, which affected 138 users.",
+   "answer": {
+    "ticket_id": "INC-68725",
+    "priority": "P2",
+    "product": "TeamBoard",
+    "reporter_email": "erik.nyberg@example.se",
+    "reported_date": "2026-07-05",
+    "affected_users": 101
+   }
+  },
+  {
+   "id": "B-043",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026257, issued 2nd of December 2026, was for 112,440.62 NOK. We received a partial payment of 29,925.09 NOK, so 82,515.53 NOK is still outstanding. Please pay the outstanding amount by 12th of December 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026257",
+    "amount_due": 82515.53,
+    "currency": "NOK",
+    "due_date": "2026-12-12",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-044",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: anna.dahl@example.se\n\nOrder ORD-639699 for Anna Dahl: 6 x desk lamp at 449 SEK each, total 2694 SEK. Delivery is planned for 17th of July 2026.\n\n----- Later message -----\nFrom: anna.dahl@example.se\n\nHi, please change order ORD-639699 to 5 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 25 July 2026.\n\n----- Reply -----\nConfirmed, ORD-639699 is updated as you asked. The total is now 2245 SEK.",
+   "answer": {
+    "order_id": "ORD-639699",
+    "customer_email": "anna.dahl@example.se",
+    "quantity": 5,
+    "total_sek": 2245,
+    "delivery_date": "2026-07-25"
+   }
+  },
+  {
+   "id": "B-045",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Emma,\n\nThanks for your order ORD-215202, placed on 9th of July 2026. It replaces your cancelled order ORD-976772.\n\n- 4 x keyboard at 1265 SEK each\n- 2 x keyboard at 1426 SEK each\n- 3 x keyboard at 99 SEK each\n\nSubtotal: 8209 SEK\nShipping: 49 SEK\nTotal: 8258 SEK\n\nDeliver to: Emma Ekstrom, Vasagatan 74\nExpected delivery: July 13, 2026. We will email emma.ekstrom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-215202",
+    "customer_name": "Emma Ekstrom",
+    "customer_email": "emma.ekstrom@example.se",
+    "total_sek": 8258,
+    "delivery_date": "2026-07-13",
+    "item_count": 9
+   }
+  },
+  {
+   "id": "B-046",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-19981 was opened on 2nd of May 2026 by Maria Holm (maria.holm@example.se), with Sara Lindqvist (sara.lindqvist@example.se) in copy. Priority was set to P2 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 747 users are affected. This looks related to INC-70227, closed last quarter, which affected 1001 users.",
+   "answer": {
+    "ticket_id": "INC-19981",
+    "priority": "P2",
+    "product": "MailGuard",
+    "reporter_email": "maria.holm@example.se",
+    "reported_date": "2026-05-02",
+    "affected_users": 747
+   }
+  },
+  {
+   "id": "B-047",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026188, issued July 13, 2026, was for 7,561.95 EUR. We received a partial payment of 774.57 EUR, so 6,787.38 EUR is still outstanding. Please pay the outstanding amount by July 28, 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026188",
+    "amount_due": 6787.38,
+    "currency": "EUR",
+    "due_date": "2026-07-28",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-048",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: viktor.dahl@example.se\n\nOrder ORD-966908 for Viktor Dahl: 6 x docking station at 1590 SEK each, total 9540 SEK. Delivery is planned for 12 October 2026.\n\n----- Later message -----\nFrom: viktor.dahl@example.se\n\nHi, please change order ORD-966908 to 4 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on 17th of October 2026.\n\n----- Reply -----\nConfirmed, ORD-966908 is updated as you asked. The total is now 6360 SEK.",
+   "answer": {
+    "order_id": "ORD-966908",
+    "customer_email": "viktor.dahl@example.se",
+    "quantity": 4,
+    "total_sek": 6360,
+    "delivery_date": "2026-10-17"
+   }
+  },
+  {
+   "id": "B-049",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-956640, placed on 21 April 2026. It replaces your cancelled order ORD-972545.\n\n- 2 x headset at 769 SEK each\n- 2 x monitor stand at 992 SEK each\n- 1 x webcam at 817 SEK each\n\nSubtotal: 4339 SEK\nShipping: 0 SEK\nTotal: 4339 SEK\n\nDeliver to: Nils Berg, Storgatan 43\nExpected delivery: April 29, 2026. We will email nils.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-956640",
+    "customer_name": "Nils Berg",
+    "customer_email": "nils.berg@example.se",
+    "total_sek": 4339,
+    "delivery_date": "2026-04-29",
+    "item_count": 5
+   }
+  },
+  {
+   "id": "B-050",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-80603 was opened on September 24, 2026 by Maja Berg (maja.berg@example.se), with Nils Dahl (nils.dahl@example.se) in copy. Priority was set to P1 after triage. Customers using InvoicePro report that sync stops after about ten minutes; the team estimates 263 users are affected. This looks related to INC-58720, closed last quarter, which affected 356 users.",
+   "answer": {
+    "ticket_id": "INC-80603",
+    "priority": "P1",
+    "product": "InvoicePro",
+    "reporter_email": "maja.berg@example.se",
+    "reported_date": "2026-09-24",
+    "affected_users": 263
+   }
+  },
+  {
+   "id": "B-051",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Ljusgarden Media AB. Invoice INV-2026614, issued April 8, 2026, was for 57,321.41 EUR. We received a partial payment of 12,350.46 EUR, so 44,970.95 EUR is still outstanding. Please pay the outstanding amount by 18 April 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Ljusgarden Media AB",
+    "invoice_number": "INV-2026614",
+    "amount_due": 44970.95,
+    "currency": "EUR",
+    "due_date": "2026-04-18",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-052",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: oskar.holm@example.se\n\nOrder ORD-418807 for Oskar Holm: 4 x desk lamp at 449 SEK each, total 1796 SEK. Delivery is planned for 19 November 2026.\n\n----- Later message -----\nFrom: oskar.holm@example.se\n\nHi, please change order ORD-418807 to 5 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 1 December 2026.\n\n----- Reply -----\nConfirmed, ORD-418807 is updated as you asked. The total is now 2245 SEK.",
+   "answer": {
+    "order_id": "ORD-418807",
+    "customer_email": "oskar.holm@example.se",
+    "quantity": 5,
+    "total_sek": 2245,
+    "delivery_date": "2026-12-01"
+   }
+  },
+  {
+   "id": "B-053",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-395338, placed on August 2, 2026. It replaces your cancelled order ORD-893015.\n\n- 4 x keyboard at 1913 SEK each\n- 2 x webcam at 1180 SEK each\n- 2 x monitor stand at 1478 SEK each\n\nSubtotal: 12968 SEK\nShipping: 0 SEK\nTotal: 12968 SEK\n\nDeliver to: Nils Ekstrom, Kungsgatan 14\nExpected delivery: August 4, 2026. We will email nils.ekstrom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-395338",
+    "customer_name": "Nils Ekstrom",
+    "customer_email": "nils.ekstrom@example.se",
+    "total_sek": 12968,
+    "delivery_date": "2026-08-04",
+    "item_count": 8
+   }
+  },
+  {
+   "id": "B-054",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-34085 was opened on 8th of February 2026 by Axel Hedlund (axel.hedlund@example.se), with Elin Lindqvist (elin.lindqvist@example.se) in copy. Priority was set to P1 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 248 users are affected. This looks related to INC-61894, closed last quarter, which affected 361 users.",
+   "answer": {
+    "ticket_id": "INC-34085",
+    "priority": "P1",
+    "product": "DataVault",
+    "reporter_email": "axel.hedlund@example.se",
+    "reported_date": "2026-02-08",
+    "affected_users": 248
+   }
+  },
+  {
+   "id": "B-055",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026204, issued June 13, 2026, was for 126,913.85 NOK. We received a partial payment of 41,609.29 NOK, so 85,304.56 NOK is still outstanding. Please pay the outstanding amount by July 13, 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026204",
+    "amount_due": 85304.56,
+    "currency": "NOK",
+    "due_date": "2026-07-13",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-056",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: axel.hedlund@example.se\n\nOrder ORD-444622 for Axel Hedlund: 5 x docking station at 1590 SEK each, total 7950 SEK. Delivery is planned for 16 September 2026.\n\n----- Later message -----\nFrom: axel.hedlund@example.se\n\nHi, please change order ORD-444622 to 7 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on September 19, 2026.\n\n----- Reply -----\nConfirmed, ORD-444622 is updated as you asked. The total is now 11130 SEK.",
+   "answer": {
+    "order_id": "ORD-444622",
+    "customer_email": "axel.hedlund@example.se",
+    "quantity": 7,
+    "total_sek": 11130,
+    "delivery_date": "2026-09-19"
+   }
+  },
+  {
+   "id": "B-057",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Elin,\n\nThanks for your order ORD-441088, placed on November 26, 2026. It replaces your cancelled order ORD-345953.\n\n- 4 x USB-C cable at 1789 SEK each\n- 2 x keyboard at 967 SEK each\n\nSubtotal: 9090 SEK\nShipping: 0 SEK\nTotal: 9090 SEK\n\nDeliver to: Elin Berg, Storgatan 13\nExpected delivery: 3 December 2026. We will email elin.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-441088",
+    "customer_name": "Elin Berg",
+    "customer_email": "elin.berg@example.se",
+    "total_sek": 9090,
+    "delivery_date": "2026-12-03",
+    "item_count": 6
+   }
+  },
+  {
+   "id": "B-058",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-13024 was opened on 1 February 2026 by Maria Berg (maria.berg@example.se), with Nils Lund (nils.lund@example.se) in copy. Priority was set to P3 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 19 users are affected. This looks related to INC-23445, closed last quarter, which affected 275 users.",
+   "answer": {
+    "ticket_id": "INC-13024",
+    "priority": "P3",
+    "product": "ShipTrack",
+    "reporter_email": "maria.berg@example.se",
+    "reported_date": "2026-02-01",
+    "affected_users": 19
+   }
+  },
+  {
+   "id": "B-059",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026819, issued May 27, 2026, was for 34,843.95 SEK. We received a partial payment of 7,508.67 SEK, so 27,335.28 SEK is still outstanding. Please pay the outstanding amount by 11 June 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026819",
+    "amount_due": 27335.28,
+    "currency": "SEK",
+    "due_date": "2026-06-11",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-060",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: maria.lund@example.se\n\nOrder ORD-500166 for Maria Lund: 3 x docking station at 1590 SEK each, total 4770 SEK. Delivery is planned for June 1, 2026.\n\n----- Later message -----\nFrom: maria.lund@example.se\n\nHi, please change order ORD-500166 to 2 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on 7 June 2026.\n\n----- Reply -----\nConfirmed, ORD-500166 is updated as you asked. The total is now 3180 SEK.",
+   "answer": {
+    "order_id": "ORD-500166",
+    "customer_email": "maria.lund@example.se",
+    "quantity": 2,
+    "total_sek": 3180,
+    "delivery_date": "2026-06-07"
+   }
+  },
+  {
+   "id": "B-061",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Anna,\n\nThanks for your order ORD-886489, placed on April 27, 2026. It replaces your cancelled order ORD-989837.\n\n- 4 x USB-C cable at 1873 SEK each\n- 1 x USB-C cable at 1469 SEK each\n\nSubtotal: 8961 SEK\nShipping: 49 SEK\nTotal: 9010 SEK\n\nDeliver to: Anna Ekstrom, Storgatan 61\nExpected delivery: 1st of May 2026. We will email anna.ekstrom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-886489",
+    "customer_name": "Anna Ekstrom",
+    "customer_email": "anna.ekstrom@example.se",
+    "total_sek": 9010,
+    "delivery_date": "2026-05-01",
+    "item_count": 5
+   }
+  },
+  {
+   "id": "B-062",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-50279 was opened on 2 June 2026 by Erik Strand (erik.strand@example.se), with Frida Dahl (frida.dahl@example.se) in copy. Priority was set to P4 after triage. Customers using CloudSync report that sync stops after about ten minutes; the team estimates 294 users are affected. This looks related to INC-61198, closed last quarter, which affected 312 users.",
+   "answer": {
+    "ticket_id": "INC-50279",
+    "priority": "P4",
+    "product": "CloudSync",
+    "reporter_email": "erik.strand@example.se",
+    "reported_date": "2026-06-02",
+    "affected_users": 294
+   }
+  },
+  {
+   "id": "B-063",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026341, issued November 6, 2026, was for 115,310.47 SEK. We received a partial payment of 32,400.78 SEK, so 82,909.69 SEK is still outstanding. Please pay the outstanding amount by 6 December 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026341",
+    "amount_due": 82909.69,
+    "currency": "SEK",
+    "due_date": "2026-12-06",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-064",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: johan.strand@example.se\n\nOrder ORD-683157 for Johan Strand: 6 x monitor at 2490 SEK each, total 14940 SEK. Delivery is planned for 19th of July 2026.\n\n----- Later message -----\nFrom: johan.strand@example.se\n\nHi, please change order ORD-683157 to 2 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 24 July 2026.\n\n----- Reply -----\nConfirmed, ORD-683157 is updated as you asked. The total is now 4980 SEK.",
+   "answer": {
+    "order_id": "ORD-683157",
+    "customer_email": "johan.strand@example.se",
+    "quantity": 2,
+    "total_sek": 4980,
+    "delivery_date": "2026-07-24"
+   }
+  },
+  {
+   "id": "B-065",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Lars,\n\nThanks for your order ORD-898160, placed on October 17, 2026. It replaces your cancelled order ORD-977981.\n\n- 1 x mouse at 1527 SEK each\n- 1 x mouse at 99 SEK each\n- 1 x monitor stand at 274 SEK each\n\nSubtotal: 1900 SEK\nShipping: 79 SEK\nTotal: 1979 SEK\n\nDeliver to: Lars Dahl, Storgatan 30\nExpected delivery: 25 October 2026. We will email lars.dahl@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-898160",
+    "customer_name": "Lars Dahl",
+    "customer_email": "lars.dahl@example.se",
+    "total_sek": 1979,
+    "delivery_date": "2026-10-25",
+    "item_count": 3
+   }
+  },
+  {
+   "id": "B-066",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-23584 was opened on August 3, 2026 by Frida Sjoberg (frida.sjoberg@example.se), with Ida Forsberg (ida.forsberg@example.se) in copy. Priority was set to P4 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 56 users are affected. This looks related to INC-16854, closed last quarter, which affected 110 users.",
+   "answer": {
+    "ticket_id": "INC-23584",
+    "priority": "P4",
+    "product": "DataVault",
+    "reporter_email": "frida.sjoberg@example.se",
+    "reported_date": "2026-08-03",
+    "affected_users": 56
+   }
+  },
+  {
+   "id": "B-067",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026355, issued 21 November 2026, was for 9,084.78 NOK. We received a partial payment of 1,156.60 NOK, so 7,928.18 NOK is still outstanding. Please pay the outstanding amount by December 1, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026355",
+    "amount_due": 7928.18,
+    "currency": "NOK",
+    "due_date": "2026-12-01",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-068",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: emma.forsberg@example.se\n\nOrder ORD-472031 for Emma Forsberg: 4 x office chair at 1890 SEK each, total 7560 SEK. Delivery is planned for August 13, 2026.\n\n----- Later message -----\nFrom: emma.forsberg@example.se\n\nHi, please change order ORD-472031 to 7 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 18th of August 2026.\n\n----- Reply -----\nConfirmed, ORD-472031 is updated as you asked. The total is now 13230 SEK.",
+   "answer": {
+    "order_id": "ORD-472031",
+    "customer_email": "emma.forsberg@example.se",
+    "quantity": 7,
+    "total_sek": 13230,
+    "delivery_date": "2026-08-18"
+   }
+  },
+  {
+   "id": "B-069",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Linnea,\n\nThanks for your order ORD-851471, placed on December 30, 2026. It replaces your cancelled order ORD-523445.\n\n- 2 x USB-C cable at 208 SEK each\n- 1 x headset at 1280 SEK each\n- 3 x monitor stand at 918 SEK each\n\nSubtotal: 4450 SEK\nShipping: 49 SEK\nTotal: 4499 SEK\n\nDeliver to: Linnea Blom, Storgatan 6\nExpected delivery: January 5, 2027. We will email linnea.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-851471",
+    "customer_name": "Linnea Blom",
+    "customer_email": "linnea.blom@example.se",
+    "total_sek": 4499,
+    "delivery_date": "2027-01-05",
+    "item_count": 6
+   }
+  },
+  {
+   "id": "B-070",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-81800 was opened on 22nd of March 2026 by Ida Lund (ida.lund@example.se), with Ida Strand (ida.strand@example.se) in copy. Priority was set to P1 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 840 users are affected. This looks related to INC-89842, closed last quarter, which affected 906 users.",
+   "answer": {
+    "ticket_id": "INC-81800",
+    "priority": "P1",
+    "product": "MailGuard",
+    "reporter_email": "ida.lund@example.se",
+    "reported_date": "2026-03-22",
+    "affected_users": 840
+   }
+  },
+  {
+   "id": "B-071",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026485, issued 12 March 2026, was for 13,428.21 NOK. We received a partial payment of 2,922.77 NOK, so 10,505.44 NOK is still outstanding. Please pay the outstanding amount by 22nd of March 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026485",
+    "amount_due": 10505.44,
+    "currency": "NOK",
+    "due_date": "2026-03-22",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-072",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: johan.wallin@example.se\n\nOrder ORD-838046 for Johan Wallin: 2 x monitor at 2490 SEK each, total 4980 SEK. Delivery is planned for 3rd of October 2026.\n\n----- Later message -----\nFrom: johan.wallin@example.se\n\nHi, please change order ORD-838046 to 1 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 14th of October 2026.\n\n----- Reply -----\nConfirmed, ORD-838046 is updated as you asked. The total is now 2490 SEK.",
+   "answer": {
+    "order_id": "ORD-838046",
+    "customer_email": "johan.wallin@example.se",
+    "quantity": 1,
+    "total_sek": 2490,
+    "delivery_date": "2026-10-14"
+   }
+  },
+  {
+   "id": "B-073",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Gustav,\n\nThanks for your order ORD-983858, placed on September 19, 2026. It replaces your cancelled order ORD-366870.\n\n- 3 x mouse at 528 SEK each\n- 1 x USB-C cable at 1792 SEK each\n\nSubtotal: 3376 SEK\nShipping: 0 SEK\nTotal: 3376 SEK\n\nDeliver to: Gustav Berg, Storgatan 51\nExpected delivery: 27 September 2026. We will email gustav.berg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-983858",
+    "customer_name": "Gustav Berg",
+    "customer_email": "gustav.berg@example.se",
+    "total_sek": 3376,
+    "delivery_date": "2026-09-27",
+    "item_count": 4
+   }
+  },
+  {
+   "id": "B-074",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-44809 was opened on 1 October 2026 by Viktor Lindqvist (viktor.lindqvist@example.se), with Nils Lund (nils.lund@example.se) in copy. Priority was set to P4 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 376 users are affected. This looks related to INC-67416, closed last quarter, which affected 594 users.",
+   "answer": {
+    "ticket_id": "INC-44809",
+    "priority": "P4",
+    "product": "DataVault",
+    "reporter_email": "viktor.lindqvist@example.se",
+    "reported_date": "2026-10-01",
+    "affected_users": 376
+   }
+  },
+  {
+   "id": "B-075",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026459, issued 12th of July 2026, was for 63,844.59 SEK. We received a partial payment of 18,929.57 SEK, so 44,915.02 SEK is still outstanding. Please pay the outstanding amount by 27 July 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026459",
+    "amount_due": 44915.02,
+    "currency": "SEK",
+    "due_date": "2026-07-27",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-076",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: axel.sjoberg@example.se\n\nOrder ORD-662349 for Axel Sjoberg: 5 x office chair at 1890 SEK each, total 9450 SEK. Delivery is planned for 13th of March 2026.\n\n----- Later message -----\nFrom: axel.sjoberg@example.se\n\nHi, please change order ORD-662349 to 2 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on March 19, 2026.\n\n----- Reply -----\nConfirmed, ORD-662349 is updated as you asked. The total is now 3780 SEK.",
+   "answer": {
+    "order_id": "ORD-662349",
+    "customer_email": "axel.sjoberg@example.se",
+    "quantity": 2,
+    "total_sek": 3780,
+    "delivery_date": "2026-03-19"
+   }
+  },
+  {
+   "id": "B-077",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Axel,\n\nThanks for your order ORD-122417, placed on February 26, 2026. It replaces your cancelled order ORD-911806.\n\n- 2 x monitor stand at 920 SEK each\n- 2 x monitor stand at 443 SEK each\n- 3 x monitor stand at 1353 SEK each\n\nSubtotal: 6785 SEK\nShipping: 79 SEK\nTotal: 6864 SEK\n\nDeliver to: Axel Blom, Storgatan 51\nExpected delivery: February 28, 2026. We will email axel.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-122417",
+    "customer_name": "Axel Blom",
+    "customer_email": "axel.blom@example.se",
+    "total_sek": 6864,
+    "delivery_date": "2026-02-28",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-078",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-31137 was opened on 31 July 2026 by Johan Berg (johan.berg@example.se), with Emma Holm (emma.holm@example.se) in copy. Priority was set to P2 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 219 users are affected. This looks related to INC-62099, closed last quarter, which affected 488 users.",
+   "answer": {
+    "ticket_id": "INC-31137",
+    "priority": "P2",
+    "product": "TeamBoard",
+    "reporter_email": "johan.berg@example.se",
+    "reported_date": "2026-07-31",
+    "affected_users": 219
+   }
+  },
+  {
+   "id": "B-079",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026060, issued 25 August 2026, was for 13,267.56 NOK. We received a partial payment of 2,801.89 NOK, so 10,465.67 NOK is still outstanding. Please pay the outstanding amount by 24th of September 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026060",
+    "amount_due": 10465.67,
+    "currency": "NOK",
+    "due_date": "2026-09-24",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-080",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: karl.hedlund@example.se\n\nOrder ORD-658703 for Karl Hedlund: 3 x office chair at 1890 SEK each, total 5670 SEK. Delivery is planned for 11 April 2026.\n\n----- Later message -----\nFrom: karl.hedlund@example.se\n\nHi, please change order ORD-658703 to 4 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 20 April 2026.\n\n----- Reply -----\nConfirmed, ORD-658703 is updated as you asked. The total is now 7560 SEK.",
+   "answer": {
+    "order_id": "ORD-658703",
+    "customer_email": "karl.hedlund@example.se",
+    "quantity": 4,
+    "total_sek": 7560,
+    "delivery_date": "2026-04-20"
+   }
+  },
+  {
+   "id": "B-081",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-347721, placed on 26 August 2026. It replaces your cancelled order ORD-137228.\n\n- 3 x keyboard at 1108 SEK each\n- 4 x USB-C cable at 516 SEK each\n\nSubtotal: 5388 SEK\nShipping: 99 SEK\nTotal: 5487 SEK\n\nDeliver to: Nils Hedlund, Storgatan 70\nExpected delivery: September 4, 2026. We will email nils.hedlund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-347721",
+    "customer_name": "Nils Hedlund",
+    "customer_email": "nils.hedlund@example.se",
+    "total_sek": 5487,
+    "delivery_date": "2026-09-04",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-082",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-18431 was opened on 4th of December 2026 by Viktor Blom (viktor.blom@example.se), with Sara Nyberg (sara.nyberg@example.se) in copy. Priority was set to P1 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 850 users are affected. This looks related to INC-70851, closed last quarter, which affected 1001 users.",
+   "answer": {
+    "ticket_id": "INC-18431",
+    "priority": "P1",
+    "product": "TeamBoard",
+    "reporter_email": "viktor.blom@example.se",
+    "reported_date": "2026-12-04",
+    "affected_users": 850
+   }
+  },
+  {
+   "id": "B-083",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026819, issued November 9, 2026, was for 118,107.78 EUR. We received a partial payment of 29,863.13 EUR, so 88,244.65 EUR is still outstanding. Please pay the outstanding amount by 24 November 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026819",
+    "amount_due": 88244.65,
+    "currency": "EUR",
+    "due_date": "2026-11-24",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-084",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: johan.blom@example.se\n\nOrder ORD-456290 for Johan Blom: 2 x docking station at 1590 SEK each, total 3180 SEK. Delivery is planned for 4 August 2026.\n\n----- Later message -----\nFrom: johan.blom@example.se\n\nHi, please change order ORD-456290 to 6 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on 16th of August 2026.\n\n----- Reply -----\nConfirmed, ORD-456290 is updated as you asked. The total is now 9540 SEK.",
+   "answer": {
+    "order_id": "ORD-456290",
+    "customer_email": "johan.blom@example.se",
+    "quantity": 6,
+    "total_sek": 9540,
+    "delivery_date": "2026-08-16"
+   }
+  },
+  {
+   "id": "B-085",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Sara,\n\nThanks for your order ORD-908582, placed on 29 October 2026. It replaces your cancelled order ORD-925219.\n\n- 3 x webcam at 184 SEK each\n- 1 x headset at 1570 SEK each\n- 2 x mouse at 810 SEK each\n- 3 x USB-C cable at 777 SEK each\n\nSubtotal: 6073 SEK\nShipping: 79 SEK\nTotal: 6152 SEK\n\nDeliver to: Sara Sandberg, Storgatan 26\nExpected delivery: 7 November 2026. We will email sara.sandberg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-908582",
+    "customer_name": "Sara Sandberg",
+    "customer_email": "sara.sandberg@example.se",
+    "total_sek": 6152,
+    "delivery_date": "2026-11-07",
+    "item_count": 9
+   }
+  },
+  {
+   "id": "B-086",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-23521 was opened on 21st of April 2026 by Maria Sjoberg (maria.sjoberg@example.se), with Emma Sandberg (emma.sandberg@example.se) in copy. Priority was set to P3 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 839 users are affected. This looks related to INC-97923, closed last quarter, which affected 1110 users.",
+   "answer": {
+    "ticket_id": "INC-23521",
+    "priority": "P3",
+    "product": "ShipTrack",
+    "reporter_email": "maria.sjoberg@example.se",
+    "reported_date": "2026-04-21",
+    "affected_users": 839
+   }
+  },
+  {
+   "id": "B-087",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026796, issued 9th of January 2026, was for 41,615.75 NOK. We received a partial payment of 12,415.54 NOK, so 29,200.21 NOK is still outstanding. Please pay the outstanding amount by February 8, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026796",
+    "amount_due": 29200.21,
+    "currency": "NOK",
+    "due_date": "2026-02-08",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-088",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: johan.strand@example.se\n\nOrder ORD-929262 for Johan Strand: 4 x monitor at 2490 SEK each, total 9960 SEK. Delivery is planned for 13 August 2026.\n\n----- Later message -----\nFrom: johan.strand@example.se\n\nHi, please change order ORD-929262 to 5 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 16th of August 2026.\n\n----- Reply -----\nConfirmed, ORD-929262 is updated as you asked. The total is now 12450 SEK.",
+   "answer": {
+    "order_id": "ORD-929262",
+    "customer_email": "johan.strand@example.se",
+    "quantity": 5,
+    "total_sek": 12450,
+    "delivery_date": "2026-08-16"
+   }
+  },
+  {
+   "id": "B-089",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-486392, placed on 1st of June 2026. It replaces your cancelled order ORD-912068.\n\n- 4 x webcam at 1086 SEK each\n- 3 x webcam at 1886 SEK each\n- 2 x headset at 800 SEK each\n- 1 x headset at 1584 SEK each\n\nSubtotal: 13186 SEK\nShipping: 0 SEK\nTotal: 13186 SEK\n\nDeliver to: Nils Lund, Kungsgatan 74\nExpected delivery: 4th of June 2026. We will email nils.lund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-486392",
+    "customer_name": "Nils Lund",
+    "customer_email": "nils.lund@example.se",
+    "total_sek": 13186,
+    "delivery_date": "2026-06-04",
+    "item_count": 10
+   }
+  },
+  {
+   "id": "B-090",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-31250 was opened on 19 August 2026 by Anna Berg (anna.berg@example.se), with Nils Hedlund (nils.hedlund@example.se) in copy. Priority was set to P3 after triage. Customers using CloudSync report that sync stops after about ten minutes; the team estimates 425 users are affected. This looks related to INC-14750, closed last quarter, which affected 575 users.",
+   "answer": {
+    "ticket_id": "INC-31250",
+    "priority": "P3",
+    "product": "CloudSync",
+    "reporter_email": "anna.berg@example.se",
+    "reported_date": "2026-08-19",
+    "affected_users": 425
+   }
+  },
+  {
+   "id": "B-091",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026555, issued 29 July 2026, was for 100,623.03 NOK. We received a partial payment of 12,234.72 NOK, so 88,388.31 NOK is still outstanding. Please pay the outstanding amount by August 28, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026555",
+    "amount_due": 88388.31,
+    "currency": "NOK",
+    "due_date": "2026-08-28",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-092",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: axel.hedlund@example.se\n\nOrder ORD-357664 for Axel Hedlund: 4 x office chair at 1890 SEK each, total 7560 SEK. Delivery is planned for 8th of November 2026.\n\n----- Later message -----\nFrom: axel.hedlund@example.se\n\nHi, please change order ORD-357664 to 7 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on November 18, 2026.\n\n----- Reply -----\nConfirmed, ORD-357664 is updated as you asked. The total is now 13230 SEK.",
+   "answer": {
+    "order_id": "ORD-357664",
+    "customer_email": "axel.hedlund@example.se",
+    "quantity": 7,
+    "total_sek": 13230,
+    "delivery_date": "2026-11-18"
+   }
+  },
+  {
+   "id": "B-093",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Johan,\n\nThanks for your order ORD-905774, placed on 12 October 2026. It replaces your cancelled order ORD-840652.\n\n- 1 x mouse at 758 SEK each\n- 2 x webcam at 438 SEK each\n- 3 x mouse at 815 SEK each\n\nSubtotal: 4079 SEK\nShipping: 99 SEK\nTotal: 4178 SEK\n\nDeliver to: Johan Strand, Storgatan 13\nExpected delivery: October 19, 2026. We will email johan.strand@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-905774",
+    "customer_name": "Johan Strand",
+    "customer_email": "johan.strand@example.se",
+    "total_sek": 4178,
+    "delivery_date": "2026-10-19",
+    "item_count": 6
+   }
+  },
+  {
+   "id": "B-094",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-84554 was opened on 15 October 2026 by Nils Holm (nils.holm@example.se), with Gustav Blom (gustav.blom@example.se) in copy. Priority was set to P3 after triage. Customers using InvoicePro report that sync stops after about ten minutes; the team estimates 264 users are affected. This looks related to INC-23162, closed last quarter, which affected 335 users.",
+   "answer": {
+    "ticket_id": "INC-84554",
+    "priority": "P3",
+    "product": "InvoicePro",
+    "reporter_email": "nils.holm@example.se",
+    "reported_date": "2026-10-15",
+    "affected_users": 264
+   }
+  },
+  {
+   "id": "B-095",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026778, issued August 14, 2026, was for 77,918.65 SEK. We received a partial payment of 16,694.80 SEK, so 61,223.85 SEK is still outstanding. Please pay the outstanding amount by 24 August 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026778",
+    "amount_due": 61223.85,
+    "currency": "SEK",
+    "due_date": "2026-08-24",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-096",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: emma.forsberg@example.se\n\nOrder ORD-568589 for Emma Forsberg: 3 x monitor at 2490 SEK each, total 7470 SEK. Delivery is planned for 24 October 2026.\n\n----- Later message -----\nFrom: emma.forsberg@example.se\n\nHi, please change order ORD-568589 to 8 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on November 3, 2026.\n\n----- Reply -----\nConfirmed, ORD-568589 is updated as you asked. The total is now 19920 SEK.",
+   "answer": {
+    "order_id": "ORD-568589",
+    "customer_email": "emma.forsberg@example.se",
+    "quantity": 8,
+    "total_sek": 19920,
+    "delivery_date": "2026-11-03"
+   }
+  },
+  {
+   "id": "B-097",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Linnea,\n\nThanks for your order ORD-348663, placed on 27 November 2026. It replaces your cancelled order ORD-485571.\n\n- 1 x USB-C cable at 1535 SEK each\n- 1 x keyboard at 654 SEK each\n- 2 x monitor stand at 1903 SEK each\n- 4 x mouse at 1658 SEK each\n\nSubtotal: 12627 SEK\nShipping: 79 SEK\nTotal: 12706 SEK\n\nDeliver to: Linnea Blom, Storgatan 64\nExpected delivery: December 5, 2026. We will email linnea.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-348663",
+    "customer_name": "Linnea Blom",
+    "customer_email": "linnea.blom@example.se",
+    "total_sek": 12706,
+    "delivery_date": "2026-12-05",
+    "item_count": 8
+   }
+  },
+  {
+   "id": "B-098",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-97571 was opened on 30th of December 2026 by Nils Forsberg (nils.forsberg@example.se), with Frida Strand (frida.strand@example.se) in copy. Priority was set to P2 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 239 users are affected. This looks related to INC-57443, closed last quarter, which affected 290 users.",
+   "answer": {
+    "ticket_id": "INC-97571",
+    "priority": "P2",
+    "product": "ShipTrack",
+    "reporter_email": "nils.forsberg@example.se",
+    "reported_date": "2026-12-30",
+    "affected_users": 239
+   }
+  },
+  {
+   "id": "B-099",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026043, issued 13th of April 2026, was for 8,744.27 EUR. We received a partial payment of 2,671.88 EUR, so 6,072.39 EUR is still outstanding. Please pay the outstanding amount by 13 May 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026043",
+    "amount_due": 6072.39,
+    "currency": "EUR",
+    "due_date": "2026-05-13",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-100",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: sara.hedlund@example.se\n\nOrder ORD-314871 for Sara Hedlund: 4 x docking station at 1590 SEK each, total 6360 SEK. Delivery is planned for 23 August 2026.\n\n----- Later message -----\nFrom: sara.hedlund@example.se\n\nHi, please change order ORD-314871 to 2 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on 30 August 2026.\n\n----- Reply -----\nConfirmed, ORD-314871 is updated as you asked. The total is now 3180 SEK.",
+   "answer": {
+    "order_id": "ORD-314871",
+    "customer_email": "sara.hedlund@example.se",
+    "quantity": 2,
+    "total_sek": 3180,
+    "delivery_date": "2026-08-30"
+   }
+  },
+  {
+   "id": "B-101",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Oskar,\n\nThanks for your order ORD-537107, placed on 11 March 2026. It replaces your cancelled order ORD-158796.\n\n- 3 x USB-C cable at 1298 SEK each\n- 3 x monitor stand at 1957 SEK each\n- 2 x mouse at 456 SEK each\n\nSubtotal: 10677 SEK\nShipping: 99 SEK\nTotal: 10776 SEK\n\nDeliver to: Oskar Lindqvist, Vasagatan 35\nExpected delivery: 16 March 2026. We will email oskar.lindqvist@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-537107",
+    "customer_name": "Oskar Lindqvist",
+    "customer_email": "oskar.lindqvist@example.se",
+    "total_sek": 10776,
+    "delivery_date": "2026-03-16",
+    "item_count": 8
+   }
+  },
+  {
+   "id": "B-102",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-97930 was opened on 3rd of January 2026 by Nils Dahl (nils.dahl@example.se), with Johan Berg (johan.berg@example.se) in copy. Priority was set to P2 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 373 users are affected. This looks related to INC-63167, closed last quarter, which affected 564 users.",
+   "answer": {
+    "ticket_id": "INC-97930",
+    "priority": "P2",
+    "product": "ShipTrack",
+    "reporter_email": "nils.dahl@example.se",
+    "reported_date": "2026-01-03",
+    "affected_users": 373
+   }
+  },
+  {
+   "id": "B-103",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026655, issued 9th of May 2026, was for 100,228.48 NOK. We received a partial payment of 30,767.74 NOK, so 69,460.74 NOK is still outstanding. Please pay the outstanding amount by 19 May 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026655",
+    "amount_due": 69460.74,
+    "currency": "NOK",
+    "due_date": "2026-05-19",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-104",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: oskar.dahl@example.se\n\nOrder ORD-661702 for Oskar Dahl: 5 x docking station at 1590 SEK each, total 7950 SEK. Delivery is planned for April 13, 2026.\n\n----- Later message -----\nFrom: oskar.dahl@example.se\n\nHi, please change order ORD-661702 to 6 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on 22 April 2026.\n\n----- Reply -----\nConfirmed, ORD-661702 is updated as you asked. The total is now 9540 SEK.",
+   "answer": {
+    "order_id": "ORD-661702",
+    "customer_email": "oskar.dahl@example.se",
+    "quantity": 6,
+    "total_sek": 9540,
+    "delivery_date": "2026-04-22"
+   }
+  },
+  {
+   "id": "B-105",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Viktor,\n\nThanks for your order ORD-513682, placed on 22 September 2026. It replaces your cancelled order ORD-498108.\n\n- 2 x keyboard at 1513 SEK each\n- 3 x USB-C cable at 1202 SEK each\n- 3 x headset at 1012 SEK each\n- 3 x mouse at 1440 SEK each\n\nSubtotal: 13988 SEK\nShipping: 0 SEK\nTotal: 13988 SEK\n\nDeliver to: Viktor Hedlund, Kungsgatan 8\nExpected delivery: 1 October 2026. We will email viktor.hedlund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-513682",
+    "customer_name": "Viktor Hedlund",
+    "customer_email": "viktor.hedlund@example.se",
+    "total_sek": 13988,
+    "delivery_date": "2026-10-01",
+    "item_count": 11
+   }
+  },
+  {
+   "id": "B-106",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-77713 was opened on 24th of October 2026 by Elin Forsberg (elin.forsberg@example.se), with Sara Nyberg (sara.nyberg@example.se) in copy. Priority was set to P1 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 228 users are affected. This looks related to INC-12090, closed last quarter, which affected 289 users.",
+   "answer": {
+    "ticket_id": "INC-77713",
+    "priority": "P1",
+    "product": "MailGuard",
+    "reporter_email": "elin.forsberg@example.se",
+    "reported_date": "2026-10-24",
+    "affected_users": 228
+   }
+  },
+  {
+   "id": "B-107",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026325, issued 31st of July 2026, was for 3,433.98 EUR. We received a partial payment of 1,067.81 EUR, so 2,366.17 EUR is still outstanding. Please pay the outstanding amount by September 14, 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026325",
+    "amount_due": 2366.17,
+    "currency": "EUR",
+    "due_date": "2026-09-14",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-108",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: emma.holm@example.se\n\nOrder ORD-702704 for Emma Holm: 3 x office chair at 1890 SEK each, total 5670 SEK. Delivery is planned for 15 May 2026.\n\n----- Later message -----\nFrom: emma.holm@example.se\n\nHi, please change order ORD-702704 to 2 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 22 May 2026.\n\n----- Reply -----\nConfirmed, ORD-702704 is updated as you asked. The total is now 3780 SEK.",
+   "answer": {
+    "order_id": "ORD-702704",
+    "customer_email": "emma.holm@example.se",
+    "quantity": 2,
+    "total_sek": 3780,
+    "delivery_date": "2026-05-22"
+   }
+  },
+  {
+   "id": "B-109",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Viktor,\n\nThanks for your order ORD-570353, placed on April 1, 2026. It replaces your cancelled order ORD-938940.\n\n- 3 x monitor stand at 1618 SEK each\n- 4 x USB-C cable at 1899 SEK each\n- 2 x headset at 371 SEK each\n- 1 x keyboard at 983 SEK each\n\nSubtotal: 14175 SEK\nShipping: 0 SEK\nTotal: 14175 SEK\n\nDeliver to: Viktor Blom, Kungsgatan 20\nExpected delivery: April 4, 2026. We will email viktor.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-570353",
+    "customer_name": "Viktor Blom",
+    "customer_email": "viktor.blom@example.se",
+    "total_sek": 14175,
+    "delivery_date": "2026-04-04",
+    "item_count": 10
+   }
+  },
+  {
+   "id": "B-110",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-25647 was opened on 24th of September 2026 by Elin Ekstrom (elin.ekstrom@example.se), with Frida Hedlund (frida.hedlund@example.se) in copy. Priority was set to P2 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 404 users are affected. This looks related to INC-47535, closed last quarter, which affected 663 users.",
+   "answer": {
+    "ticket_id": "INC-25647",
+    "priority": "P2",
+    "product": "TeamBoard",
+    "reporter_email": "elin.ekstrom@example.se",
+    "reported_date": "2026-09-24",
+    "affected_users": 404
+   }
+  },
+  {
+   "id": "B-111",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026283, issued March 20, 2026, was for 9,098.59 NOK. We received a partial payment of 1,523.28 NOK, so 7,575.31 NOK is still outstanding. Please pay the outstanding amount by 4th of April 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026283",
+    "amount_due": 7575.31,
+    "currency": "NOK",
+    "due_date": "2026-04-04",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-112",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: sara.dahl@example.se\n\nOrder ORD-875337 for Sara Dahl: 4 x office chair at 1890 SEK each, total 7560 SEK. Delivery is planned for 24th of September 2026.\n\n----- Later message -----\nFrom: sara.dahl@example.se\n\nHi, please change order ORD-875337 to 7 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 2 October 2026.\n\n----- Reply -----\nConfirmed, ORD-875337 is updated as you asked. The total is now 13230 SEK.",
+   "answer": {
+    "order_id": "ORD-875337",
+    "customer_email": "sara.dahl@example.se",
+    "quantity": 7,
+    "total_sek": 13230,
+    "delivery_date": "2026-10-02"
+   }
+  },
+  {
+   "id": "B-113",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Lars,\n\nThanks for your order ORD-910017, placed on 19 December 2026. It replaces your cancelled order ORD-352896.\n\n- 4 x monitor stand at 629 SEK each\n- 3 x webcam at 195 SEK each\n\nSubtotal: 3101 SEK\nShipping: 79 SEK\nTotal: 3180 SEK\n\nDeliver to: Lars Forsberg, Storgatan 67\nExpected delivery: December 22, 2026. We will email lars.forsberg@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-910017",
+    "customer_name": "Lars Forsberg",
+    "customer_email": "lars.forsberg@example.se",
+    "total_sek": 3180,
+    "delivery_date": "2026-12-22",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-114",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-18520 was opened on July 1, 2026 by Maja Lindqvist (maja.lindqvist@example.se), with Maja Lindqvist (maja.lindqvist@example.se) in copy. Priority was set to P4 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 806 users are affected. This looks related to INC-22593, closed last quarter, which affected 893 users.",
+   "answer": {
+    "ticket_id": "INC-18520",
+    "priority": "P4",
+    "product": "TeamBoard",
+    "reporter_email": "maja.lindqvist@example.se",
+    "reported_date": "2026-07-01",
+    "affected_users": 806
+   }
+  },
+  {
+   "id": "B-115",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Ljusgarden Media AB. Invoice INV-2026249, issued 29 May 2026, was for 30,598.94 SEK. We received a partial payment of 8,520.34 SEK, so 22,078.60 SEK is still outstanding. Please pay the outstanding amount by 13 July 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Ljusgarden Media AB",
+    "invoice_number": "INV-2026249",
+    "amount_due": 22078.6,
+    "currency": "SEK",
+    "due_date": "2026-07-13",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-116",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: oskar.lindqvist@example.se\n\nOrder ORD-729044 for Oskar Lindqvist: 5 x docking station at 1590 SEK each, total 7950 SEK. Delivery is planned for March 6, 2026.\n\n----- Later message -----\nFrom: oskar.lindqvist@example.se\n\nHi, please change order ORD-729044 to 3 of the docking stations instead. Our office is closed that week, so we have agreed with your support to deliver on March 17, 2026.\n\n----- Reply -----\nConfirmed, ORD-729044 is updated as you asked. The total is now 4770 SEK.",
+   "answer": {
+    "order_id": "ORD-729044",
+    "customer_email": "oskar.lindqvist@example.se",
+    "quantity": 3,
+    "total_sek": 4770,
+    "delivery_date": "2026-03-17"
+   }
+  },
+  {
+   "id": "B-117",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Emma,\n\nThanks for your order ORD-131484, placed on 12th of September 2026. It replaces your cancelled order ORD-858549.\n\n- 2 x headset at 1971 SEK each\n- 3 x headset at 1843 SEK each\n- 4 x headset at 368 SEK each\n- 3 x mouse at 981 SEK each\n\nSubtotal: 13886 SEK\nShipping: 99 SEK\nTotal: 13985 SEK\n\nDeliver to: Emma Holm, Kungsgatan 57\nExpected delivery: 14th of September 2026. We will email emma.holm@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-131484",
+    "customer_name": "Emma Holm",
+    "customer_email": "emma.holm@example.se",
+    "total_sek": 13985,
+    "delivery_date": "2026-09-14",
+    "item_count": 12
+   }
+  },
+  {
+   "id": "B-118",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-21235 was opened on 3 December 2026 by Johan Dahl (johan.dahl@example.se), with Elin Wallin (elin.wallin@example.se) in copy. Priority was set to P4 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 583 users are affected. This looks related to INC-12989, closed last quarter, which affected 845 users.",
+   "answer": {
+    "ticket_id": "INC-21235",
+    "priority": "P4",
+    "product": "MailGuard",
+    "reporter_email": "johan.dahl@example.se",
+    "reported_date": "2026-12-03",
+    "affected_users": 583
+   }
+  },
+  {
+   "id": "B-119",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Ljusgarden Media AB. Invoice INV-2026963, issued March 4, 2026, was for 66,472.51 SEK. We received a partial payment of 8,703.08 SEK, so 57,769.43 SEK is still outstanding. Please pay the outstanding amount by 3 April 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Ljusgarden Media AB",
+    "invoice_number": "INV-2026963",
+    "amount_due": 57769.43,
+    "currency": "SEK",
+    "due_date": "2026-04-03",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-120",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: elin.lindqvist@example.se\n\nOrder ORD-223351 for Elin Lindqvist: 3 x monitor at 2490 SEK each, total 7470 SEK. Delivery is planned for 29th of September 2026.\n\n----- Later message -----\nFrom: elin.lindqvist@example.se\n\nHi, please change order ORD-223351 to 6 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 9 October 2026.\n\n----- Reply -----\nConfirmed, ORD-223351 is updated as you asked. The total is now 14940 SEK.",
+   "answer": {
+    "order_id": "ORD-223351",
+    "customer_email": "elin.lindqvist@example.se",
+    "quantity": 6,
+    "total_sek": 14940,
+    "delivery_date": "2026-10-09"
+   }
+  },
+  {
+   "id": "B-121",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Lars,\n\nThanks for your order ORD-612892, placed on 20 June 2026. It replaces your cancelled order ORD-639842.\n\n- 2 x headset at 345 SEK each\n- 3 x monitor stand at 1762 SEK each\n\nSubtotal: 5976 SEK\nShipping: 0 SEK\nTotal: 5976 SEK\n\nDeliver to: Lars Holm, Storgatan 61\nExpected delivery: 28 June 2026. We will email lars.holm@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-612892",
+    "customer_name": "Lars Holm",
+    "customer_email": "lars.holm@example.se",
+    "total_sek": 5976,
+    "delivery_date": "2026-06-28",
+    "item_count": 5
+   }
+  },
+  {
+   "id": "B-122",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-63554 was opened on June 18, 2026 by Nils Berg (nils.berg@example.se), with Elin Lindqvist (elin.lindqvist@example.se) in copy. Priority was set to P2 after triage. Customers using InvoicePro report that sync stops after about ten minutes; the team estimates 381 users are affected. This looks related to INC-64619, closed last quarter, which affected 510 users.",
+   "answer": {
+    "ticket_id": "INC-63554",
+    "priority": "P2",
+    "product": "InvoicePro",
+    "reporter_email": "nils.berg@example.se",
+    "reported_date": "2026-06-18",
+    "affected_users": 381
+   }
+  },
+  {
+   "id": "B-123",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026323, issued May 12, 2026, was for 43,224.70 EUR. We received a partial payment of 13,244.85 EUR, so 29,979.85 EUR is still outstanding. Please pay the outstanding amount by 27th of May 2026. After that date a late fee of 8% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026323",
+    "amount_due": 29979.85,
+    "currency": "EUR",
+    "due_date": "2026-05-27",
+    "late_fee_percent": 8
+   }
+  },
+  {
+   "id": "B-124",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: erik.hedlund@example.se\n\nOrder ORD-564957 for Erik Hedlund: 6 x desk lamp at 449 SEK each, total 2694 SEK. Delivery is planned for 19th of July 2026.\n\n----- Later message -----\nFrom: erik.hedlund@example.se\n\nHi, please change order ORD-564957 to 1 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 25 July 2026.\n\n----- Reply -----\nConfirmed, ORD-564957 is updated as you asked. The total is now 449 SEK.",
+   "answer": {
+    "order_id": "ORD-564957",
+    "customer_email": "erik.hedlund@example.se",
+    "quantity": 1,
+    "total_sek": 449,
+    "delivery_date": "2026-07-25"
+   }
+  },
+  {
+   "id": "B-125",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Nils,\n\nThanks for your order ORD-550043, placed on June 20, 2026. It replaces your cancelled order ORD-487826.\n\n- 2 x USB-C cable at 1994 SEK each\n- 2 x USB-C cable at 925 SEK each\n- 3 x headset at 603 SEK each\n- 3 x monitor stand at 1457 SEK each\n\nSubtotal: 12018 SEK\nShipping: 0 SEK\nTotal: 12018 SEK\n\nDeliver to: Nils Wallin, Kungsgatan 15\nExpected delivery: 22nd of June 2026. We will email nils.wallin@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-550043",
+    "customer_name": "Nils Wallin",
+    "customer_email": "nils.wallin@example.se",
+    "total_sek": 12018,
+    "delivery_date": "2026-06-22",
+    "item_count": 10
+   }
+  },
+  {
+   "id": "B-126",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-92459 was opened on October 22, 2026 by Maria Sandberg (maria.sandberg@example.se), with Elin Lindqvist (elin.lindqvist@example.se) in copy. Priority was set to P2 after triage. Customers using DataVault report that sync stops after about ten minutes; the team estimates 246 users are affected. This looks related to INC-40339, closed last quarter, which affected 283 users.",
+   "answer": {
+    "ticket_id": "INC-92459",
+    "priority": "P2",
+    "product": "DataVault",
+    "reporter_email": "maria.sandberg@example.se",
+    "reported_date": "2026-10-22",
+    "affected_users": 246
+   }
+  },
+  {
+   "id": "B-127",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Fjord Logistics AB. Invoice INV-2026375, issued 31 August 2026, was for 32,740.64 SEK. We received a partial payment of 5,534.87 SEK, so 27,205.77 SEK is still outstanding. Please pay the outstanding amount by 15 September 2026. After that date a late fee of 2% per month applies.",
+   "answer": {
+    "vendor": "Fjord Logistics AB",
+    "invoice_number": "INV-2026375",
+    "amount_due": 27205.77,
+    "currency": "SEK",
+    "due_date": "2026-09-15",
+    "late_fee_percent": 2
+   }
+  },
+  {
+   "id": "B-128",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: emma.nyberg@example.se\n\nOrder ORD-793624 for Emma Nyberg: 3 x monitor at 2490 SEK each, total 7470 SEK. Delivery is planned for 26 October 2026.\n\n----- Later message -----\nFrom: emma.nyberg@example.se\n\nHi, please change order ORD-793624 to 5 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 3 November 2026.\n\n----- Reply -----\nConfirmed, ORD-793624 is updated as you asked. The total is now 12450 SEK.",
+   "answer": {
+    "order_id": "ORD-793624",
+    "customer_email": "emma.nyberg@example.se",
+    "quantity": 5,
+    "total_sek": 12450,
+    "delivery_date": "2026-11-03"
+   }
+  },
+  {
+   "id": "B-129",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Maria,\n\nThanks for your order ORD-767169, placed on October 2, 2026. It replaces your cancelled order ORD-260976.\n\n- 1 x USB-C cable at 1829 SEK each\n- 2 x USB-C cable at 1050 SEK each\n- 1 x monitor stand at 1445 SEK each\n- 3 x webcam at 1259 SEK each\n\nSubtotal: 9151 SEK\nShipping: 0 SEK\nTotal: 9151 SEK\n\nDeliver to: Maria Strand, Vasagatan 75\nExpected delivery: 9th of October 2026. We will email maria.strand@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-767169",
+    "customer_name": "Maria Strand",
+    "customer_email": "maria.strand@example.se",
+    "total_sek": 9151,
+    "delivery_date": "2026-10-09",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-130",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-49970 was opened on January 28, 2026 by Ida Nyberg (ida.nyberg@example.se), with Frida Lindqvist (frida.lindqvist@example.se) in copy. Priority was set to P1 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 533 users are affected. This looks related to INC-93464, closed last quarter, which affected 791 users.",
+   "answer": {
+    "ticket_id": "INC-49970",
+    "priority": "P1",
+    "product": "ShipTrack",
+    "reporter_email": "ida.nyberg@example.se",
+    "reported_date": "2026-01-28",
+    "affected_users": 533
+   }
+  },
+  {
+   "id": "B-131",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Skarvik Energi AB. Invoice INV-2026221, issued August 4, 2026, was for 78,109.48 EUR. We received a partial payment of 17,575.00 EUR, so 60,534.48 EUR is still outstanding. Please pay the outstanding amount by August 14, 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Skarvik Energi AB",
+    "invoice_number": "INV-2026221",
+    "amount_due": 60534.48,
+    "currency": "EUR",
+    "due_date": "2026-08-14",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-132",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: lars.sandberg@example.se\n\nOrder ORD-566498 for Lars Sandberg: 5 x desk lamp at 449 SEK each, total 2245 SEK. Delivery is planned for January 29, 2026.\n\n----- Later message -----\nFrom: lars.sandberg@example.se\n\nHi, please change order ORD-566498 to 3 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 3 February 2026.\n\n----- Reply -----\nConfirmed, ORD-566498 is updated as you asked. The total is now 1347 SEK.",
+   "answer": {
+    "order_id": "ORD-566498",
+    "customer_email": "lars.sandberg@example.se",
+    "quantity": 3,
+    "total_sek": 1347,
+    "delivery_date": "2026-02-03"
+   }
+  },
+  {
+   "id": "B-133",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Oskar,\n\nThanks for your order ORD-234678, placed on 23 November 2026. It replaces your cancelled order ORD-962167.\n\n- 4 x USB-C cable at 789 SEK each\n- 1 x keyboard at 824 SEK each\n\nSubtotal: 3980 SEK\nShipping: 0 SEK\nTotal: 3980 SEK\n\nDeliver to: Oskar Ekstrom, Vasagatan 49\nExpected delivery: 27 November 2026. We will email oskar.ekstrom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-234678",
+    "customer_name": "Oskar Ekstrom",
+    "customer_email": "oskar.ekstrom@example.se",
+    "total_sek": 3980,
+    "delivery_date": "2026-11-27",
+    "item_count": 5
+   }
+  },
+  {
+   "id": "B-134",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-48599 was opened on January 4, 2026 by Ida Ekstrom (ida.ekstrom@example.se), with Emma Ekstrom (emma.ekstrom@example.se) in copy. Priority was set to P4 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 420 users are affected. This looks related to INC-57427, closed last quarter, which affected 715 users.",
+   "answer": {
+    "ticket_id": "INC-48599",
+    "priority": "P4",
+    "product": "TeamBoard",
+    "reporter_email": "ida.ekstrom@example.se",
+    "reported_date": "2026-01-04",
+    "affected_users": 420
+   }
+  },
+  {
+   "id": "B-135",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026120, issued February 25, 2026, was for 67,883.04 NOK. We received a partial payment of 21,855.01 NOK, so 46,028.03 NOK is still outstanding. Please pay the outstanding amount by 27th of March 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026120",
+    "amount_due": 46028.03,
+    "currency": "NOK",
+    "due_date": "2026-03-27",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-136",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: lars.berg@example.se\n\nOrder ORD-162165 for Lars Berg: 2 x desk lamp at 449 SEK each, total 898 SEK. Delivery is planned for March 27, 2026.\n\n----- Later message -----\nFrom: lars.berg@example.se\n\nHi, please change order ORD-162165 to 3 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on April 5, 2026.\n\n----- Reply -----\nConfirmed, ORD-162165 is updated as you asked. The total is now 1347 SEK.",
+   "answer": {
+    "order_id": "ORD-162165",
+    "customer_email": "lars.berg@example.se",
+    "quantity": 3,
+    "total_sek": 1347,
+    "delivery_date": "2026-04-05"
+   }
+  },
+  {
+   "id": "B-137",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Anna,\n\nThanks for your order ORD-979252, placed on 20 January 2026. It replaces your cancelled order ORD-398877.\n\n- 2 x headset at 707 SEK each\n- 2 x keyboard at 1590 SEK each\n- 2 x headset at 927 SEK each\n- 3 x mouse at 1471 SEK each\n\nSubtotal: 10861 SEK\nShipping: 0 SEK\nTotal: 10861 SEK\n\nDeliver to: Anna Blom, Storgatan 4\nExpected delivery: 24 January 2026. We will email anna.blom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-979252",
+    "customer_name": "Anna Blom",
+    "customer_email": "anna.blom@example.se",
+    "total_sek": 10861,
+    "delivery_date": "2026-01-24",
+    "item_count": 9
+   }
+  },
+  {
+   "id": "B-138",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-39464 was opened on October 3, 2026 by Anna Sandberg (anna.sandberg@example.se), with Karl Ekstrom (karl.ekstrom@example.se) in copy. Priority was set to P3 after triage. Customers using InvoicePro report that sync stops after about ten minutes; the team estimates 201 users are affected. This looks related to INC-77221, closed last quarter, which affected 396 users.",
+   "answer": {
+    "ticket_id": "INC-39464",
+    "priority": "P3",
+    "product": "InvoicePro",
+    "reporter_email": "anna.sandberg@example.se",
+    "reported_date": "2026-10-03",
+    "affected_users": 201
+   }
+  },
+  {
+   "id": "B-139",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Nordlys Consulting AB. Invoice INV-2026992, issued 13th of February 2026, was for 101,697.88 SEK. We received a partial payment of 19,026.06 SEK, so 82,671.82 SEK is still outstanding. Please pay the outstanding amount by 23rd of February 2026. After that date a late fee of 10% per month applies.",
+   "answer": {
+    "vendor": "Nordlys Consulting AB",
+    "invoice_number": "INV-2026992",
+    "amount_due": 82671.82,
+    "currency": "SEK",
+    "due_date": "2026-02-23",
+    "late_fee_percent": 10
+   }
+  },
+  {
+   "id": "B-140",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: maria.ekstrom@example.se\n\nOrder ORD-325093 for Maria Ekstrom: 3 x desk lamp at 449 SEK each, total 1347 SEK. Delivery is planned for June 8, 2026.\n\n----- Later message -----\nFrom: maria.ekstrom@example.se\n\nHi, please change order ORD-325093 to 5 of the desk lamps instead. Our office is closed that week, so we have agreed with your support to deliver on 18 June 2026.\n\n----- Reply -----\nConfirmed, ORD-325093 is updated as you asked. The total is now 2245 SEK.",
+   "answer": {
+    "order_id": "ORD-325093",
+    "customer_email": "maria.ekstrom@example.se",
+    "quantity": 5,
+    "total_sek": 2245,
+    "delivery_date": "2026-06-18"
+   }
+  },
+  {
+   "id": "B-141",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Johan,\n\nThanks for your order ORD-109983, placed on May 14, 2026. It replaces your cancelled order ORD-624758.\n\n- 4 x headset at 1473 SEK each\n- 3 x mouse at 1541 SEK each\n- 2 x USB-C cable at 1941 SEK each\n- 4 x headset at 895 SEK each\n\nSubtotal: 17977 SEK\nShipping: 0 SEK\nTotal: 17977 SEK\n\nDeliver to: Johan Ekstrom, Storgatan 73\nExpected delivery: 22nd of May 2026. We will email johan.ekstrom@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-109983",
+    "customer_name": "Johan Ekstrom",
+    "customer_email": "johan.ekstrom@example.se",
+    "total_sek": 17977,
+    "delivery_date": "2026-05-22",
+    "item_count": 13
+   }
+  },
+  {
+   "id": "B-142",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-18325 was opened on 1 July 2026 by Gustav Nyberg (gustav.nyberg@example.se), with Axel Lund (axel.lund@example.se) in copy. Priority was set to P2 after triage. Customers using TeamBoard report that sync stops after about ten minutes; the team estimates 69 users are affected. This looks related to INC-64527, closed last quarter, which affected 219 users.",
+   "answer": {
+    "ticket_id": "INC-18325",
+    "priority": "P2",
+    "product": "TeamBoard",
+    "reporter_email": "gustav.nyberg@example.se",
+    "reported_date": "2026-07-01",
+    "affected_users": 69
+   }
+  },
+  {
+   "id": "B-143",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Granit IT AB. Invoice INV-2026396, issued April 17, 2026, was for 10,853.34 NOK. We received a partial payment of 1,907.89 NOK, so 8,945.45 NOK is still outstanding. Please pay the outstanding amount by June 1, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Granit IT AB",
+    "invoice_number": "INV-2026396",
+    "amount_due": 8945.45,
+    "currency": "NOK",
+    "due_date": "2026-06-01",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-144",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: ida.blom@example.se\n\nOrder ORD-865223 for Ida Blom: 5 x office chair at 1890 SEK each, total 9450 SEK. Delivery is planned for 29th of October 2026.\n\n----- Later message -----\nFrom: ida.blom@example.se\n\nHi, please change order ORD-865223 to 4 of the office chairs instead. Our office is closed that week, so we have agreed with your support to deliver on 1 November 2026.\n\n----- Reply -----\nConfirmed, ORD-865223 is updated as you asked. The total is now 7560 SEK.",
+   "answer": {
+    "order_id": "ORD-865223",
+    "customer_email": "ida.blom@example.se",
+    "quantity": 4,
+    "total_sek": 7560,
+    "delivery_date": "2026-11-01"
+   }
+  },
+  {
+   "id": "B-145",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Maria,\n\nThanks for your order ORD-940872, placed on December 2, 2026. It replaces your cancelled order ORD-767040.\n\n- 1 x webcam at 372 SEK each\n- 1 x monitor stand at 574 SEK each\n- 1 x monitor stand at 317 SEK each\n- 4 x mouse at 489 SEK each\n\nSubtotal: 3219 SEK\nShipping: 0 SEK\nTotal: 3219 SEK\n\nDeliver to: Maria Hedlund, Vasagatan 12\nExpected delivery: December 5, 2026. We will email maria.hedlund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-940872",
+    "customer_name": "Maria Hedlund",
+    "customer_email": "maria.hedlund@example.se",
+    "total_sek": 3219,
+    "delivery_date": "2026-12-05",
+    "item_count": 7
+   }
+  },
+  {
+   "id": "B-146",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-74926 was opened on 18th of February 2026 by Erik Nyberg (erik.nyberg@example.se), with Ida Berg (ida.berg@example.se) in copy. Priority was set to P1 after triage. Customers using MailGuard report that sync stops after about ten minutes; the team estimates 396 users are affected. This looks related to INC-50803, closed last quarter, which affected 531 users.",
+   "answer": {
+    "ticket_id": "INC-74926",
+    "priority": "P1",
+    "product": "MailGuard",
+    "reporter_email": "erik.nyberg@example.se",
+    "reported_date": "2026-02-18",
+    "affected_users": 396
+   }
+  },
+  {
+   "id": "B-147",
+   "category": "invoice",
+   "prompt": "Extract these fields from the text below: vendor, invoice_number, amount_due, currency, due_date, late_fee_percent.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. amount_due is what is still outstanding.\n\nText:\nPayment reminder from Ljusgarden Media AB. Invoice INV-2026772, issued 3 December 2026, was for 113,033.55 SEK. We received a partial payment of 26,085.97 SEK, so 86,947.58 SEK is still outstanding. Please pay the outstanding amount by December 18, 2026. After that date a late fee of 1.5% per month applies.",
+   "answer": {
+    "vendor": "Ljusgarden Media AB",
+    "invoice_number": "INV-2026772",
+    "amount_due": 86947.58,
+    "currency": "SEK",
+    "due_date": "2026-12-18",
+    "late_fee_percent": 1.5
+   }
+  },
+  {
+   "id": "B-148",
+   "category": "correction",
+   "prompt": "Extract these fields from the text below: order_id, customer_email, quantity, total_sek, delivery_date.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. Use the values as they stand after the last message.\n\nText:\nFrom: orders@shopnorth.se\nTo: lars.strand@example.se\n\nOrder ORD-455193 for Lars Strand: 2 x monitor at 2490 SEK each, total 4980 SEK. Delivery is planned for May 6, 2026.\n\n----- Later message -----\nFrom: lars.strand@example.se\n\nHi, please change order ORD-455193 to 8 of the monitors instead. Our office is closed that week, so we have agreed with your support to deliver on 10th of May 2026.\n\n----- Reply -----\nConfirmed, ORD-455193 is updated as you asked. The total is now 19920 SEK.",
+   "answer": {
+    "order_id": "ORD-455193",
+    "customer_email": "lars.strand@example.se",
+    "quantity": 8,
+    "total_sek": 19920,
+    "delivery_date": "2026-05-10"
+   }
+  },
+  {
+   "id": "B-149",
+   "category": "order",
+   "prompt": "Extract these fields from the text below: order_id, customer_name, customer_email, total_sek, delivery_date, item_count.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. item_count is the total number of units across all lines.\n\nText:\nHi Lars,\n\nThanks for your order ORD-650232, placed on 15th of June 2026. It replaces your cancelled order ORD-758207.\n\n- 3 x monitor stand at 1752 SEK each\n- 1 x USB-C cable at 536 SEK each\n\nSubtotal: 5792 SEK\nShipping: 99 SEK\nTotal: 5891 SEK\n\nDeliver to: Lars Hedlund, Storgatan 78\nExpected delivery: 18 June 2026. We will email lars.hedlund@example.se when it ships.\n\nBest regards,\nThe ShopNorth team",
+   "answer": {
+    "order_id": "ORD-650232",
+    "customer_name": "Lars Hedlund",
+    "customer_email": "lars.hedlund@example.se",
+    "total_sek": 5891,
+    "delivery_date": "2026-06-18",
+    "item_count": 4
+   }
+  },
+  {
+   "id": "B-150",
+   "category": "ticket",
+   "prompt": "Extract these fields from the text below: ticket_id, priority, product, reporter_email, reported_date, affected_users.\nReturn only a JSON object with exactly these keys. Write dates as YYYY-MM-DD and amounts and counts as plain numbers without currency or thousands separators. reporter_email is the person who opened the ticket.\n\nText:\nTicket INC-52315 was opened on May 14, 2026 by Maria Dahl (maria.dahl@example.se), with Maria Sjoberg (maria.sjoberg@example.se) in copy. Priority was set to P1 after triage. Customers using ShipTrack report that sync stops after about ten minutes; the team estimates 432 users are affected. This looks related to INC-40330, closed last quarter, which affected 558 users.",
+   "answer": {
+    "ticket_id": "INC-52315",
+    "priority": "P1",
+    "product": "ShipTrack",
+    "reporter_email": "maria.dahl@example.se",
+    "reported_date": "2026-05-14",
+    "affected_users": 432
+   }
+  }
+ ]
+}

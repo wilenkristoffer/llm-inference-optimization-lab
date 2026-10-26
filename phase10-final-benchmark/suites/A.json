@@ -1,0 +1,1406 @@
+{
+ "suite": "A",
+ "seed": 20261026,
+ "items": [
+  {
+   "id": "A-001",
+   "category": "shop",
+   "prompt": "Notebooks cost 26 SEK each and pens cost 9 SEK each. Linnea buys 9 notebooks and 5 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Linnea pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 261.56,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-002",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 8 hours and pipe B fills it in 12 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 8.25,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-003",
+   "category": "date_add",
+   "prompt": "What is the date 194 days after 2026-06-19? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-12-30",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-004",
+   "category": "weekday",
+   "prompt": "2026-04-09 is a Thursday. Which day of the week is it 692 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-005",
+   "category": "fuel",
+   "prompt": "A car uses 7.54 litres of fuel per 100 km. Fuel costs 21.98 SEK per litre. What does a trip of 214 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 570.65,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-006",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Oskar is taller than Erik. Lars is shorter than Oskar. Elin is taller than Karl. Lars is taller than Erik. Oskar is taller than Karl. Lars is shorter than Elin. Oskar is shorter than Elin. Erik is shorter than Elin. Karl is shorter than Lars. Erik is taller than Karl. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Oskar",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-007",
+   "category": "stock",
+   "prompt": "A warehouse holds 501 boxes. Every day it ships 43 boxes and receives 14 new ones, at the end of the day. After how many days does it first hold fewer than 200 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 11,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-008",
+   "category": "price_chain",
+   "prompt": "A price starts at 618 SEK. It rises by 14%, then falls by 19%, then rises by 20%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 684.79,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-009",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 73.5. 5 of them are 88, 43, 94, 67, 84. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 65,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-010",
+   "category": "shop",
+   "prompt": "Notebooks cost 26 SEK each and pens cost 25 SEK each. Maja buys 6 notebooks and 6 pens. A coupon takes 10% off the total, and then 25% VAT is added to the discounted amount. How much does Maja pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 344.25,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-011",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 4 hours and pipe B fills it in 9 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.75,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-012",
+   "category": "date_add",
+   "prompt": "What is the date 162 days after 2026-01-29? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-07-10",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-013",
+   "category": "weekday",
+   "prompt": "2026-05-21 is a Thursday. Which day of the week is it 874 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-014",
+   "category": "fuel",
+   "prompt": "A car uses 7.52 litres of fuel per 100 km. Fuel costs 16.61 SEK per litre. What does a trip of 88 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 176.86,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-015",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Ida is shorter than Emma. Frida is shorter than Emma. Ida is shorter than Viktor. Viktor is shorter than Nils. Ida is shorter than Frida. Emma is taller than Viktor. Viktor is taller than Frida. Nils is taller than Frida. Emma is taller than Nils. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Nils",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-016",
+   "category": "stock",
+   "prompt": "A warehouse holds 627 boxes. Every day it ships 58 boxes and receives 27 new ones, at the end of the day. After how many days does it first hold fewer than 140 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 16,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-017",
+   "category": "price_chain",
+   "prompt": "A price starts at 1825 SEK. It rises by 36%, then falls by 32%, then rises by 10%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1856.54,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-018",
+   "category": "missing_score",
+   "prompt": "7 test scores have an average of 73.0. 6 of them are 84, 59, 64, 68, 96, 67. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 73,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-019",
+   "category": "shop",
+   "prompt": "Notebooks cost 78 SEK each and pens cost 9 SEK each. Frida buys 6 notebooks and 3 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Frida pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 495.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-020",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 9 hours and pipe B fills it in 8 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.17,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-021",
+   "category": "date_add",
+   "prompt": "What is the date 176 days after 2026-04-09? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-10-02",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-022",
+   "category": "weekday",
+   "prompt": "2026-06-04 is a Thursday. Which day of the week is it 792 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Friday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-023",
+   "category": "fuel",
+   "prompt": "A car uses 7.29 litres of fuel per 100 km. Fuel costs 19.1 SEK per litre. What does a trip of 192 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 430.15,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-024",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Oskar is shorter than Lars. Lars is taller than Emma. Oskar is shorter than Frida. Frida is taller than Lars. Lars is taller than Maja. Maja is shorter than Frida. Emma is taller than Maja. Emma is shorter than Oskar. Nobody has the same height. Who is the 3rd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Oskar",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-025",
+   "category": "stock",
+   "prompt": "A warehouse holds 861 boxes. Every day it ships 69 boxes and receives 18 new ones, at the end of the day. After how many days does it first hold fewer than 175 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 14,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-026",
+   "category": "price_chain",
+   "prompt": "A price starts at 945 SEK. It rises by 17%, then falls by 31%, then rises by 12%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 854.45,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-027",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 75.0. 5 of them are 50, 57, 81, 97, 82. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 83,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-028",
+   "category": "shop",
+   "prompt": "Notebooks cost 57 SEK each and pens cost 9 SEK each. Viktor buys 4 notebooks and 12 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Viktor pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 336.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-029",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 9 hours and pipe B fills it in 11 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 7.67,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-030",
+   "category": "date_add",
+   "prompt": "What is the date 70 days after 2026-07-28? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-10-06",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-031",
+   "category": "weekday",
+   "prompt": "2026-10-30 is a Friday. Which day of the week is it 576 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Sunday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-032",
+   "category": "fuel",
+   "prompt": "A car uses 8.53 litres of fuel per 100 km. Fuel costs 21.14 SEK per litre. What does a trip of 316 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 916.85,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-033",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Maja is taller than Karl. Oskar is taller than Nils. Johan is taller than Nils. Karl is shorter than Nils. Maja is shorter than Oskar. Karl is shorter than Johan. Oskar is shorter than Johan. Johan is taller than Maja. Nils is shorter than Maja. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Oskar",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-034",
+   "category": "stock",
+   "prompt": "A warehouse holds 422 boxes. Every day it ships 44 boxes and receives 20 new ones, at the end of the day. After how many days does it first hold fewer than 175 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 11,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-035",
+   "category": "price_chain",
+   "prompt": "A price starts at 515 SEK. It rises by 9%, then falls by 9%, then rises by 18%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 602.78,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-036",
+   "category": "missing_score",
+   "prompt": "8 test scores have an average of 71.0. 7 of them are 62, 70, 86, 64, 92, 44, 88. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 62,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-037",
+   "category": "shop",
+   "prompt": "Notebooks cost 75 SEK each and pens cost 20 SEK each. Linnea buys 9 notebooks and 5 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Linnea pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 726.56,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-038",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 9 hours and pipe B fills it in 4 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 2.56,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-039",
+   "category": "date_add",
+   "prompt": "What is the date 21 days after 2026-12-22? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-01-12",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-040",
+   "category": "weekday",
+   "prompt": "2026-04-22 is a Wednesday. Which day of the week is it 978 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Monday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-041",
+   "category": "fuel",
+   "prompt": "A car uses 7.7 litres of fuel per 100 km. Fuel costs 20.24 SEK per litre. What does a trip of 55 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 137.92,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-042",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Frida is taller than Anna. Viktor is shorter than Frida. Anna is taller than Viktor. Johan is shorter than Frida. Anna is taller than Maja. Johan is taller than Anna. Maja is shorter than Frida. Maja is shorter than Johan. Viktor is shorter than Johan. Viktor is shorter than Maja. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Johan",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-043",
+   "category": "stock",
+   "prompt": "A warehouse holds 752 boxes. Every day it ships 50 boxes and receives 22 new ones, at the end of the day. After how many days does it first hold fewer than 182 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 21,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-044",
+   "category": "price_chain",
+   "prompt": "A price starts at 1275 SEK. It rises by 17%, then falls by 16%, then rises by 21%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1516.21,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-045",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 67.0. 4 of them are 52, 68, 77, 83. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 55,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-046",
+   "category": "shop",
+   "prompt": "Notebooks cost 36 SEK each and pens cost 15 SEK each. Frida buys 5 notebooks and 3 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Frida pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 210.94,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-047",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 4 hours and pipe B fills it in 11 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.38,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-048",
+   "category": "date_add",
+   "prompt": "What is the date 109 days after 2026-09-17? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-01-04",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-049",
+   "category": "weekday",
+   "prompt": "2026-12-01 is a Tuesday. Which day of the week is it 38 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Friday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-050",
+   "category": "fuel",
+   "prompt": "A car uses 4.68 litres of fuel per 100 km. Fuel costs 18.16 SEK per litre. What does a trip of 276 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 377.42,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-051",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Anna is taller than Elin. Elin is shorter than Maria. Gustav is taller than Anna. Maria is taller than Anna. Maria is taller than Gustav. Maria is taller than Sara. Elin is shorter than Gustav. Anna is taller than Sara. Sara is shorter than Elin. Nobody has the same height. Who is the 3rd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Anna",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-052",
+   "category": "stock",
+   "prompt": "A warehouse holds 784 boxes. Every day it ships 90 boxes and receives 13 new ones, at the end of the day. After how many days does it first hold fewer than 67 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 10,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-053",
+   "category": "price_chain",
+   "prompt": "A price starts at 1081 SEK. It rises by 28%, then falls by 16%, then rises by 13%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1313.39,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-054",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 74.0. 5 of them are 41, 68, 65, 84, 87. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 99,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-055",
+   "category": "shop",
+   "prompt": "Notebooks cost 73 SEK each and pens cost 16 SEK each. Axel buys 4 notebooks and 11 pens. A coupon takes 10% off the total, and then 25% VAT is added to the discounted amount. How much does Axel pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 526.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-056",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 6 hours and pipe B fills it in 8 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 4.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-057",
+   "category": "date_add",
+   "prompt": "What is the date 48 days after 2026-10-17? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-12-04",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-058",
+   "category": "weekday",
+   "prompt": "2026-05-29 is a Friday. Which day of the week is it 537 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-059",
+   "category": "fuel",
+   "prompt": "A car uses 7.08 litres of fuel per 100 km. Fuel costs 21.86 SEK per litre. What does a trip of 354 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 881.54,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-060",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Lars is shorter than Maria. Elin is taller than Axel. Nils is taller than Elin. Elin is taller than Lars. Maria is shorter than Nils. Axel is shorter than Nils. Elin is taller than Maria. Lars is shorter than Axel. Maria is shorter than Axel. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Elin",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-061",
+   "category": "stock",
+   "prompt": "A warehouse holds 652 boxes. Every day it ships 51 boxes and receives 18 new ones, at the end of the day. After how many days does it first hold fewer than 87 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 18,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-062",
+   "category": "price_chain",
+   "prompt": "A price starts at 1763 SEK. It rises by 36%, then falls by 23%, then rises by 19%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 2196.99,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-063",
+   "category": "missing_score",
+   "prompt": "7 test scores have an average of 67.0. 6 of them are 68, 76, 57, 77, 54, 57. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 80,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-064",
+   "category": "shop",
+   "prompt": "Notebooks cost 51 SEK each and pens cost 20 SEK each. Viktor buys 4 notebooks and 3 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Viktor pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 247.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-065",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 8 hours and pipe B fills it in 4 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 3.25,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-066",
+   "category": "date_add",
+   "prompt": "What is the date 379 days after 2026-11-12? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-11-26",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-067",
+   "category": "weekday",
+   "prompt": "2026-01-24 is a Saturday. Which day of the week is it 348 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Thursday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-068",
+   "category": "fuel",
+   "prompt": "A car uses 9.05 litres of fuel per 100 km. Fuel costs 21.27 SEK per litre. What does a trip of 161 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 498.65,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-069",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Nils is taller than Frida. Maria is taller than Frida. Johan is shorter than Frida. Nils is shorter than Axel. Axel is taller than Frida. Johan is shorter than Axel. Maria is taller than Johan. Johan is shorter than Nils. Axel is taller than Maria. Maria is taller than Nils. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Maria",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-070",
+   "category": "stock",
+   "prompt": "A warehouse holds 608 boxes. Every day it ships 54 boxes and receives 32 new ones, at the end of the day. After how many days does it first hold fewer than 71 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 25,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-071",
+   "category": "price_chain",
+   "prompt": "A price starts at 1292 SEK. It rises by 10%, then falls by 7%, then rises by 22%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1612.49,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-072",
+   "category": "missing_score",
+   "prompt": "7 test scores have an average of 78.0. 6 of them are 90, 71, 74, 79, 99, 67. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 66,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-073",
+   "category": "shop",
+   "prompt": "Notebooks cost 19 SEK each and pens cost 13 SEK each. Erik buys 3 notebooks and 7 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Erik pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 148.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-074",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 3 hours and pipe B fills it in 12 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 7.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-075",
+   "category": "date_add",
+   "prompt": "What is the date 206 days after 2026-05-04? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-11-26",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-076",
+   "category": "weekday",
+   "prompt": "2026-06-08 is a Monday. Which day of the week is it 123 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Friday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-077",
+   "category": "fuel",
+   "prompt": "A car uses 6.09 litres of fuel per 100 km. Fuel costs 21.05 SEK per litre. What does a trip of 288 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 594.04,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-078",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Erik is taller than Lars. Lars is taller than Frida. Erik is taller than Viktor. Viktor is taller than Lars. Johan is taller than Viktor. Frida is shorter than Johan. Frida is shorter than Erik. Frida is shorter than Viktor. Johan is taller than Lars. Erik is shorter than Johan. Nobody has the same height. Who is the 3rd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Viktor",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-079",
+   "category": "stock",
+   "prompt": "A warehouse holds 506 boxes. Every day it ships 84 boxes and receives 24 new ones, at the end of the day. After how many days does it first hold fewer than 138 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 7,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-080",
+   "category": "price_chain",
+   "prompt": "A price starts at 648 SEK. It rises by 21%, then falls by 17%, then rises by 24%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 806.98,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-081",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 73.5. 5 of them are 43, 93, 92, 81, 62. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 70,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-082",
+   "category": "shop",
+   "prompt": "Notebooks cost 24 SEK each and pens cost 14 SEK each. Anna buys 3 notebooks and 6 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Anna pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 165.75,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-083",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 7 hours and pipe B fills it in 4 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1.64,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-084",
+   "category": "date_add",
+   "prompt": "What is the date 322 days after 2026-06-18? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-05-06",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-085",
+   "category": "weekday",
+   "prompt": "2026-12-26 is a Saturday. Which day of the week is it 418 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Thursday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-086",
+   "category": "fuel",
+   "prompt": "A car uses 7.64 litres of fuel per 100 km. Fuel costs 17.11 SEK per litre. What does a trip of 220 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 462.72,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-087",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Lars is taller than Karl. Elin is taller than Ida. Ida is shorter than Frida. Karl is taller than Frida. Frida is shorter than Lars. Lars is shorter than Elin. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Frida",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-088",
+   "category": "stock",
+   "prompt": "A warehouse holds 689 boxes. Every day it ships 82 boxes and receives 25 new ones, at the end of the day. After how many days does it first hold fewer than 105 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 11,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-089",
+   "category": "price_chain",
+   "prompt": "A price starts at 277 SEK. It rises by 17%, then falls by 16%, then rises by 7%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 291.29,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-090",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 76.6. 4 of them are 79, 68, 85, 87. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 64,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-091",
+   "category": "shop",
+   "prompt": "Notebooks cost 14 SEK each and pens cost 11 SEK each. Viktor buys 8 notebooks and 10 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Viktor pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 208.13,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-092",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 8 hours and pipe B fills it in 6 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.13,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-093",
+   "category": "date_add",
+   "prompt": "What is the date 334 days after 2026-10-22? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-09-21",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-094",
+   "category": "weekday",
+   "prompt": "2026-05-04 is a Monday. Which day of the week is it 176 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Tuesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-095",
+   "category": "fuel",
+   "prompt": "A car uses 8.83 litres of fuel per 100 km. Fuel costs 18.96 SEK per litre. What does a trip of 266 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 716.53,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-096",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Frida is taller than Erik. Johan is taller than Erik. Frida is taller than Johan. Karl is taller than Johan. Erik is shorter than Karl. Erik is shorter than Sara. Sara is taller than Johan. Sara is taller than Frida. Frida is shorter than Karl. Sara is taller than Karl. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Karl",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-097",
+   "category": "stock",
+   "prompt": "A warehouse holds 870 boxes. Every day it ships 58 boxes and receives 18 new ones, at the end of the day. After how many days does it first hold fewer than 81 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 20,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-098",
+   "category": "price_chain",
+   "prompt": "A price starts at 1046 SEK. It rises by 27%, then falls by 18%, then rises by 23%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1339.84,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-099",
+   "category": "missing_score",
+   "prompt": "8 test scores have an average of 74.5. 7 of them are 99, 56, 89, 77, 91, 47, 73. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 64,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-100",
+   "category": "shop",
+   "prompt": "Notebooks cost 60 SEK each and pens cost 9 SEK each. Viktor buys 5 notebooks and 12 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Viktor pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 433.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-101",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 8 hours and pipe B fills it in 5 hours. Both pipes run together for 2 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1.75,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-102",
+   "category": "date_add",
+   "prompt": "What is the date 388 days after 2026-01-03? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-01-26",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-103",
+   "category": "weekday",
+   "prompt": "2026-12-17 is a Thursday. Which day of the week is it 740 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Tuesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-104",
+   "category": "fuel",
+   "prompt": "A car uses 6.06 litres of fuel per 100 km. Fuel costs 17.29 SEK per litre. What does a trip of 180 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 303.46,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-105",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Erik is taller than Maria. Erik is taller than Oskar. Nils is taller than Oskar. Maria is taller than Nils. Emma is taller than Erik. Nobody has the same height. Who is the 3rd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Maria",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-106",
+   "category": "stock",
+   "prompt": "A warehouse holds 698 boxes. Every day it ships 48 boxes and receives 34 new ones, at the end of the day. After how many days does it first hold fewer than 92 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 44,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-107",
+   "category": "price_chain",
+   "prompt": "A price starts at 664 SEK. It rises by 9%, then falls by 16%, then rises by 23%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 747.79,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-108",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 66.2. 4 of them are 88, 44, 59, 83. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 57,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-109",
+   "category": "shop",
+   "prompt": "Notebooks cost 32 SEK each and pens cost 16 SEK each. Viktor buys 3 notebooks and 9 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Viktor pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 240.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-110",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 3 hours and pipe B fills it in 8 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 2.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-111",
+   "category": "date_add",
+   "prompt": "What is the date 88 days after 2026-04-21? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-07-18",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-112",
+   "category": "weekday",
+   "prompt": "2026-06-20 is a Saturday. Which day of the week is it 623 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Saturday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-113",
+   "category": "fuel",
+   "prompt": "A car uses 6.75 litres of fuel per 100 km. Fuel costs 20.62 SEK per litre. What does a trip of 350 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 783.82,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-114",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Gustav is taller than Emma. Nils is taller than Frida. Nils is taller than Emma. Frida is taller than Erik. Gustav is taller than Frida. Frida is shorter than Emma. Erik is shorter than Nils. Gustav is shorter than Nils. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Frida",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-115",
+   "category": "stock",
+   "prompt": "A warehouse holds 653 boxes. Every day it ships 63 boxes and receives 15 new ones, at the end of the day. After how many days does it first hold fewer than 68 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 13,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-116",
+   "category": "price_chain",
+   "prompt": "A price starts at 266 SEK. It rises by 20%, then falls by 10%, then rises by 11%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 318.88,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-117",
+   "category": "missing_score",
+   "prompt": "8 test scores have an average of 80.0. 7 of them are 86, 92, 83, 61, 80, 93, 58. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 87,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-118",
+   "category": "shop",
+   "prompt": "Notebooks cost 21 SEK each and pens cost 12 SEK each. Erik buys 8 notebooks and 7 pens. A coupon takes 10% off the total, and then 25% VAT is added to the discounted amount. How much does Erik pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 283.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-119",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 8 hours and pipe B fills it in 7 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 6.06,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-120",
+   "category": "date_add",
+   "prompt": "What is the date 290 days after 2026-03-18? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-01-02",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-121",
+   "category": "weekday",
+   "prompt": "2026-09-18 is a Friday. Which day of the week is it 726 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-122",
+   "category": "fuel",
+   "prompt": "A car uses 7.59 litres of fuel per 100 km. Fuel costs 21.35 SEK per litre. What does a trip of 307 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 800.45,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-123",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Johan is taller than Viktor. Johan is taller than Anna. Gustav is shorter than Johan. Johan is taller than Erik. Anna is shorter than Viktor. Anna is taller than Gustav. Anna is shorter than Erik. Erik is taller than Viktor. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Anna",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-124",
+   "category": "stock",
+   "prompt": "A warehouse holds 458 boxes. Every day it ships 40 boxes and receives 24 new ones, at the end of the day. After how many days does it first hold fewer than 73 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 25,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-125",
+   "category": "price_chain",
+   "prompt": "A price starts at 1507 SEK. It rises by 19%, then falls by 20%, then rises by 23%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1764.64,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-126",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 81.2. 4 of them are 97, 86, 100, 74. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 49,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-127",
+   "category": "shop",
+   "prompt": "Notebooks cost 64 SEK each and pens cost 23 SEK each. Sara buys 8 notebooks and 2 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Sara pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 558.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-128",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 2 hours and pipe B fills it in 8 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.5,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-129",
+   "category": "date_add",
+   "prompt": "What is the date 323 days after 2026-03-08? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-01-25",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-130",
+   "category": "weekday",
+   "prompt": "2026-04-16 is a Thursday. Which day of the week is it 34 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-131",
+   "category": "fuel",
+   "prompt": "A car uses 8.78 litres of fuel per 100 km. Fuel costs 17.08 SEK per litre. What does a trip of 159 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 383.65,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-132",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Erik is shorter than Nils. Emma is taller than Oskar. Erik is shorter than Oskar. Elin is shorter than Emma. Elin is taller than Erik. Nils is taller than Oskar. Elin is shorter than Nils. Elin is shorter than Oskar. Erik is shorter than Emma. Emma is shorter than Nils. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Emma",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-133",
+   "category": "stock",
+   "prompt": "A warehouse holds 478 boxes. Every day it ships 60 boxes and receives 23 new ones, at the end of the day. After how many days does it first hold fewer than 119 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 10,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-134",
+   "category": "price_chain",
+   "prompt": "A price starts at 980 SEK. It rises by 27%, then falls by 40%, then rises by 23%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 918.51,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-135",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 77.0. 4 of them are 53, 85, 97, 72. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 78,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-136",
+   "category": "shop",
+   "prompt": "Notebooks cost 46 SEK each and pens cost 14 SEK each. Elin buys 6 notebooks and 10 pens. A coupon takes 25% off the total, and then 25% VAT is added to the discounted amount. How much does Elin pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 390.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-137",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 3 hours and pipe B fills it in 10 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 7.83,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-138",
+   "category": "date_add",
+   "prompt": "What is the date 152 days after 2026-10-17? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-03-18",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-139",
+   "category": "weekday",
+   "prompt": "2026-10-14 is a Wednesday. Which day of the week is it 872 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Sunday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-140",
+   "category": "fuel",
+   "prompt": "A car uses 8.93 litres of fuel per 100 km. Fuel costs 17.06 SEK per litre. What does a trip of 367 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 899.61,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-141",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Gustav is taller than Erik. Maja is shorter than Lars. Lars is shorter than Gustav. Anna is shorter than Lars. Maja is shorter than Erik. Erik is taller than Anna. Maja is shorter than Gustav. Erik is taller than Lars. Maja is shorter than Anna. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Anna",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-142",
+   "category": "stock",
+   "prompt": "A warehouse holds 617 boxes. Every day it ships 57 boxes and receives 27 new ones, at the end of the day. After how many days does it first hold fewer than 193 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 15,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-143",
+   "category": "price_chain",
+   "prompt": "A price starts at 992 SEK. It rises by 24%, then falls by 35%, then rises by 25%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 999.44,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-144",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 67.8. 4 of them are 51, 66, 90, 83. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 49,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-145",
+   "category": "shop",
+   "prompt": "Notebooks cost 77 SEK each and pens cost 18 SEK each. Lars buys 7 notebooks and 9 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Lars pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 744.81,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-146",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 9 hours and pipe B fills it in 7 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.22,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-147",
+   "category": "date_add",
+   "prompt": "What is the date 76 days after 2026-02-01? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-04-18",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-148",
+   "category": "weekday",
+   "prompt": "2026-11-15 is a Sunday. Which day of the week is it 649 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Friday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-149",
+   "category": "fuel",
+   "prompt": "A car uses 8.53 litres of fuel per 100 km. Fuel costs 16.14 SEK per litre. What does a trip of 282 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 624.68,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-150",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Maja is shorter than Emma. Erik is shorter than Lars. Karl is shorter than Lars. Karl is taller than Maja. Lars is taller than Maja. Emma is shorter than Karl. Lars is taller than Emma. Karl is taller than Erik. Erik is shorter than Emma. Erik is shorter than Maja. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Karl",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-151",
+   "category": "stock",
+   "prompt": "A warehouse holds 689 boxes. Every day it ships 90 boxes and receives 16 new ones, at the end of the day. After how many days does it first hold fewer than 110 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 8,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-152",
+   "category": "price_chain",
+   "prompt": "A price starts at 376 SEK. It rises by 12%, then falls by 33%, then rises by 23%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 347.04,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-153",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 62.4. 4 of them are 60, 55, 55, 89. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 53,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-154",
+   "category": "shop",
+   "prompt": "Notebooks cost 86 SEK each and pens cost 17 SEK each. Axel buys 8 notebooks and 3 pens. A coupon takes 10% off the total, and then 25% VAT is added to the discounted amount. How much does Axel pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 831.38,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-155",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 3 hours and pipe B fills it in 8 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 4.33,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-156",
+   "category": "date_add",
+   "prompt": "What is the date 22 days after 2026-10-31? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2026-11-22",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-157",
+   "category": "weekday",
+   "prompt": "2026-12-17 is a Thursday. Which day of the week is it 334 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Tuesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-158",
+   "category": "fuel",
+   "prompt": "A car uses 7.62 litres of fuel per 100 km. Fuel costs 20.32 SEK per litre. What does a trip of 197 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 490.8,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-159",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Maria is taller than Viktor. Maria is taller than Nils. Anna is shorter than Maria. Nils is shorter than Sara. Anna is taller than Viktor. Maria is taller than Sara. Anna is taller than Nils. Viktor is shorter than Sara. Viktor is taller than Nils. Anna is taller than Sara. Nobody has the same height. Who is the 3rd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Sara",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-160",
+   "category": "stock",
+   "prompt": "A warehouse holds 469 boxes. Every day it ships 56 boxes and receives 34 new ones, at the end of the day. After how many days does it first hold fewer than 155 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 15,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-161",
+   "category": "price_chain",
+   "prompt": "A price starts at 1157 SEK. It rises by 22%, then falls by 38%, then rises by 12%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 980.17,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-162",
+   "category": "missing_score",
+   "prompt": "7 test scores have an average of 72.0. 6 of them are 100, 64, 64, 78, 73, 65. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 60,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-163",
+   "category": "shop",
+   "prompt": "Notebooks cost 29 SEK each and pens cost 5 SEK each. Oskar buys 4 notebooks and 10 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Oskar pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 176.38,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-164",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 4 hours and pipe B fills it in 12 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 10.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-165",
+   "category": "date_add",
+   "prompt": "What is the date 260 days after 2026-09-05? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-05-23",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-166",
+   "category": "weekday",
+   "prompt": "2026-06-03 is a Wednesday. Which day of the week is it 106 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Thursday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-167",
+   "category": "fuel",
+   "prompt": "A car uses 8.65 litres of fuel per 100 km. Fuel costs 21.99 SEK per litre. What does a trip of 160 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 489.69,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-168",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Elin is taller than Viktor. Johan is taller than Anna. Lars is taller than Elin. Viktor is shorter than Lars. Elin is taller than Anna. Anna is taller than Viktor. Lars is taller than Anna. Johan is shorter than Elin. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Elin",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-169",
+   "category": "stock",
+   "prompt": "A warehouse holds 766 boxes. Every day it ships 68 boxes and receives 34 new ones, at the end of the day. After how many days does it first hold fewer than 182 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 18,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-170",
+   "category": "price_chain",
+   "prompt": "A price starts at 1366 SEK. It rises by 20%, then falls by 25%, then rises by 11%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 1364.63,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-171",
+   "category": "missing_score",
+   "prompt": "5 test scores have an average of 66.4. 4 of them are 72, 51, 48, 64. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 97,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-172",
+   "category": "shop",
+   "prompt": "Notebooks cost 74 SEK each and pens cost 23 SEK each. Erik buys 8 notebooks and 10 pens. A coupon takes 20% off the total, and then 25% VAT is added to the discounted amount. How much does Erik pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 822.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-173",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 5 hours and pipe B fills it in 8 hours. Both pipes run together for 1.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 4.1,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-174",
+   "category": "date_add",
+   "prompt": "What is the date 252 days after 2026-06-30? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-03-09",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-175",
+   "category": "weekday",
+   "prompt": "2026-08-02 is a Sunday. Which day of the week is it 300 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Saturday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-176",
+   "category": "fuel",
+   "prompt": "A car uses 6.05 litres of fuel per 100 km. Fuel costs 16.59 SEK per litre. What does a trip of 277 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 447.34,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-177",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Johan is taller than Frida. Maja is taller than Frida. Emma is shorter than Oskar. Oskar is taller than Johan. Johan is shorter than Emma. Maja is shorter than Oskar. Oskar is taller than Frida. Maja is taller than Johan. Frida is shorter than Emma. Maja is taller than Emma. Nobody has the same height. Who is the 2nd tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Maja",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-178",
+   "category": "stock",
+   "prompt": "A warehouse holds 660 boxes. Every day it ships 54 boxes and receives 12 new ones, at the end of the day. After how many days does it first hold fewer than 149 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 13,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-179",
+   "category": "price_chain",
+   "prompt": "A price starts at 934 SEK. It rises by 9%, then falls by 31%, then rises by 12%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 786.76,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-180",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 76.5. 5 of them are 79, 98, 82, 79, 44. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 77,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-181",
+   "category": "shop",
+   "prompt": "Notebooks cost 77 SEK each and pens cost 13 SEK each. Gustav buys 6 notebooks and 3 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Gustav pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 532.31,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-182",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 6 hours and pipe B fills it in 11 hours. Both pipes run together for 1 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 8.17,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-183",
+   "category": "date_add",
+   "prompt": "What is the date 296 days after 2026-11-23? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-09-15",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-184",
+   "category": "weekday",
+   "prompt": "2026-10-12 is a Monday. Which day of the week is it 539 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Monday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-185",
+   "category": "fuel",
+   "prompt": "A car uses 7.15 litres of fuel per 100 km. Fuel costs 21.85 SEK per litre. What does a trip of 350 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 879.8,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-186",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Maria is taller than Ida. Ida is taller than Nils. Johan is taller than Ida. Johan is taller than Nils. Johan is taller than Sara. Sara is shorter than Ida. Maria is taller than Johan. Nils is shorter than Maria. Sara is taller than Nils. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Sara",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-187",
+   "category": "stock",
+   "prompt": "A warehouse holds 774 boxes. Every day it ships 58 boxes and receives 12 new ones, at the end of the day. After how many days does it first hold fewer than 160 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 14,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-188",
+   "category": "price_chain",
+   "prompt": "A price starts at 1970 SEK. It rises by 26%, then falls by 30%, then rises by 17%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 2032.92,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-189",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 69.0. 5 of them are 71, 87, 85, 52, 52. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 67,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-190",
+   "category": "shop",
+   "prompt": "Notebooks cost 86 SEK each and pens cost 22 SEK each. Elin buys 5 notebooks and 5 pens. A coupon takes 15% off the total, and then 25% VAT is added to the discounted amount. How much does Elin pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 573.75,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-191",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 6 hours and pipe B fills it in 7 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 5.92,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-192",
+   "category": "date_add",
+   "prompt": "What is the date 342 days after 2026-06-23? Give it as YYYY-MM-DD. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "2027-05-31",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-193",
+   "category": "weekday",
+   "prompt": "2026-09-14 is a Monday. Which day of the week is it 436 days later? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Wednesday",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-194",
+   "category": "fuel",
+   "prompt": "A car uses 5.47 litres of fuel per 100 km. Fuel costs 16.09 SEK per litre. What does a trip of 210 miles cost, if 1 mile = 1.609 km? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 297.38,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-195",
+   "category": "ordering",
+   "prompt": "Five people stand in a room. Linnea is shorter than Emma. Linnea is shorter than Lars. Lars is taller than Emma. Gustav is taller than Emma. Lars is taller than Gustav. Linnea is shorter than Frida. Frida is taller than Emma. Gustav is taller than Frida. Nobody has the same height. Who is the 4th tallest? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": "Emma",
+   "answer_type": "text"
+  },
+  {
+   "id": "A-196",
+   "category": "stock",
+   "prompt": "A warehouse holds 588 boxes. Every day it ships 54 boxes and receives 18 new ones, at the end of the day. After how many days does it first hold fewer than 113 boxes? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 14,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-197",
+   "category": "price_chain",
+   "prompt": "A price starts at 337 SEK. It rises by 6%, then falls by 40%, then rises by 24%. What is the final price in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 265.77,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-198",
+   "category": "missing_score",
+   "prompt": "6 test scores have an average of 74.5. 5 of them are 50, 67, 62, 82, 90. What is the remaining score? Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 96,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-199",
+   "category": "shop",
+   "prompt": "Notebooks cost 66 SEK each and pens cost 9 SEK each. Johan buys 4 notebooks and 8 pens. A coupon takes 10% off the total, and then 25% VAT is added to the discounted amount. How much does Johan pay, in SEK? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 378.0,
+   "answer_type": "number"
+  },
+  {
+   "id": "A-200",
+   "category": "pipes",
+   "prompt": "Pipe A fills a tank in 6 hours and pipe B fills it in 4 hours. Both pipes run together for 0.5 hours, then pipe A is closed. How many more hours does pipe B need to fill the tank? Round to 2 decimals. Show your working briefly, then end with a final line of the form 'Answer: <answer>'.",
+   "answer": 3.17,
+   "answer_type": "number"
+  }
+ ]
+}

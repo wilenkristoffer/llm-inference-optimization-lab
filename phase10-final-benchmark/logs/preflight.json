@@ -1,0 +1,248 @@
+{
+  "ollama_version": "ollama 0.40.11",
+  "models": {
+    "qwen2.5:1.5b": {
+      "installed": true,
+      "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+      "quantization": "Q4_K_M",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 3618,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "category": "SALES",
+          "email_id": "E-17"
+        },
+        "correct": false
+      }
+    },
+    "qwen2.5:3b": {
+      "installed": true,
+      "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+      "quantization": "Q4_K_M",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 3369,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    },
+    "qwen2.5:3b-instruct-q8_0": {
+      "installed": true,
+      "digest": "cd6aa8b25d7af6e11b3d06e0b5f318ab1cd6c9da19813f4bf21a33e1e278ce9a",
+      "quantization": "Q8_0",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 4517,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    },
+    "qwen2.5:7b": {
+      "installed": true,
+      "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "quantization": "Q4_K_M",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 5781,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    },
+    "qwen2.5:7b-instruct-q8_0": {
+      "installed": true,
+      "digest": "2d9500c948416525a044cc51a47a1ef93deb045aebf2f61e8d6b3ac3a3cf2290",
+      "quantization": "Q8_0",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 8533,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    },
+    "qwen2.5:14b": {
+      "installed": true,
+      "digest": "7cdf5a0187d5c58cc5d369b255592f7841d1c4696d45a8c8a9489440385b22f6",
+      "quantization": "Q4_K_M",
+      "family": "qwen2.5",
+      "tools": {
+        "wall_ms": 9911,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    },
+    "qwen3:14b": {
+      "installed": true,
+      "digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
+      "quantization": "Q4_K_M",
+      "family": "qwen3",
+      "tools": {
+        "wall_ms": 10232,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 148,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 1054,
+          "output_tokens": 415,
+          "wall_ms": 7997,
+          "correct": true
+        }
+      }
+    },
+    "qwen3.5:4b-bf16": {
+      "installed": true,
+      "digest": "530cc2ae9e8592f2f134589c8373f4e88b724b2e02bd46bae12bc62fe99580b5",
+      "quantization": "BF16",
+      "family": "qwen3.5",
+      "tools": {
+        "wall_ms": 10742,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 168,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 753,
+          "output_tokens": 274,
+          "wall_ms": 5143,
+          "correct": true
+        }
+      }
+    },
+    "gemma3:12b": {
+      "installed": true,
+      "digest": "f4031aab637d1ffa37b42570452ae0e4fad0314754d17ded67322e4b95836f8a",
+      "quantization": "Q4_K_M",
+      "family": "gemma3",
+      "tools": {
+        "wall_ms": 874,
+        "accepted": false,
+        "error": "registry.ollama.ai/library/gemma3:12b does not support tools"
+      }
+    },
+    "gemma4:12b": {
+      "installed": true,
+      "digest": "4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c",
+      "quantization": "Q4_K_M",
+      "family": "gemma4",
+      "tools": {
+        "wall_ms": 11932,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "category": "BILLING",
+          "email_id": "E-17"
+        },
+        "correct": true
+      }
+    },
+    "llama3.1:8b": {
+      "installed": true,
+      "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+      "quantization": "Q4_K_M",
+      "family": "llama3.1",
+      "tools": {
+        "wall_ms": 6502,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      }
+    }
+  },
+  "hf_cache": {
+    "qwen2.5-1.5b-instruct": true,
+    "qwen2.5-3b-instruct": true
+  },
+  "vllm_tools": {
+    "model": "qwen2.5-1.5b-instruct",
+    "startup_s": 52.2,
+    "n_calls": 1,
+    "content": "",
+    "name": "mail-categorize",
+    "arguments": {
+      "email_id": "E-17",
+      "category": "SALES"
+    },
+    "correct": false
+  }
+}

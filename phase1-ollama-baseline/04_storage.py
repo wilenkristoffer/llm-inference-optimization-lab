@@ -232,6 +232,21 @@ FIDELITY_MIGRATIONS = {
     "context_depth": "INTEGER",     # prompt tokens before the scored text
 }
 
+# The same for task_results (Phase 10: the final benchmark's suites). suite is
+# A-E; config names the serving setup ("default", "best"); think is 1/0 for
+# models that reason, NULL otherwise. score is partial credit in [0, 1]
+# beside the all-or-nothing `correct` (fields right, emails handled). turns
+# and the token counts are summed over an agent episode's requests.
+TASK_MIGRATIONS = {
+    "suite": "TEXT",
+    "config": "TEXT",
+    "think": "INTEGER",
+    "score": "REAL",
+    "turns": "INTEGER",
+    "input_tokens": "INTEGER",
+    "wall_ms": "REAL",
+}
+
 
 # Backends name identical weights differently:
 #
@@ -284,7 +299,8 @@ def canonical_model(name):
 
 def _migrate(conn):
     for table, columns in (("inference_runs", MIGRATIONS),
-                           ("fidelity_positions", FIDELITY_MIGRATIONS)):
+                           ("fidelity_positions", FIDELITY_MIGRATIONS),
+                           ("task_results", TASK_MIGRATIONS)):
         existing = {row["name"]
                     for row in conn.execute(f"PRAGMA table_info({table})")}
         for name, coltype in columns.items():
