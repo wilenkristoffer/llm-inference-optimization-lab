@@ -3,11 +3,15 @@
     "steps": [
       "detect",
       "preflight",
-      "quick"
+      "quick",
+      "quality",
+      "repeat",
+      "cost"
     ],
     "warnings": [
       "detect: Modelfile bundles a draft model (Ollama speculative decoding); nemotron's gained nothing alone and blocked batching",
-      "detect: loads a vision/audio projector, which takes VRAM the agent does not use"
+      "detect: loads a vision/audio projector, which takes VRAM the agent does not use",
+      "cost: 1 of 8 episodes change answer at NUM_PARALLEL 4 (batched decode; gemma4 broke this way)"
     ],
     "preflight": {
       "installed": true,
@@ -15,7 +19,7 @@
       "quantization": "Q4_K_M",
       "family": "gemma4",
       "tools": {
-        "wall_ms": 6808,
+        "wall_ms": 6822,
         "accepted": true,
         "n_calls": 1,
         "content": "",
@@ -32,7 +36,7 @@
           "content": "391",
           "thinking_chars": 0,
           "output_tokens": 4,
-          "wall_ms": 90,
+          "wall_ms": 97,
           "correct": true
         },
         "think_true": {
@@ -40,7 +44,110 @@
           "content": "391",
           "thinking_chars": 0,
           "output_tokens": 4,
-          "wall_ms": 96,
+          "wall_ms": 103,
+          "correct": true
+        }
+      }
+    }
+  },
+  "bonsai-2:27b": {
+    "steps": [
+      "detect",
+      "preflight",
+      "quick",
+      "quality",
+      "repeat",
+      "cost"
+    ],
+    "warnings": [
+      "detect: loads a vision projector, which takes VRAM the agent does not use",
+      "cost: Ollama forces -np 1 for architecture qwen35: NUM_PARALLEL only queues (like qwen3.5)",
+      "cost: fan-out buys little: 2.2 episodes/min at np4 vs 3.1 one at a time"
+    ],
+    "preflight": {
+      "installed": true,
+      "digest": "f3c4f42086593225d8be9bb4270658d0e05f5232fb2b5e8faa49ef74d2cc843a",
+      "quantization": "Q2_0",
+      "family": "qwen35",
+      "tools": {
+        "wall_ms": 9852,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 339,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 115,
+          "output_tokens": 63,
+          "wall_ms": 1409,
+          "correct": true
+        }
+      }
+    }
+  },
+  "bonsai-2:9b": {
+    "steps": [
+      "detect",
+      "preflight",
+      "quick",
+      "quality",
+      "repeat",
+      "cost"
+    ],
+    "warnings": [
+      "detect: Modelfile sets {'presence_penalty': '1'}; pinned to neutral here, so the agent must pin it too or it runs a different model",
+      "detect: loads a vision projector, which takes VRAM the agent does not use",
+      "cost: Ollama forces -np 1 for architecture qwen35: NUM_PARALLEL only queues (like qwen3.5)",
+      "cost: fan-out buys little: 6.3 episodes/min at np4 vs 8.5 one at a time"
+    ],
+    "preflight": {
+      "installed": true,
+      "digest": "c8b5462f8688647fe0b53568e3c00181ada5f05300aa4bf00695f2902f4d388e",
+      "quantization": "Q2_0",
+      "family": "qwen35",
+      "tools": {
+        "wall_ms": 4858,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 136,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 853,
+          "output_tokens": 351,
+          "wall_ms": 3243,
           "correct": true
         }
       }

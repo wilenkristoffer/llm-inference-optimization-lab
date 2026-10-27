@@ -1,0 +1,147 @@
+{
+  "models": {
+    "gemma4:e4b": {
+      "default": {
+        "n": 20,
+        "correct": 14,
+        "s_per_episode": 3.468506939999861,
+        "s_per_episode_median": 3.4078776500009553,
+        "s_per_turn": 0.29394126610168314,
+        "turns_per_episode": 11.8,
+        "out_tokens_per_episode": 401.95,
+        "wall_s": 69.37013879999722,
+        "episodes_per_min": 17.29850942722992,
+        "prefill_share": 0.2431384058899149,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 5506,
+          "shared_mb": 192,
+          "ollama_size_mb": 513,
+          "ollama_size_vram_mb": 513
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 5,
+        "s_per_episode": 9.497844299999997,
+        "s_per_episode_median": 9.565050899998823,
+        "s_per_turn": 0.7914870249999998,
+        "turns_per_episode": 12.0,
+        "out_tokens_per_episode": 390.125,
+        "wall_s": 22.26104530000157,
+        "episodes_per_min": 21.5623297797236,
+        "prefill_share": 0.2851835153551477,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 5946,
+          "shared_mb": 201,
+          "ollama_size_mb": 693,
+          "ollama_size_vram_mb": 693,
+          "runner_np": 4,
+          "ollama_draft": true,
+          "offloaded": [
+            "43/43",
+            "5/5"
+          ]
+        }
+      }
+    },
+    "bonsai-2:27b": {
+      "default": {
+        "n": 20,
+        "correct": 19,
+        "s_per_episode": 19.250899105000098,
+        "s_per_episode_median": 19.29021405000094,
+        "s_per_turn": 1.20695292194358,
+        "turns_per_episode": 15.95,
+        "out_tokens_per_episode": 673.35,
+        "wall_s": 385.01798210000203,
+        "episodes_per_min": 3.116737544191689,
+        "prefill_share": 0.20162859980669698,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9317,
+          "shared_mb": 180,
+          "ollama_size_mb": 8151,
+          "ollama_size_vram_mb": 8151
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 7,
+        "s_per_episode": 95.49329071250077,
+        "s_per_episode_median": 88.74059070000112,
+        "s_per_turn": 6.015325399212647,
+        "turns_per_episode": 15.875,
+        "out_tokens_per_episode": 669.125,
+        "wall_s": 219.81616900000154,
+        "episodes_per_min": 2.1836428238361147,
+        "prefill_share": 0.4648356520866469,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9317,
+          "shared_mb": 180,
+          "ollama_size_mb": 8151,
+          "ollama_size_vram_mb": 8151,
+          "runner_np": 1,
+          "ollama_draft": false,
+          "offloaded": [
+            "65/65"
+          ]
+        }
+      }
+    },
+    "bonsai-2:9b": {
+      "default": {
+        "n": 20,
+        "correct": 13,
+        "s_per_episode": 7.071377745000791,
+        "s_per_episode_median": 7.049870400001964,
+        "s_per_turn": 0.4461437063091982,
+        "turns_per_episode": 15.85,
+        "out_tokens_per_episode": 587.65,
+        "wall_s": 141.42755490001582,
+        "episodes_per_min": 8.484909470777154,
+        "prefill_share": 0.2414376819982438,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 3984,
+          "shared_mb": 164,
+          "ollama_size_mb": 2933,
+          "ollama_size_vram_mb": 2933
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 3,
+        "s_per_episode": 33.40327313749913,
+        "s_per_episode_median": 31.799594299998716,
+        "s_per_turn": 2.1208427388888333,
+        "turns_per_episode": 15.75,
+        "out_tokens_per_episode": 568.75,
+        "wall_s": 76.4266695999977,
+        "episodes_per_min": 6.2805301148437644,
+        "prefill_share": 0.4618413916383324,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 3984,
+          "shared_mb": 164,
+          "ollama_size_mb": 2933,
+          "ollama_size_vram_mb": 2933,
+          "runner_np": 1,
+          "ollama_draft": false,
+          "offloaded": [
+            "33/33"
+          ]
+        }
+      }
+    }
+  },
+  "ollama_version": "ollama 0.40.11"
+}

@@ -15,5 +15,37 @@
     ],
     "draft": true,
     "added": "2026-10-27"
+  },
+  "bonsai-2:27b": {
+    "quantization": "Q2_0",
+    "family": "qwen35",
+    "thinks": true,
+    "think_off": false,
+    "parameters": "26.9B",
+    "size_gb": 8.3,
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ],
+    "draft": false,
+    "added": "2026-10-27"
+  },
+  "bonsai-2:9b": {
+    "quantization": "Q2_0",
+    "family": "qwen35",
+    "thinks": true,
+    "think_off": false,
+    "parameters": "9.0B",
+    "size_gb": 3.2,
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ],
+    "draft": false,
+    "added": "2026-10-27"
   }
 }

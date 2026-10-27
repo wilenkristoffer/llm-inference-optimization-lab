@@ -7,26 +7,33 @@
 <line class="g" x1="70" x2="730" y1="178.0" y2="178.0"/><text class="t" x="62" y="182.0" text-anchor="end">60%</text>
 <line class="g" x1="70" x2="730" y1="103.99999999999999" y2="103.99999999999999"/><text class="t" x="62" y="107.99999999999999" text-anchor="end">80%</text>
 <line class="g" x1="70" x2="730" y1="30" y2="30"/><text class="t" x="62" y="34" text-anchor="end">100%</text>
-<line class="g" y1="30" y2="400" x1="152.97832040988527" x2="152.97832040988527"/><text class="t" x="152.97832040988527" y="418" text-anchor="middle">0.5</text>
-<line class="g" y1="30" y2="400" x1="265.5728852942418" x2="265.5728852942418"/><text class="t" x="265.5728852942418" y="418" text-anchor="middle">1</text>
-<line class="g" y1="30" y2="400" x1="378.1674501785983" x2="378.1674501785983"/><text class="t" x="378.1674501785983" y="418" text-anchor="middle">2</text>
-<line class="g" y1="30" y2="400" x1="527.0093688308473" x2="527.0093688308473"/><text class="t" x="527.0093688308473" y="418" text-anchor="middle">5</text>
-<line class="g" y1="30" y2="400" x1="639.6039337152037" x2="639.6039337152037"/><text class="t" x="639.6039337152037" y="418" text-anchor="middle">10</text>
+<line class="g" y1="30" y2="400" x1="144.95435777299406" x2="144.95435777299406"/><text class="t" x="144.95435777299406" y="418" text-anchor="middle">0.5</text>
+<line class="g" y1="30" y2="400" x1="246.66108379430372" x2="246.66108379430372"/><text class="t" x="246.66108379430372" y="418" text-anchor="middle">1</text>
+<line class="g" y1="30" y2="400" x1="348.36780981561344" x2="348.36780981561344"/><text class="t" x="348.36780981561344" y="418" text-anchor="middle">2</text>
+<line class="g" y1="30" y2="400" x1="482.8167883821943" x2="482.8167883821943"/><text class="t" x="482.8167883821943" y="418" text-anchor="middle">5</text>
+<line class="g" y1="30" y2="400" x1="584.523514403504" x2="584.523514403504"/><text class="t" x="584.523514403504" y="418" text-anchor="middle">10</text>
+<line class="g" y1="30" y2="400" x1="686.2302404248137" x2="686.2302404248137"/><text class="t" x="686.2302404248137" y="418" text-anchor="middle">20</text>
 <text class="t" x="400.0" y="445" text-anchor="middle">seconds per episode (log scale, one episode at a time)</text><text class="t" transform="translate(18 215.0) rotate(-90)" text-anchor="middle">suite D pass rate</text>
-<circle class="o" cx="583.4" cy="181.1" r="21.1"/>
-<circle class="o" cx="575.5" cy="363.0" r="19.4"/>
-<circle class="o" cx="657.3" cy="178.0" r="19.1"/>
-<circle class="o" cx="655.3" cy="310.6" r="19.0"/>
-<circle class="f" cx="675.3" cy="97.8" r="18.6"/>
-<circle class="f" cx="523.1" cy="134.8" r="18.1"/>
-<circle class="f" cx="668.0" cy="178.0" r="17.6"/>
-<circle class="o" cx="166.9" cy="400.0" r="6.0"/>
-<text class="l" x="485.7" y="185.1">gpt-oss:20b</text>
-<text class="l" x="413.5" y="367.0">qwen2.5:14b spec-0.5b</text>
-<text class="l" x="574.8" y="182.0">qwen3:14b</text>
-<text class="l" x="559.7" y="314.6">qwen2.5:14b</text>
-<text class="l" x="553.8" y="101.8">qwen3.5:4b-bf16</text>
-<text class="l" x="362.4" y="138.8">nemotron-3.5-bolt:e4b</text>
-<text class="l" x="580.5" y="196.0">gemma4:12b</text>
-<text class="l" x="176.9" y="404.0">qwen2.5:1.5b vllm-tuned</text>
+<circle class="o" cx="533.8" cy="181.1" r="21.1"/>
+<circle class="o" cx="526.6" cy="363.0" r="19.4"/>
+<circle class="o" cx="600.5" cy="178.0" r="19.1"/>
+<circle class="o" cx="598.7" cy="310.6" r="19.0"/>
+<circle class="f" cx="616.8" cy="97.8" r="18.6"/>
+<circle class="f" cx="680.6" cy="36.2" r="18.1"/>
+<circle class="o" cx="479.3" cy="134.8" r="18.1"/>
+<circle class="o" cx="610.2" cy="178.0" r="17.6"/>
+<circle class="f" cx="429.2" cy="100.9" r="13.9"/>
+<circle class="f" cx="533.7" cy="178.0" r="11.8"/>
+<circle class="o" cx="157.5" cy="400.0" r="6.0"/>
+<text class="l" x="436.1" y="185.1">gpt-oss:20b</text>
+<text class="l" x="364.7" y="367.0">qwen2.5:14b spec-0.5b</text>
+<text class="l" x="518.0" y="182.0">qwen3:14b</text>
+<text class="l" x="503.1" y="314.6">qwen2.5:14b</text>
+<text class="l" x="495.2" y="101.8">qwen3.5:4b-bf16</text>
+<text class="l" x="579.3" y="40.2">bonsai-2:27b</text>
+<text class="l" x="318.6" y="138.8">nemotron-3.5-bolt:e4b</text>
+<text class="l" x="522.7" y="196.0">gemma4:12b</text>
+<text class="l" x="345.2" y="104.9">gemma4:e4b</text>
+<text class="l" x="445.2" y="210.0">bonsai-2:9b</text>
+<text class="l" x="167.5" y="404.0">qwen2.5:1.5b vllm-tuned</text>
 <text class="t" x="70" y="18">Blue: Pareto front (pass rate, time, VRAM). Circle area: VRAM.</text></svg>

@@ -242,11 +242,15 @@ cannot do the task. Getting a current model under vLLM on gfx1101 is untested.
 
 | use | model | settings |
 |---|---|---|
-| one agent loop, correctness first | **qwen3.5:4b** (BF16 measured; Q8_0 the first thing to score) | Ollama, `think: false`, temperature 0, `num_ctx` 8192, pin `presence_penalty` 0 (its Modelfile sets 1.5) |
-| throughput, or latency per turn | **nemotron-3.5-bolt:e4b** | Ollama, `think: false`, same options; the bundled draft is dead weight but harmless one at a time |
-| several loops at once | no measured option on Ollama | qwen3.5 queues; nemotron's draft blocks batching; a Modelfile without the draft, or llama-server directly, is the next thing to try |
+| one agent loop, correctness first | **bonsai-2:27b** (Prism ML, Qwen3.5 27B in ternary weights, 9.1 GB) | Ollama, `think: false`, temperature 0, `num_ctx` 8192; 98% on D, ~19 s per episode |
+| throughput, or latency per turn | **gemma4:e4b** | same options; 81% on D at 3.5 s per episode, 5.4 GB; best correct episodes per hour (839) |
+| several loops at once | no measured option on Ollama | both qwen35-architecture models (qwen3.5, bonsai) are forced to one slot; gemma4:e4b gained 25% at np4 but changed 1 of 8 answers |
 
-Per turn that is 0.3-0.9 s against the 32B's ~53 s in Phase 7. For the
+The first table here was written before `evaluate.py` existed. It recommended
+qwen3.5:4b for correctness and nemotron-3.5-bolt:e4b for throughput. The
+tool's first three runs (below) replaced both picks the same day.
+
+Per turn that is 0.3-1.2 s against the 32B's ~53 s in Phase 7. For the
 agent's code, independent of model: return an error that lists the valid
 tool names on an unknown tool (gemma4 recovers with it), treat an empty reply
 with tokens generated as a dropped tool call, and set `think` explicitly.
@@ -298,9 +302,9 @@ with tokens generated as a dropped tool call, and set `think` explicitly.
 - Score the Q8_0 and Q4_K_M of qwen3.5:4b on D, and nemotron without its
   bundled draft, one at a time and at np4.
 - A current model on vLLM on this card.
-- Run `evaluate.py` on each new release that fits 16 GB. A first `--quick`
-  look at gemma4:e4b (installed, never scored) gave D 6/10. Like nemotron,
-  it ships with its own draft model.
+- Run `evaluate.py` on each new release that fits 16 GB. Out of reach for
+  now: qwen3.8:27b (18 GB at Q4_K_M) and flint (23 GB). If Prism ML ships a
+  ternary qwen3.8, it would fit.
 
 ## The evaluation tool
 
@@ -321,3 +325,34 @@ down to automating each trap this phase fell into by hand:
 Warnings go to `logs/eval.json` and print with the report. `--quick` (10 items
 per suite, run group `eval-quick`) is a first look in about two minutes, and it
 is kept out of the leaderboard.
+
+## First runs through the tool (2026-10-27)
+
+Three models went through the tool, all scored on the same footing as above:
+- gemma4:e4b, which had been installed all along and never scored;
+- Prism ML's bonsai-2:27b and bonsai-2:9b, which were pulled for this.
+
+| model | D (120) | flips | A | B | C | E | s/episode | VRAM GB | correct/hour |
+|---|---|---|---|---|---|---|---|---|---|
+| **bonsai-2:27b** | **98%** | 0 | 93 | 99 | 100 | 100 | 19.3 | 9.1 | 184 |
+| qwen3.5:4b-bf16 (previous leader) | 82% | 0 | 92 | 47 | 97 | 100 | 12.5 | 9.6 | 236 |
+| **gemma4:e4b** | 81% | 1 | 80 | 100 | 96 | 100 | 3.5 | 5.4 | **839** |
+| nemotron-3.5-bolt:e4b | 72% | 0 | 80 | 99 | 89 | 100 | 4.9 | 9.1 | 528 |
+| bonsai-2:9b | 60% | 0 | 87 | 99 | 91 | 98 | 7.1 | 3.9 | 305 |
+
+- **bonsai-2:27b fails 2 episodes in 120.** Every other model fails 19 or more.
+  - McNemar on the 60 episodes: 10 to 0 against both gemma4:e4b and qwen3.5 (p=0.002).
+  - It is Qwen3.5 27B at about 1.6 bits per weight. That fits on the GPU with room for the KV cache, which no 27B-32B at 4 bits does on 16 GB (Phase 7).
+  - The ternary kernels run on ROCm, but slowly: 1.2 s per turn.
+- **gemma4:e4b, the base model of nemotron-3.5-bolt, beats its NVIDIA tune.**
+  - It is better on D (81% vs 72%) and faster (3.5 vs 4.9 s).
+  - It ties qwen3.5 on D (4 episodes each way, p=1) at 3.5x the speed.
+- **bonsai-2:9b gains nothing over a plain 4-8B.** At 9B, ternary costs too much.
+- **What the tool caught:**
+  - It flagged each trap without being told:
+    - bonsai's Ollama runner forced to one slot (architecture qwen35, like qwen3.5);
+    - gemma4:e4b's bundled draft;
+    - one changed answer at np4.
+  - It also caught the 9b's Modelfile presence_penalty of 1.
+
+Full tables: `phase10-final-benchmark/logs/eval-report.md` and `logs/eval-pareto.svg`.

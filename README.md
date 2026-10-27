@@ -40,6 +40,8 @@ every message and then stop), one at a time on Ollama:
 
 | model | episodes fully right | s/episode | VRAM | correct/hour |
 |---|---|---|---|---|
+| bonsai-2:27b (ternary, via evaluate.py) | 98% | 19.3 | 9.1 GB | 184 |
+| gemma4:e4b (via evaluate.py) | 81% | 3.5 | 5.4 GB | 839 |
 | qwen3.5:4b (BF16) | 82% | 12.5 | 9.6 GB | 236 |
 | nemotron-3.5-bolt:e4b | 72% | 4.9 | 9.1 GB | 528 |
 | gpt-oss:20b, qwen3:14b, gemma4:12b | 59-62% | 7.1-11.9 | 8.6-12.4 GB | 181-301 |
@@ -50,8 +52,11 @@ A current 4B beats the previous generation's 14B by 57 points. qwen3.5 vs
 nemotron is not significant (p = 0.18, paired); both beat the 60% group. And
 running episodes in parallel gained nothing on Ollama for the good models:
 qwen3.5 is silently forced to one slot, nemotron's bundled draft model blocks
-batching, and gemma4's answers break under batched decode. See
-`docs/phase10.md`.
+batching, and gemma4's answers break under batched decode. The first two
+rows came from `evaluate.py` on the same day, and they show the point of
+the tool. bonsai-2:27b is a 27B in ternary weights that fits on the GPU,
+and it fails 2 episodes in 120. gemma4:e4b had been on disk all along and
+beats its own NVIDIA tune (nemotron). See `docs/phase10.md`.
 
 **Decode speed tracks memory bandwidth, and bigger models use the GPU better.**
 Same model family, Q4_K_M, single stream:
@@ -312,8 +317,9 @@ picks the model for the user's agent from five vendors' current releases.
 
 What the lab found, for running an agent on a 16 GB consumer AMD card:
 
-- **Pick the model first.** qwen3.5:4b (most accurate) or
-  nemotron-3.5-bolt:e4b (2.2x the correct episodes per hour) on Ollama with
+- **Pick the model first, and re-pick it with `evaluate.py` when new ones
+  ship.** bonsai-2:27b (98% of episodes) or gemma4:e4b (4.6x the correct
+  episodes per hour) on Ollama with
   `think: false`, temperature 0, `num_ctx` 8192. Phase 10.
 - **Fit it fully on the GPU.** A model that spills pages over PCIe on
   Windows: the 32B is ~10x slower per turn than the 14B, and no layer split
