@@ -170,8 +170,8 @@ def score_e(item, content, prompt_tokens, num_ctx):
 class OllamaBackend:
     name = "ollama"
 
-    def __init__(self, model, think):
-        self.model = model
+    def __init__(self, model, think, base=common.OLLAMA):
+        self.model, self.base = model, base
         self.think = None if think is None else common.think_value(model, think)
         self.version = common.ollama_version()
         self.digest = common.ollama_tags().get(model)
@@ -191,7 +191,7 @@ class OllamaBackend:
                 msgs.append({"role": m["role"], "content": m["content"]})
         t0 = time.perf_counter()
         r = common.ollama_chat(self.model, msgs, tools=tools, think=self.think,
-                               num_predict=num_predict, num_ctx=num_ctx)
+                               num_predict=num_predict, num_ctx=num_ctx, base=self.base)
         wall = (time.perf_counter() - t0) * 1000
         if "error" in r:
             return {"error": r["error"], "wall_ms": wall}
@@ -207,11 +207,13 @@ class OllamaBackend:
         return {"content": content, "thinking": msg.get("thinking") or "",
                 "tool_calls": calls, "empty_output": empty,
                 "input_tokens": r.get("prompt_eval_count"),
-                "output_tokens": r.get("eval_count"), "wall_ms": wall}
+                "output_tokens": r.get("eval_count"), "wall_ms": wall,
+                "prefill_ms": r.get("prompt_eval_duration", 0) / 1e6,
+                "decode_ms": r.get("eval_duration", 0) / 1e6}
 
     def close(self):
         common.ollama_chat(self.model, [{"role": "user", "content": "x"}], num_predict=1,
-                           keep_alive=0)
+                           keep_alive=0, base=self.base)
 
 
 class QwenRawBackend(OllamaBackend):
@@ -301,6 +303,7 @@ class VllmBackend:
     def __init__(self, model, think):
         p9 = common.p9
         self.model, self.think, self.p9 = model, None, p9
+        self.url = p9.VLLM_URL
         self.version = p9.vllm_version()
         self.digest, self.quant = None, "FP16"
         self.server = p9.VllmServer(model, gpu_fraction=0.75, max_len=E_NUM_CTX + 2048,
@@ -326,7 +329,7 @@ class VllmBackend:
             body["tools"] = tools
         t0 = time.perf_counter()
         try:
-            r = self.p9._post(self.p9.VLLM_URL + "/v1/chat/completions", body)
+            r = self.p9._post(self.url + "/v1/chat/completions", body)
         except urllib.error.HTTPError as e:
             return {"error": e.read().decode("utf-8", "replace")[:300],
                     "wall_ms": (time.perf_counter() - t0) * 1000}
@@ -340,9 +343,10 @@ class VllmBackend:
                 args = c["function"]["arguments"]
             calls.append({"id": c["id"], "name": c["function"]["name"], "arguments": args})
         u = r.get("usage") or {}
+        t = r.get("timings") or {}      # llama-server only; vLLM has no split
         return {"content": msg.get("content") or "", "thinking": "", "tool_calls": calls,
                 "input_tokens": u.get("prompt_tokens"), "output_tokens": u.get("completion_tokens"),
-                "wall_ms": wall}
+                "wall_ms": wall, "prefill_ms": t.get("prompt_ms"), "decode_ms": t.get("predicted_ms")}
 
     def close(self):
         self.server.__exit__(None, None, None)

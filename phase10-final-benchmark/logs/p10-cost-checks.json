@@ -1,0 +1,76 @@
+{
+  "gemma4_np4_sequential": {
+    "n": 8,
+    "correct": 5,
+    "episodes_with_get_unread": 8,
+    "per_episode": {
+      "D-001": 1,
+      "D-002": 1,
+      "D-003": 0,
+      "D-004": 1,
+      "D-005": 1,
+      "D-006": 1,
+      "D-007": 0,
+      "D-008": 0
+    }
+  },
+  "decode": {
+    "qwen2.5:3b": {
+      "c1": {
+        "aggregate_tok_s": 150.4526469751555,
+        "per_request_tok_s": 154.4721601824739
+      },
+      "c4": {
+        "aggregate_tok_s": 395.75993727792616,
+        "per_request_tok_s": 104.21353295828153
+      },
+      "scaling": 2.630461778072131
+    },
+    "qwen3.5:4b-bf16": {
+      "c1": {
+        "aggregate_tok_s": 53.20635882127094,
+        "per_request_tok_s": 54.41007225105454
+      },
+      "c4": {
+        "aggregate_tok_s": 160.375209496657,
+        "per_request_tok_s": 41.621385613411945
+      },
+      "scaling": 3.014211328299765
+    },
+    "qwen3.5:4b-q8_0": {
+      "c1": {
+        "aggregate_tok_s": 76.94142757688228,
+        "per_request_tok_s": 78.85518064149666
+      },
+      "c4": {
+        "aggregate_tok_s": 265.11547876203196,
+        "per_request_tok_s": 69.70513023385163
+      },
+      "scaling": 3.4456792278401682
+    },
+    "nemotron no draft": {
+      "c1": {
+        "aggregate_tok_s": 93.52673840145415,
+        "per_request_tok_s": 96.46553965355984
+      },
+      "c4": {
+        "aggregate_tok_s": 271.0233577317157,
+        "per_request_tok_s": 71.01786192741025
+      },
+      "scaling": 2.8978168421566792
+    },
+    "nemotron + draft": {
+      "c1": {
+        "aggregate_tok_s": 91.3501538464917,
+        "per_request_tok_s": 94.60181802810348,
+        "draft_accept": 0.22745098039215686
+      },
+      "c4": {
+        "aggregate_tok_s": 98.7213026862133,
+        "per_request_tok_s": 31.583833620766498,
+        "draft_accept": 0.06878306878306878
+      },
+      "scaling": 1.08069114861162
+    }
+  }
+}

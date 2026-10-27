@@ -3,9 +3,9 @@ Phase 10 helpers: the candidate list and the Ollama chat call every suite
 uses. Servers, streaming clients and the TunableOp env come from Phase 9's
 common.py rather than being copied.
 
-Only models already on disk take part (decided 2026-10-26: nothing is
-downloaded for this phase). A candidate that has gone missing is dropped by
-01_preflight.py, not pulled.
+Only models already on disk take part (decided 2026-10-26), apart from the
+three non-Qwen/Llama models the user chose on 2026-10-27. A candidate that
+has gone missing is dropped by 01_preflight.py, not pulled.
 """
 
 import importlib.util
@@ -76,11 +76,12 @@ OPTIONS = {"temperature": 0, "seed": 42, "repeat_penalty": 1.0,
 
 
 def ollama_chat(model, messages, tools=None, think=None, num_predict=512,
-                keep_alive=None, timeout=600, num_ctx=None):
+                keep_alive=None, timeout=600, num_ctx=None, base=OLLAMA):
     """Native /api/chat, not streamed. Returns the parsed response, or
     {"error": <text>, "status": <code>} when Ollama refuses the request -
     a model without tool support is refused this way, and that is a result,
-    not a crash. num_ctx overrides the pinned 8192 (suite E only)."""
+    not a crash. num_ctx overrides the pinned 8192 (suite E only); base is
+    another Ollama, e.g. a side server with its own NUM_PARALLEL."""
     options = {**OPTIONS, "num_predict": num_predict}
     if num_ctx:
         options["num_ctx"] = num_ctx
@@ -91,7 +92,7 @@ def ollama_chat(model, messages, tools=None, think=None, num_predict=512,
         body["think"] = think
     if keep_alive is not None:
         body["keep_alive"] = keep_alive
-    req = urllib.request.Request(OLLAMA + "/api/chat", json.dumps(body).encode(),
+    req = urllib.request.Request(base + "/api/chat", json.dumps(body).encode(),
                                  {"Content-Type": "application/json"})
     try:
         return json.load(urllib.request.urlopen(req, timeout=timeout))

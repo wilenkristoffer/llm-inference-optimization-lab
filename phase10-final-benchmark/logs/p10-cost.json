@@ -1,0 +1,440 @@
+{
+  "models": {
+    "qwen3.5:4b-bf16": {
+      "default": {
+        "n": 20,
+        "correct": 15,
+        "s_per_episode": 12.460991869999907,
+        "s_per_episode_median": 12.739258550000159,
+        "s_per_turn": 0.8932610659498141,
+        "turns_per_episode": 13.95,
+        "out_tokens_per_episode": 576.9,
+        "wall_s": 249.2198373999982,
+        "episodes_per_min": 4.815026012853055,
+        "prefill_share": 0.11360470397706783,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9804,
+          "shared_mb": 140,
+          "ollama_size_mb": 8717,
+          "ollama_size_vram_mb": 8717
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 4,
+        "s_per_episode": 47.663804862499774,
+        "s_per_episode_median": 47.3234293000005,
+        "s_per_turn": 3.666446527884598,
+        "turns_per_episode": 13.0,
+        "out_tokens_per_episode": 570.625,
+        "wall_s": 106.15384599999925,
+        "episodes_per_min": 4.52173913698806,
+        "prefill_share": 0.1956209618205298,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9804,
+          "shared_mb": 140,
+          "ollama_size_mb": 8717,
+          "ollama_size_vram_mb": 8717,
+          "runner_np": 1,
+          "ollama_draft": false,
+          "offloaded": [
+            "34/34"
+          ]
+        }
+      },
+      "np16": {
+        "n": 32,
+        "correct": 24,
+        "s_per_episode": 197.54389822812482,
+        "s_per_episode_median": 204.04297105000023,
+        "s_per_turn": 13.653141994168454,
+        "turns_per_episode": 14.46875,
+        "out_tokens_per_episode": 576.375,
+        "wall_s": 443.1392810999987,
+        "episodes_per_min": 4.332723551913542,
+        "prefill_share": 0.21154232387425972,
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9804,
+          "shared_mb": 140,
+          "ollama_size_mb": 8717,
+          "ollama_size_vram_mb": 8717,
+          "runner_np": 1,
+          "ollama_draft": false,
+          "offloaded": [
+            "34/34"
+          ]
+        }
+      }
+    },
+    "nemotron-3.5-bolt:e4b": {
+      "default": {
+        "n": 20,
+        "correct": 14,
+        "s_per_episode": 4.88184563000068,
+        "s_per_episode_median": 4.696860550000565,
+        "s_per_turn": 0.3051153518750425,
+        "turns_per_episode": 16.0,
+        "out_tokens_per_episode": 400.7,
+        "wall_s": 97.6369126000136,
+        "episodes_per_min": 12.29043368993043,
+        "prefill_share": 0.268395999101018,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9296,
+          "shared_mb": 282,
+          "ollama_size_mb": 1102,
+          "ollama_size_vram_mb": 1102
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 4,
+        "s_per_episode": 17.6062122000003,
+        "s_per_episode_median": 17.54464410000037,
+        "s_per_turn": 1.1003882625000188,
+        "turns_per_episode": 16.0,
+        "out_tokens_per_episode": 390.75,
+        "wall_s": 41.612664099997346,
+        "episodes_per_min": 11.534950005761122,
+        "prefill_share": 0.1887825724302726,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9815,
+          "shared_mb": 305,
+          "ollama_size_mb": 1222,
+          "ollama_size_vram_mb": 1222,
+          "runner_np": 4,
+          "ollama_draft": true,
+          "offloaded": [
+            "43/43",
+            "6/6"
+          ]
+        }
+      },
+      "np16": {
+        "n": 32,
+        "correct": 19,
+        "s_per_episode": 107.78506913437491,
+        "s_per_episode_median": 99.85704305000036,
+        "s_per_turn": 6.816447059881417,
+        "turns_per_episode": 15.8125,
+        "out_tokens_per_episode": 392.9375,
+        "wall_s": 332.1093295999999,
+        "episodes_per_min": 5.781228736670819,
+        "prefill_share": 0.09686018044745691,
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10484,
+          "shared_mb": 216,
+          "ollama_size_mb": 1483,
+          "ollama_size_vram_mb": 1483,
+          "runner_np": 16,
+          "ollama_draft": true,
+          "offloaded": [
+            "43/43",
+            "6/6"
+          ]
+        }
+      }
+    },
+    "gpt-oss:20b": {
+      "default": {
+        "n": 20,
+        "correct": 12,
+        "s_per_episode": 7.076975089999723,
+        "s_per_episode_median": 6.954283799999757,
+        "s_per_turn": 0.4625473915032499,
+        "turns_per_episode": 15.3,
+        "out_tokens_per_episode": 556.8,
+        "wall_s": 141.53950179999447,
+        "episodes_per_min": 8.478198557570781,
+        "prefill_share": 0.12608170680246236,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12671,
+          "shared_mb": 116,
+          "ollama_size_mb": 12153,
+          "ollama_size_vram_mb": 12153
+        }
+      },
+      "np4": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12534,
+          "shared_mb": 884,
+          "ollama_size_mb": 12207,
+          "ollama_size_vram_mb": 12207,
+          "runner_np": 4,
+          "ollama_draft": false,
+          "offloaded": [
+            "25/25"
+          ]
+        }
+      },
+      "np16": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12062,
+          "shared_mb": 3424,
+          "ollama_size_mb": 13167,
+          "ollama_size_vram_mb": 12019,
+          "runner_np": 16,
+          "ollama_draft": false,
+          "offloaded": [
+            "25/25"
+          ]
+        }
+      }
+    },
+    "qwen3:14b": {
+      "default": {
+        "n": 20,
+        "correct": 13,
+        "s_per_episode": 11.148432474999755,
+        "s_per_episode_median": 11.677577450000172,
+        "s_per_turn": 0.7011592751572172,
+        "turns_per_episode": 15.9,
+        "out_tokens_per_episode": 489.55,
+        "wall_s": 222.96864949999508,
+        "episodes_per_min": 5.381922537948666,
+        "prefill_share": 0.12685966160566378,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10326,
+          "shared_mb": 179,
+          "ollama_size_mb": 10003,
+          "ollama_size_vram_mb": 10003
+        }
+      },
+      "np4": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12465,
+          "shared_mb": 1689,
+          "ollama_size_mb": 13693,
+          "ollama_size_vram_mb": 13693,
+          "runner_np": 4,
+          "ollama_draft": false,
+          "offloaded": [
+            "41/41"
+          ]
+        }
+      },
+      "np16": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12470,
+          "shared_mb": 2568,
+          "ollama_size_mb": 29950,
+          "ollama_size_vram_mb": 14632,
+          "runner_np": 16,
+          "ollama_draft": false,
+          "offloaded": [
+            "20/41"
+          ]
+        }
+      }
+    },
+    "gemma4:12b": {
+      "default": {
+        "n": 20,
+        "correct": 14,
+        "s_per_episode": 11.913725400000112,
+        "s_per_episode_median": 11.618725950000226,
+        "s_per_turn": 0.7736185324675398,
+        "turns_per_episode": 15.4,
+        "out_tokens_per_episode": 432.2,
+        "wall_s": 238.27450800000224,
+        "episodes_per_min": 5.036208069727663,
+        "prefill_share": 0.30119099428208446,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 8777,
+          "shared_mb": 165,
+          "ollama_size_mb": 7983,
+          "ollama_size_vram_mb": 7983
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 1,
+        "s_per_episode": 17.671872199999143,
+        "s_per_episode_median": 4.816847500000222,
+        "s_per_turn": 2.280241574193438,
+        "turns_per_episode": 7.75,
+        "out_tokens_per_episode": 182.5,
+        "wall_s": 56.680116600000474,
+        "episodes_per_min": 8.46857820331294,
+        "prefill_share": 0.3177678946151956,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 11052,
+          "shared_mb": 105,
+          "ollama_size_mb": 9903,
+          "ollama_size_vram_mb": 9903,
+          "runner_np": 4,
+          "ollama_draft": false,
+          "offloaded": [
+            "49/49"
+          ]
+        }
+      },
+      "np16": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12668,
+          "shared_mb": 2835,
+          "ollama_size_mb": 14204,
+          "ollama_size_vram_mb": 12989,
+          "runner_np": 16,
+          "ollama_draft": false,
+          "offloaded": [
+            "42/49"
+          ]
+        }
+      }
+    },
+    "qwen2.5:14b": {
+      "default": {
+        "n": 20,
+        "correct": 4,
+        "s_per_episode": 11.013796364999688,
+        "s_per_episode_median": 8.570297699998264,
+        "s_per_turn": 1.4883508601350932,
+        "turns_per_episode": 7.4,
+        "out_tokens_per_episode": 513.1,
+        "wall_s": 220.27592729999378,
+        "episodes_per_min": 5.447712851371725,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10232,
+          "shared_mb": 175,
+          "ollama_size_mb": 9942,
+          "ollama_size_vram_mb": 9942
+        }
+      },
+      "spec-0.5b": {
+        "n": 20,
+        "correct": 2,
+        "s_per_episode": 6.739561730000605,
+        "s_per_episode_median": 6.650417300001209,
+        "s_per_turn": 1.1326994504202699,
+        "turns_per_episode": 5.95,
+        "out_tokens_per_episode": 391.2,
+        "wall_s": 134.7912346000121,
+        "episodes_per_min": 8.90265604852537,
+        "prefill_share": 0.09945535175780122,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10677,
+          "shared_mb": 144
+        }
+      },
+      "np4": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12543,
+          "shared_mb": 2304,
+          "ollama_size_mb": 14421,
+          "ollama_size_vram_mb": 14421,
+          "runner_np": 4,
+          "ollama_draft": false,
+          "offloaded": [
+            "49/49"
+          ]
+        }
+      },
+      "np16": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 16,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12644,
+          "shared_mb": 2298,
+          "ollama_size_mb": 33761,
+          "ollama_size_vram_mb": 14571,
+          "runner_np": 16,
+          "ollama_draft": false,
+          "offloaded": [
+            "21/49"
+          ]
+        }
+      }
+    },
+    "qwen2.5:1.5b": {
+      "vllm-tuned": {
+        "n": 20,
+        "correct": 0,
+        "s_per_episode": 0.5447214849997181,
+        "s_per_episode_median": 0.5785598999991635,
+        "s_per_turn": 0.24209843777765247,
+        "turns_per_episode": 2.25,
+        "out_tokens_per_episode": 74.85,
+        "wall_s": 10.894742200001929,
+        "episodes_per_min": 110.14487336834713,
+        "concurrency": 1,
+        "vram": {
+          "note": "vLLM runs in WSL: 0.75 of 16 GB by --gpu-memory-utilization"
+        }
+      },
+      "vllm-c4": {
+        "n": 8,
+        "correct": 0,
+        "s_per_episode": 0.5738363749997006,
+        "s_per_episode_median": 0.4607970999986719,
+        "s_per_turn": 0.2869181874998503,
+        "turns_per_episode": 2.0,
+        "out_tokens_per_episode": 69.5,
+        "wall_s": 1.288186300000234,
+        "episodes_per_min": 372.6169110787103,
+        "concurrency": 4,
+        "vram": {
+          "note": "vLLM runs in WSL: 0.75 of 16 GB by --gpu-memory-utilization"
+        }
+      },
+      "vllm-c16": {
+        "n": 32,
+        "correct": 0,
+        "s_per_episode": 0.8417797562500482,
+        "s_per_episode_median": 0.7648302500001591,
+        "s_per_turn": 0.38481360285716487,
+        "turns_per_episode": 2.1875,
+        "out_tokens_per_episode": 69.875,
+        "wall_s": 2.1431598000017402,
+        "episodes_per_min": 895.8734668308173,
+        "concurrency": 16,
+        "vram": {
+          "note": "vLLM runs in WSL: 0.75 of 16 GB by --gpu-memory-utilization"
+        }
+      }
+    }
+  },
+  "ollama_version": "ollama 0.40.11"
+}

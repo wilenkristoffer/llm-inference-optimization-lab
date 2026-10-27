@@ -27,6 +27,9 @@ env/
 scratch/
 tmp/
 
+# Model weights made locally (e.g. a llama-quantize copy for a check)
+*.gguf
+
 # Editors / OS
 .vscode/
 .idea/
