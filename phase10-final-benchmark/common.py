@@ -46,9 +46,24 @@ CANDIDATES = {
     "qwen3:14b": ("Q4_K_M", "qwen3", True),
     "qwen3.5:4b-bf16": ("BF16", "qwen3.5", True),
     "gemma3:12b": ("Q4_K_M", "gemma3", False),
-    "gemma4:12b": ("Q4_K_M", "gemma4", False),
+    "gemma4:12b": ("Q4_K_M", "gemma4", True),
     "llama3.1:8b": ("Q4_K_M", "llama3.1", False),
+    # Added 2026-10-27: non-Qwen/Llama models that fit 16 GB with tool support.
+    "gpt-oss:20b": ("MXFP4", "gpt-oss", True),
+    "nemotron-3.5-bolt:e4b": ("Q4_K_M", "nemotron3.5", True),
+    "ministral-3:14b": ("Q4_K_M", "ministral3", False),
 }
+
+# Models that cannot stop reasoning: Ollama takes a level, not false, so
+# "think off" means the lowest level, and the budget must leave room for it.
+THINK_OFF = {"gpt-oss:20b": "low"}
+
+
+def think_value(model, on):
+    """The request's think field for a model that reasons by default."""
+    if on:
+        return True
+    return THINK_OFF.get(model, False)
 
 # vLLM's FP16 twins, already in WSL's HF cache (Phase 9). Served with TunableOp.
 VLLM_CANDIDATES = ["qwen2.5-1.5b-instruct", "qwen2.5-3b-instruct"]

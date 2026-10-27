@@ -227,6 +227,91 @@
         },
         "correct": true
       }
+    },
+    "gpt-oss:20b": {
+      "installed": true,
+      "digest": "f38aa0c53da5f8c49d08c43a99df24ff53167fe68e24664a7777288e7656fdfe",
+      "quantization": "MXFP4",
+      "family": "gpt-oss",
+      "tools": {
+        "wall_ms": 12881,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "category": "invoice",
+          "email_id": "E-17"
+        },
+        "correct": false
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 20,
+          "output_tokens": 20,
+          "wall_ms": 285,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 137,
+          "output_tokens": 65,
+          "wall_ms": 750,
+          "correct": true
+        }
+      }
+    },
+    "nemotron-3.5-bolt:e4b": {
+      "installed": true,
+      "digest": "69f2be39b309ade35ef04ee02507915f4cd839f6631e14425146cb6c9df3bd39",
+      "quantization": "Q4_K_M",
+      "family": "nemotron3.5",
+      "tools": {
+        "wall_ms": 9692,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "category": "BILLING",
+          "email_id": "E-17"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 121,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 287,
+          "output_tokens": 154,
+          "wall_ms": 859,
+          "correct": true
+        }
+      }
+    },
+    "ministral-3:14b": {
+      "installed": true,
+      "digest": "4760c35aeb9d9e9c6174c2492562c0b999e80a222804fd96b1915ab72bbcdcf7",
+      "quantization": "Q4_K_M",
+      "family": "ministral3",
+      "tools": {
+        "wall_ms": 9067,
+        "accepted": true,
+        "n_calls": 0,
+        "content": "mail-categorize[ARGS]{\"email_id\": \"E-17\", \"category\": \"BILLING\"}",
+        "correct": false
+      }
     }
   },
   "hf_cache": {

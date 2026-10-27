@@ -22,6 +22,7 @@ model can't do.
 Usage:
     python 01_preflight.py
     python 01_preflight.py --vllm
+    python 01_preflight.py --models gpt-oss:20b ministral-3:14b
 """
 
 import argparse
@@ -78,7 +79,8 @@ def check_think(model):
     out = {}
     for think in (False, True):
         t0 = time.perf_counter()
-        r = common.ollama_chat(model, THINK_PROMPT, think=think, num_predict=2048)
+        r = common.ollama_chat(model, THINK_PROMPT, think=common.think_value(model, think),
+                               num_predict=2048)
         msg = r.get("message", {})
         out[f"think_{str(think).lower()}"] = {
             "error": r.get("error"),
@@ -92,7 +94,7 @@ def check_think(model):
 
 
 def _think_off(model):
-    return False if common.CANDIDATES[model][2] else None
+    return common.think_value(model, False) if common.CANDIDATES[model][2] else None
 
 
 def check_vllm():
@@ -126,12 +128,22 @@ def hf_cached(repo):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--vllm", action="store_true", help="also check vLLM's tool parser")
+    ap.add_argument("--models", nargs="+",
+                    help="check only these; entries for other models are kept")
     args = ap.parse_args()
 
-    report = {"ollama_version": common.ollama_version(), "models": {}}
+    path = os.path.join(common.LOG_DIR, "preflight.json")
+    old = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+    report = {"ollama_version": common.ollama_version(),
+              "models": dict(old.get("models", {})) if args.models else {}}
     print(report["ollama_version"])
     tags = common.ollama_tags()
     for model, (quant, family, thinks) in common.CANDIDATES.items():
+        if args.models and model not in args.models:
+            continue
         if model not in tags:
             print(f"{model:28} MISSING - dropped")
             report["models"][model] = {"installed": False}
@@ -160,12 +172,8 @@ def main():
         print("vLLM tools:", report["vllm_tools"])
 
     os.makedirs(common.LOG_DIR, exist_ok=True)
-    path = os.path.join(common.LOG_DIR, "preflight.json")
-    if os.path.exists(path) and not args.vllm:
-        with open(path, encoding="utf-8") as f:
-            old = json.load(f)
-        if "vllm_tools" in old:
-            report["vllm_tools"] = old["vllm_tools"]
+    if not args.vllm and "vllm_tools" in old:
+        report["vllm_tools"] = old["vllm_tools"]
     with open(path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
     print("wrote", path)

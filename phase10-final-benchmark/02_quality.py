@@ -171,7 +171,8 @@ class OllamaBackend:
     name = "ollama"
 
     def __init__(self, model, think):
-        self.model, self.think = model, think
+        self.model = model
+        self.think = None if think is None else common.think_value(model, think)
         self.version = common.ollama_version()
         self.digest = common.ollama_tags().get(model)
         self.quant = common.CANDIDATES[model][0]
@@ -424,7 +425,7 @@ def run_model(conn, model, args, suites):
             print(f"  {model} {suite}: {len(todo)} to run ({len(items) - len(todo)} stored)")
             right, t0 = 0, time.perf_counter()
             for n, item in enumerate(todo, 1):
-                res = run_item(backend, suite, item, think_on)
+                res = run_item(backend, suite, item, think_on or model in common.THINK_OFF)
                 right += res["correct"]
                 common.storage.record_rows(conn, "task_results", [{
                     "run_group": args.run_group, "backend": backend.name,
