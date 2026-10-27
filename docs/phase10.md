@@ -355,4 +355,9 @@ Three models went through the tool, all scored on the same footing as above:
     - one changed answer at np4.
   - It also caught the 9b's Modelfile presence_penalty of 1.
 
-Full tables: `phase10-final-benchmark/logs/eval-report.md` and `logs/eval-pareto.svg`.
+![Pareto chart with the evaluated models](eval-pareto.svg)
+
+The front now runs gemma4:e4b (fastest), qwen3.5 and bonsai-2:27b (most accurate),
+plus bonsai-2:9b, which is on it only for its 3.9 GB. Full tables:
+`phase10-final-benchmark/logs/eval-report.md`. `evaluate.py --report`
+redraws the chart in `logs/eval-pareto.svg`; copy it here after new runs.

@@ -245,17 +245,33 @@ def svg(pts, path=SVG_PATH):
                'seconds per episode (log scale, one episode at a time)</text>'
                f'<text class="t" transform="translate(18 {(T + H - B) / 2}) rotate(-90)" '
                'text-anchor="middle">suite D pass rate</text>')
+    pts = sorted(pts, key=lambda p: -(p["vram_gb"] or 0))
+    circles = [(X(p["s_ep"]), Y(p["pass"]), 6 * math.sqrt(p["vram_gb"] or 1)) for p in pts]
+
+    def clear(box, own):
+        """True when a label box (x1, y1, x2, y2) misses every other circle and label."""
+        x1, y1, x2, y2 = box
+        if x1 < L or x2 > W - R or y1 < T - 6 or y2 > H - B + 6:
+            return False
+        for i, (cx, cy, r) in enumerate(circles):
+            dx, dy = max(x1 - cx, 0, cx - x2), max(y1 - cy, 0, cy - y2)
+            if i != own and dx * dx + dy * dy < r * r:
+                return False
+        return not any(x1 < b[2] and b[0] < x2 and y1 < b[3] and b[1] < y2 for b in placed)
+
     labels, placed = [], []              # label boxes so close points don't overprint
-    for p in sorted(pts, key=lambda p: -(p["vram_gb"] or 0)):
-        r = 6 * math.sqrt(p["vram_gb"] or 1)
+    for i, p in enumerate(pts):
+        cx, cy, r = circles[i]
         label = p["model"] + ("" if p["config"] == "default" else " " + p["config"])
-        cx, cy = X(p["s_ep"]), Y(p["pass"])
         w = 6.6 * len(label)
-        tx = cx - r - 4 - w if cx > (L + W - R) / 2 else cx + r + 4
-        ty = cy + 4
-        while any(abs(ty - y) < 14 and tx < x2 and x1 < tx + w for x1, x2, y in placed):
-            ty += 14
-        placed.append((tx, tx + w, ty))
+        sides = [cx - r - 4 - w, cx + r + 4]
+        if cx < (L + W - R) / 2:
+            sides.reverse()
+        # both sides at the circle's height first, then stepping away from it
+        tries = [(tx, cy + 4 + dy) for dy in (0, -14, 14, -28, 28, -42, 42) for tx in sides]
+        tx, ty = next(((tx, ty) for tx, ty in tries if clear((tx, ty - 11, tx + w, ty + 3), i)),
+                      tries[0])
+        placed.append((tx, ty - 11, tx + w, ty + 3))
         out.append(f'<circle class="{"f" if p["front"] else "o"}" cx="{cx:.1f}" '
                    f'cy="{cy:.1f}" r="{r:.1f}"/>')
         labels.append(f'<text class="l" x="{tx:.1f}" y="{ty:.1f}">{label}</text>')
