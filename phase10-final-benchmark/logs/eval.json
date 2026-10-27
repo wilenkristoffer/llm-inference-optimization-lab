@@ -1,0 +1,49 @@
+{
+  "gemma4:e4b": {
+    "steps": [
+      "detect",
+      "preflight",
+      "quick"
+    ],
+    "warnings": [
+      "detect: Modelfile bundles a draft model (Ollama speculative decoding); nemotron's gained nothing alone and blocked batching",
+      "detect: loads a vision/audio projector, which takes VRAM the agent does not use"
+    ],
+    "preflight": {
+      "installed": true,
+      "digest": "dc35e8d9c6061baa6f0fa870975ab6932e2542b579b13ea0f199fa4bb7300c9c",
+      "quantization": "Q4_K_M",
+      "family": "gemma4",
+      "tools": {
+        "wall_ms": 6808,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "category": "BILLING",
+          "email_id": "E-17"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 90,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 96,
+          "correct": true
+        }
+      }
+    }
+  }
+}

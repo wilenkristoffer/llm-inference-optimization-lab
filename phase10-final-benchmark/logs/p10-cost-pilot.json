@@ -1,0 +1,136 @@
+{
+  "models": {
+    "nemotron-3.5-bolt:e4b": {
+      "default": {
+        "n": 2,
+        "correct": 2,
+        "s_per_episode": 4.010132899999917,
+        "s_per_episode_median": 4.010132899999917,
+        "s_per_turn": 0.33417774166665976,
+        "turns_per_episode": 12.0,
+        "out_tokens_per_episode": 306.0,
+        "wall_s": 8.020265799999834,
+        "episodes_per_min": 14.962097640205702,
+        "prefill_share": 0.2924135957004092,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9296,
+          "shared_mb": 282,
+          "ollama_size_mb": 1102,
+          "ollama_size_vram_mb": 1102
+        }
+      },
+      "np4": {
+        "n": 8,
+        "correct": 4,
+        "s_per_episode": 17.935125337500267,
+        "s_per_episode_median": 14.638336050000362,
+        "s_per_turn": 1.1209453335937667,
+        "turns_per_episode": 16.0,
+        "out_tokens_per_episode": 391.75,
+        "wall_s": 43.2808845999989,
+        "episodes_per_min": 11.090346337329995,
+        "prefill_share": 0.1914154042391871,
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 9815,
+          "shared_mb": 305,
+          "ollama_size_mb": 1222,
+          "ollama_size_vram_mb": 1222,
+          "runner_np": 4
+        }
+      }
+    },
+    "qwen2.5:14b": {
+      "default": {
+        "n": 2,
+        "correct": 1,
+        "s_per_episode": 7.5047737500008225,
+        "s_per_episode_median": 7.5047737500008225,
+        "s_per_turn": 1.0721105357144032,
+        "turns_per_episode": 7.0,
+        "out_tokens_per_episode": 335.5,
+        "wall_s": 15.009547500001645,
+        "episodes_per_min": 7.994911238995503,
+        "prefill_share": 0.12256186658767998,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10232,
+          "shared_mb": 175,
+          "ollama_size_mb": 9942,
+          "ollama_size_vram_mb": 9942
+        }
+      },
+      "spec-0.5b": {
+        "n": 2,
+        "correct": 0,
+        "s_per_episode": 6.336032400000477,
+        "s_per_episode_median": 6.336032400000477,
+        "s_per_turn": 1.0560054000000794,
+        "turns_per_episode": 6.0,
+        "out_tokens_per_episode": 353.0,
+        "wall_s": 12.672064800000953,
+        "episodes_per_min": 9.469648545357105,
+        "prefill_share": 0.13688912496117103,
+        "concurrency": 1,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 10677,
+          "shared_mb": 144
+        }
+      },
+      "np4": {
+        "skipped": "does not fit on the GPU",
+        "concurrency": 4,
+        "vram": {
+          "processes": 1,
+          "dedicated_mb": 12415,
+          "shared_mb": 2432,
+          "ollama_size_mb": 14421,
+          "ollama_size_vram_mb": 14421,
+          "runner_np": 4,
+          "ollama_draft": false,
+          "offloaded": [
+            "49/49"
+          ]
+        }
+      }
+    },
+    "qwen2.5:1.5b": {
+      "vllm-tuned": {
+        "n": 2,
+        "correct": 0,
+        "s_per_episode": 0.7518461000008756,
+        "s_per_episode_median": 0.7518461000008756,
+        "s_per_turn": 0.3759230500004378,
+        "turns_per_episode": 2.0,
+        "out_tokens_per_episode": 104.0,
+        "wall_s": 1.503737099999853,
+        "episodes_per_min": 79.80118333185484,
+        "concurrency": 1,
+        "vram": {
+          "note": "vLLM runs in WSL: 0.75 of 16 GB by --gpu-memory-utilization"
+        }
+      },
+      "vllm-c4": {
+        "n": 8,
+        "correct": 0,
+        "s_per_episode": 0.533323474999861,
+        "s_per_episode_median": 0.42471855000076175,
+        "s_per_turn": 0.2666617374999305,
+        "turns_per_episode": 2.0,
+        "out_tokens_per_episode": 63.0,
+        "wall_s": 1.2184887999992497,
+        "episodes_per_min": 393.9305802402907,
+        "concurrency": 4,
+        "vram": {
+          "note": "vLLM runs in WSL: 0.75 of 16 GB by --gpu-memory-utilization"
+        }
+      }
+    }
+  },
+  "ollama_version": "ollama 0.40.11"
+}

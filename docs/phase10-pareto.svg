@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" font-family="sans-serif" font-size="12">
+<style>.bg{fill:#fff}.g{stroke:#e2e2e2}.t{fill:#333}.l{fill:#222;stroke:#fff;stroke-width:4px;paint-order:stroke;stroke-linejoin:round}.f{fill:#2a6fdb;fill-opacity:.55;stroke:#2a6fdb}.o{fill:#999;fill-opacity:.35;stroke:#777}@media (prefers-color-scheme:dark){.bg{fill:#1b1b1b}.t{fill:#ccc}.g{stroke:#3a3a3a}.l{fill:#eee;stroke:#1b1b1b}}</style>
+<rect class="bg" width="760" height="460"/>
+<line class="g" x1="70" x2="730" y1="400" y2="400"/><text class="t" x="62" y="404" text-anchor="end">0%</text>
+<line class="g" x1="70" x2="730" y1="326.0" y2="326.0"/><text class="t" x="62" y="330.0" text-anchor="end">20%</text>
+<line class="g" x1="70" x2="730" y1="252.0" y2="252.0"/><text class="t" x="62" y="256.0" text-anchor="end">40%</text>
+<line class="g" x1="70" x2="730" y1="178.0" y2="178.0"/><text class="t" x="62" y="182.0" text-anchor="end">60%</text>
+<line class="g" x1="70" x2="730" y1="103.99999999999999" y2="103.99999999999999"/><text class="t" x="62" y="107.99999999999999" text-anchor="end">80%</text>
+<line class="g" x1="70" x2="730" y1="30" y2="30"/><text class="t" x="62" y="34" text-anchor="end">100%</text>
+<line class="g" y1="30" y2="400" x1="152.97832040988527" x2="152.97832040988527"/><text class="t" x="152.97832040988527" y="418" text-anchor="middle">0.5</text>
+<line class="g" y1="30" y2="400" x1="265.5728852942418" x2="265.5728852942418"/><text class="t" x="265.5728852942418" y="418" text-anchor="middle">1</text>
+<line class="g" y1="30" y2="400" x1="378.1674501785983" x2="378.1674501785983"/><text class="t" x="378.1674501785983" y="418" text-anchor="middle">2</text>
+<line class="g" y1="30" y2="400" x1="527.0093688308473" x2="527.0093688308473"/><text class="t" x="527.0093688308473" y="418" text-anchor="middle">5</text>
+<line class="g" y1="30" y2="400" x1="639.6039337152037" x2="639.6039337152037"/><text class="t" x="639.6039337152037" y="418" text-anchor="middle">10</text>
+<text class="t" x="400.0" y="445" text-anchor="middle">seconds per episode (log scale, one episode at a time)</text><text class="t" transform="translate(18 215.0) rotate(-90)" text-anchor="middle">suite D pass rate</text>
+<circle class="o" cx="583.4" cy="181.1" r="21.1"/>
+<circle class="o" cx="575.5" cy="363.0" r="19.4"/>
+<circle class="o" cx="657.3" cy="178.0" r="19.1"/>
+<circle class="o" cx="655.3" cy="310.6" r="19.0"/>
+<circle class="f" cx="675.3" cy="97.8" r="18.6"/>
+<circle class="f" cx="523.1" cy="134.8" r="18.1"/>
+<circle class="f" cx="668.0" cy="178.0" r="17.6"/>
+<circle class="o" cx="166.9" cy="400.0" r="6.0"/>
+<text class="l" x="485.7" y="185.1">gpt-oss:20b</text>
+<text class="l" x="413.5" y="367.0">qwen2.5:14b spec-0.5b</text>
+<text class="l" x="574.8" y="182.0">qwen3:14b</text>
+<text class="l" x="559.7" y="314.6">qwen2.5:14b</text>
+<text class="l" x="553.8" y="101.8">qwen3.5:4b-bf16</text>
+<text class="l" x="362.4" y="138.8">nemotron-3.5-bolt:e4b</text>
+<text class="l" x="580.5" y="196.0">gemma4:12b</text>
+<text class="l" x="176.9" y="404.0">qwen2.5:1.5b vllm-tuned</text>
+<text class="t" x="70" y="18">Blue: Pareto front (pass rate, time, VRAM). Circle area: VRAM.</text></svg>

@@ -41,7 +41,7 @@ ollama rm qwen2.5:1.5b-instruct-q2_K     # 0.7 GB  pulled to show Q2_K works on 
 configuration for this card, keep that one for Phase 10's final benchmark and
 note it here.
 
-## Stage 2 - after Phase 10, the final benchmark (~15 GB)
+## Stage 2 - after Phase 10, the final benchmark (~15 GB; qwen3.5:4b-bf16 now stays, see below)
 
 Kept until then because they are the high-precision references and the likely
 "best quality that fits" candidates the final benchmark compares.
@@ -50,7 +50,15 @@ Kept until then because they are the high-precision references and the likely
 ollama rm qwen2.5:3b-instruct-q8_0       # 3.3 GB
 ollama rm qwen2.5:7b-instruct-q8_0       # 8.1 GB
 ollama rm qwen2.5:1.5b-instruct-fp16     # 3.1 GB  (Phase 3; vLLM's FP16 twin)
-ollama rm qwen3.5:4b-bf16                # 9.3 GB  the "current model" track's reference
+```
+
+Phase 10 is done, so this stage can run, with one change: **keep
+`qwen3.5:4b-bf16`**. It is the agent's recommended model, and stays until a
+Q8_0 or Q4_K_M of it has been scored on suite D (`docs/phase10.md`). Phase
+10's leftover to delete, 4.3 GB, ignored by git:
+
+```
+Remove-Item phase10-final-benchmark\logs\qwen35-4b-q8_0.gguf
 ```
 
 The Qwen3.5-4B ladder built for the Phase 6 extension (~21 GB) goes in Stage

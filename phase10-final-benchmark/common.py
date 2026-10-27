@@ -58,6 +58,17 @@ CANDIDATES = {
 # "think off" means the lowest level, and the budget must leave room for it.
 THINK_OFF = {"gpt-oss:20b": "low"}
 
+# Models added later by evaluate.py, detected from `ollama show` rather than
+# typed in (gemma4 was once listed here as not thinking, and its first run was
+# wasted). Same shape; the hand-written entries above win.
+REGISTRY = os.path.join(HERE, "candidates.json")
+if os.path.exists(REGISTRY):
+    with open(REGISTRY, encoding="utf-8") as _f:
+        for _tag, _e in json.load(_f).items():
+            CANDIDATES.setdefault(_tag, (_e["quantization"], _e["family"], _e["thinks"]))
+            if _e["thinks"] and _e.get("think_off") is not False:
+                THINK_OFF.setdefault(_tag, _e["think_off"])
+
 
 def think_value(model, on):
     """The request's think field for a model that reasons by default."""

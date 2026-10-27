@@ -34,6 +34,25 @@ no `requests`, no `numpy`, no framework.
 
 All measured on the hardware above. Method and caveats are in `docs/`.
 
+**The model generation matters more than anything else the lab measured.**
+On 60 multi-turn mail-triage episodes scored by code (the agent must handle
+every message and then stop), one at a time on Ollama:
+
+| model | episodes fully right | s/episode | VRAM | correct/hour |
+|---|---|---|---|---|
+| qwen3.5:4b (BF16) | 82% | 12.5 | 9.6 GB | 236 |
+| nemotron-3.5-bolt:e4b | 72% | 4.9 | 9.1 GB | 528 |
+| gpt-oss:20b, qwen3:14b, gemma4:12b | 59-62% | 7.1-11.9 | 8.6-12.4 GB | 181-301 |
+| qwen2.5:14b | 25% | 11.0 | 10.0 GB | 79 |
+| qwen2.5 1.5B-7B | 0-18% | | | |
+
+A current 4B beats the previous generation's 14B by 57 points. qwen3.5 vs
+nemotron is not significant (p = 0.18, paired); both beat the 60% group. And
+running episodes in parallel gained nothing on Ollama for the good models:
+qwen3.5 is silently forced to one slot, nemotron's bundled draft model blocks
+batching, and gemma4's answers break under batched decode. See
+`docs/phase10.md`.
+
 **Decode speed tracks memory bandwidth, and bigger models use the GPU better.**
 Same model family, Q4_K_M, single stream:
 
@@ -157,6 +176,11 @@ phase6-quantization/      VRAM/speed ladder -> fidelity vs full precision
 phase7-gpu-environments/  stack inventory -> measured hardware ceilings (HIP)
                           -> CPU vs GPU -> layer offload and a model that
                           does not fit -> ROCm vs Vulkan
+phase8-docker/            Ollama and vLLM in containers; Compose
+phase9-optimization/      speculative decoding -> context and KV cache
+                          -> prefix caching -> tuned GEMMs -> concurrency
+phase10-final-benchmark/  code-checked suites and mailbox agent episodes
+                          -> cost per episode -> Pareto choice
 docs/                     per-phase technical notes, including the WSL2 + ROCm
                           setup that gets vLLM running on consumer AMD
 ```
@@ -180,6 +204,37 @@ python phase2-model-serving/02_concurrency.py --levels 1,2,4,8
 
 Results persist to `lab.db` (SQLite), which is gitignored — regenerate it by
 running the benchmark.
+
+### Evaluating a new model
+
+Phase 10's main result is that the model generation matters more than any
+serving setting. So the lab ends in a tool that scores a new Ollama tag on the
+same suites and the same footing, and places it on the leaderboard:
+
+```bash
+python phase10-final-benchmark/evaluate.py gemma4:e4b --quick   # 10 items per suite, ~2 min
+python phase10-final-benchmark/evaluate.py qwen3.6:8b --pull    # full run, ~1 h on a 4-8B model
+python phase10-final-benchmark/evaluate.py --report             # leaderboard only
+```
+
+The full run has five steps, all handled by the tool:
+- **detect:** reads `ollama show` to find whether the model takes tools, whether think is a bool or only takes levels, whether it bundles a draft model, and its Modelfile penalties. The result goes to `candidates.json`, so nothing needs typing in.
+- **preflight:** one tool call and a think check.
+- **suites:** all five, A-E.
+- **repeat:** suite D runs a second time.
+- **cost:** 20 episodes one at a time, then 8 at `NUM_PARALLEL` 4.
+
+The report includes the leaderboard, a McNemar test against the leader, the Pareto front and a chart. Every step resumes after an interruption.
+
+Each model also gets a list of warnings. These cover the traps Phase 10 found by hand:
+- a tool call Ollama's parser left as text;
+- think that cannot be turned off;
+- a bundled draft model;
+- Ollama forcing one slot;
+- spilling into system RAM;
+- answers that change under batching or between identical runs.
+
+`--quick` rows are kept out of the leaderboard.
 
 ### The observability UI
 
@@ -248,10 +303,31 @@ and quantization: full GGUF ladders on Qwen2.5-3B/7B and Qwen3.5-4B, measured
 with a token-level fidelity method, plus a root cause for Qwen2.5-3B's Q2_K
 collapse - and GPU environments: the stack layer by layer on this machine,
 measured hardware ceilings, CPU vs GPU, layer offload, a model that does not
-fit, and ROCm vs Vulkan.
+fit, and ROCm vs Vulkan. Phases 8-10 are complete too: Docker (vLLM in a
+container within 2% of native), optimization (speculative decoding, KV
+cache, prefix caching, tuned GEMMs, concurrency) and a final benchmark that
+picks the model for the user's agent from five vendors' current releases.
 
-Docker, further optimization and a final benchmark are planned but not
-built. After those, Phase 11 adds LoRA / QLoRA fine-tuning of
+### Final summary
+
+What the lab found, for running an agent on a 16 GB consumer AMD card:
+
+- **Pick the model first.** qwen3.5:4b (most accurate) or
+  nemotron-3.5-bolt:e4b (2.2x the correct episodes per hour) on Ollama with
+  `think: false`, temperature 0, `num_ctx` 8192. Phase 10.
+- **Fit it fully on the GPU.** A model that spills pages over PCIe on
+  Windows: the 32B is ~10x slower per turn than the 14B, and no layer split
+  helps. Phase 7.
+- **Keep the prompt prefix stable.** A timestamp at the top of the system
+  prompt costs 23x the TTFT on every turn. Phase 9.
+- **Check the runner, not the setting.** Ollama silently ignores
+  `NUM_PARALLEL` for some architectures, ships draft models in some
+  Modelfiles, and truncates overflowing prompts to half the window with no
+  error. Phases 5, 9, 10.
+- **vLLM is faster here once its GEMMs are tuned**, but only the models it
+  was run with (Qwen2.5) could not do the task. Phases 3, 9.
+
+Phase 11 adds LoRA / QLoRA fine-tuning of
 a small model and measures what serving the adapter costs - see
 `docs/phase11-plan.md`. Known gaps are listed at the end of each phase
 document - the largest is that kernel profiling is unavailable in this

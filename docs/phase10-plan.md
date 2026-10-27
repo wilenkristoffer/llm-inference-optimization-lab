@@ -1,7 +1,9 @@
 # Phase 10 plan - The final benchmark
 
-Status: **planned, not started.** This is a plan, not results. Predictions
-are written down so the measurements can prove them wrong.
+Status: **complete 2026-10-27; results in `phase10.md`.** This is the plan
+as written before the runs, kept for its predictions. Scope changed on the
+way: three non-Qwen models were downloaded (gpt-oss, nemotron, ministral) and
+the shortlist was decided from the quality run.
 
 Phases 1-9 measured speed, memory and fidelity one variable at a time. Each
 left the same question open: **which model and configuration should actually

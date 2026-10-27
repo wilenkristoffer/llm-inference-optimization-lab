@@ -1,0 +1,19 @@
+{
+  "gemma4:e4b": {
+    "quantization": "Q4_K_M",
+    "family": "gemma4",
+    "thinks": true,
+    "think_off": false,
+    "parameters": "7.5B",
+    "size_gb": 6.6,
+    "capabilities": [
+      "completion",
+      "vision",
+      "audio",
+      "tools",
+      "thinking"
+    ],
+    "draft": true,
+    "added": "2026-10-27"
+  }
+}
