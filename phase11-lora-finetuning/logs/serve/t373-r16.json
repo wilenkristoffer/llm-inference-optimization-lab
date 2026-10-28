@@ -1,0 +1,59 @@
+{
+ "name": "t373-r16",
+ "configs": {
+  "base": {
+   "load_s": 7.6,
+   "prompt_tokens": 788,
+   "prefill_tok_s": 2735.2,
+   "decode_tok_s": 53.2
+  },
+  "merged": {
+   "load_s": 6.6,
+   "prompt_tokens": 788,
+   "prefill_tok_s": 2777.6,
+   "decode_tok_s": 53.3
+  },
+  "lora": {
+   "load_s": 5.6,
+   "prompt_tokens": 788,
+   "prefill_tok_s": 2186.3,
+   "decode_tok_s": 46.6
+  }
+ },
+ "check": {
+  "base vs merged": {
+   "turns": 320,
+   "identical": 241,
+   "same_first_40_chars": 296
+  },
+  "lora vs merged": {
+   "turns": 320,
+   "identical": 318,
+   "same_first_40_chars": 320
+  }
+ },
+ "episodes": {
+  "lora-p10-D": {
+   "episodes": 60,
+   "correct_share": 1.0,
+   "s_per_episode": 16.9,
+   "vs merged native": {
+    "only_merged": 0,
+    "only_this": 0,
+    "p": 1.0,
+    "identical_transcripts": 55
+   }
+  },
+  "lora-p10-Dp": {
+   "episodes": 60,
+   "correct_share": 0.917,
+   "s_per_episode": 16.6,
+   "vs merged native": {
+    "only_merged": 0,
+    "only_this": 0,
+    "p": 1.0,
+    "identical_transcripts": 47
+   }
+  }
+ }
+}
