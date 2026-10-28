@@ -333,8 +333,9 @@ What the lab found, for running an agent on a 16 GB consumer AMD card:
 - **vLLM is faster here once its GEMMs are tuned**, but only the models it
   was run with (Qwen2.5) could not do the task. Phases 3, 9.
 
-Phase 11 adds LoRA / QLoRA fine-tuning of
-a small model and measures what serving the adapter costs - see
+Phase 11 adds LoRA fine-tuning: qwen3.5:4b trained on the mailbox agent
+episodes from bonsai-2:27b's runs, to see if a fast model can reach the
+teacher's accuracy, and what serving the adapter costs - see
 `docs/phase11-plan.md`. Known gaps are listed at the end of each phase
 document - the largest is that kernel profiling is unavailable in this
 environment because `rocprof` had to be disabled to get vLLM running under WSL.
