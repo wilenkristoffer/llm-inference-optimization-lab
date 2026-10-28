@@ -1,0 +1,136 @@
+{
+ "torch": "2.14.0+rocm7.2",
+ "hip": "7.2.53211",
+ "device": "AMD Radeon RX 7800 XT",
+ "vram_total_gb": 17.14,
+ "kernels": {
+  "bound": {
+   "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk",
+   "torch_recurrent_gated_delta_rule": "fla.ops.gated_delta_rule.fused_recurrent",
+   "causal_conv1d_fn": "torch reference",
+   "causal_conv1d_update": "torch reference"
+  },
+  "fla": {
+   "tokens": 2048,
+   "out_rel_err": 0.00546,
+   "grad_rel_err": {
+    "q": 0.00742,
+    "k": 0.00767,
+    "v": 0.00603,
+    "g": 0.00552,
+    "beta": 0.00414
+   },
+   "ms_fwd_bwd": {
+    "torch": 62.23,
+    "fla": 17.65
+   }
+  }
+ },
+ "model": {
+  "class": "Qwen3_5ForCausalLM",
+  "load_s": 23.7,
+  "missing_keys": 0,
+  "unexpected_keys": 0,
+  "missing_sample": [],
+  "unexpected_sample": [],
+  "weights_gb": 8.41,
+  "params_b": 4.206,
+  "linear_by_layer_type": {
+   "linear_attention": [
+    "down_proj",
+    "gate_proj",
+    "in_proj_a",
+    "in_proj_b",
+    "in_proj_qkv",
+    "in_proj_z",
+    "out_proj",
+    "up_proj"
+   ],
+   "full_attention": [
+    "down_proj",
+    "gate_proj",
+    "k_proj",
+    "o_proj",
+    "q_proj",
+    "up_proj",
+    "v_proj"
+   ]
+  },
+  "lora_targets": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "in_proj_qkv",
+   "in_proj_z",
+   "out_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ],
+  "lora_targets_missing": []
+ },
+ "memory": {
+  "rank": 16,
+  "targets": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "in_proj_qkv",
+   "in_proj_z",
+   "out_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ],
+  "loss": "chunked, every position labelled",
+  "trainable_m": 30.47,
+  "steps": [
+   {
+    "grad_ckpt": true,
+    "tokens": 1024,
+    "ok": true,
+    "s_per_step": 1.981,
+    "train_tok_s": 517,
+    "peak_gb": 9.8
+   },
+   {
+    "grad_ckpt": true,
+    "tokens": 2048,
+    "ok": true,
+    "s_per_step": 4.243,
+    "train_tok_s": 483,
+    "peak_gb": 10.51
+   },
+   {
+    "grad_ckpt": true,
+    "tokens": 3072,
+    "ok": true,
+    "s_per_step": 6.849,
+    "train_tok_s": 449,
+    "peak_gb": 12.15
+   },
+   {
+    "grad_ckpt": true,
+    "tokens": 4096,
+    "ok": true,
+    "s_per_step": 11.0,
+    "train_tok_s": 372,
+    "peak_gb": 14.32
+   },
+   {
+    "grad_ckpt": true,
+    "tokens": 5120,
+    "ok": false,
+    "error": "OOM"
+   },
+   {
+    "grad_ckpt": false,
+    "tokens": 1024,
+    "ok": false,
+    "error": "OOM"
+   }
+  ]
+ }
+}

@@ -1,0 +1,10 @@
+# Phase 11 training stack for ~/ft-env (WSL). torch is NOT listed: it comes
+# from the ROCm index in setup_ft_env.sh and is pinned by constraints.txt.
+transformers
+peft
+trl
+datasets
+accelerate
+safetensors
+huggingface_hub
+flash-linear-attention
