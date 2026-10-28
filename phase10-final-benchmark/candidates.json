@@ -47,5 +47,21 @@
     ],
     "draft": false,
     "added": "2026-10-27"
+  },
+  "qwen3.5-mail:t373-r16": {
+    "quantization": "BF16",
+    "family": "qwen35",
+    "thinks": true,
+    "think_off": false,
+    "parameters": "4.3B",
+    "size_gb": 9.3,
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ],
+    "draft": false,
+    "added": "2026-10-28"
   }
 }

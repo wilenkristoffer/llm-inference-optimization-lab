@@ -420,6 +420,42 @@
           "correct": true
         }
       }
+    },
+    "qwen3.5-mail:t373-r16": {
+      "installed": true,
+      "digest": "a4a6ff54c9060c6ebcf49b9a30a9fe4ff24c021875ef838acf9dd3c10a2ff305",
+      "quantization": "BF16",
+      "family": "qwen35",
+      "tools": {
+        "wall_ms": 7040,
+        "accepted": true,
+        "n_calls": 1,
+        "content": "",
+        "name": "mail-categorize",
+        "arguments": {
+          "email_id": "E-17",
+          "category": "BILLING"
+        },
+        "correct": true
+      },
+      "think": {
+        "think_false": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 0,
+          "output_tokens": 4,
+          "wall_ms": 159,
+          "correct": true
+        },
+        "think_true": {
+          "error": null,
+          "content": "391",
+          "thinking_chars": 760,
+          "output_tokens": 274,
+          "wall_ms": 5138,
+          "correct": true
+        }
+      }
     }
   },
   "hf_cache": {
