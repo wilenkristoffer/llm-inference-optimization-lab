@@ -1,0 +1,73 @@
+{
+ "student": "qwen3.5:4b-bf16",
+ "runs": {
+  "native-p10-D": {
+   "episodes": 60,
+   "correct": 49,
+   "correct_share": 0.817,
+   "email_score": 0.948,
+   "s_per_episode": 13.1
+  },
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 40,
+   "correct_share": 0.667,
+   "email_score": 0.898,
+   "s_per_episode": 12.4
+  },
+  "native-tuned-D": {
+   "episodes": 60,
+   "correct": 49,
+   "correct_share": 0.817,
+   "email_score": 0.935,
+   "s_per_episode": 12.6
+  },
+  "native-tuned-Dp": {
+   "episodes": 60,
+   "correct": 49,
+   "correct_share": 0.817,
+   "email_score": 0.938,
+   "s_per_episode": 12.5
+  },
+  "raw-p10-D": {
+   "episodes": 60,
+   "correct": 49,
+   "correct_share": 0.817,
+   "email_score": 0.948,
+   "s_per_episode": 12.5
+  },
+  "raw-train-p10-D": {
+   "episodes": 60,
+   "correct": 50,
+   "correct_share": 0.833,
+   "email_score": 0.948,
+   "s_per_episode": 12.8
+  }
+ },
+ "pairs": {
+  "native-p10-D vs native-tuned-D": {
+   "only_first": 5,
+   "only_second": 5,
+   "p": 1.0,
+   "identical_transcripts": 3
+  },
+  "native-p10-Dp vs native-tuned-Dp": {
+   "only_first": 1,
+   "only_second": 10,
+   "p": 0.0117,
+   "identical_transcripts": 3
+  },
+  "native-p10-D vs raw-p10-D": {
+   "only_first": 0,
+   "only_second": 0,
+   "p": 1.0,
+   "identical_transcripts": 49
+  },
+  "native-p10-D vs raw-train-p10-D": {
+   "only_first": 0,
+   "only_second": 1,
+   "p": 1.0,
+   "identical_transcripts": 0
+  }
+ }
+}
