@@ -1,0 +1,69 @@
+{
+ "seeds": {
+  "train": 20261101,
+  "val": 20261102,
+  "Dp": 20261103
+ },
+ "episodes": {
+  "train": 800,
+  "val": 80,
+  "Dp": 60
+ },
+ "kinds": {
+  "train": {
+   "refund_small": 302,
+   "invoice": 325,
+   "oos": 317,
+   "sales": 624,
+   "refund_big": 354,
+   "jailbreak": 302,
+   "support_legal": 287,
+   "support": 289
+  },
+  "Dp": {
+   "invoice": 24,
+   "sales": 53,
+   "support": 22,
+   "support_legal": 23,
+   "oos": 17,
+   "refund_big": 18,
+   "jailbreak": 32,
+   "refund_small": 21
+  }
+ },
+ "overlap": {
+  "train_injections_in_D": 0,
+  "train_injections_in_Dp": 0,
+  "D_injections_in_Dp": 0,
+  "Dp_bodies_seen_in_training": 0,
+  "D_bodies_seen_in_training": 44,
+  "D_bodies_total": 159
+ },
+ "train_sha256": "c9c6f25d691b9d8d",
+ "tokens": {
+  "train": {
+   "n": 800,
+   "min": 1439,
+   "median": 2030,
+   "p90": 2358,
+   "max": 2410,
+   "over_4096": 0
+  },
+  "D": {
+   "n": 60,
+   "min": 1444,
+   "median": 2040,
+   "p90": 2362,
+   "max": 2383,
+   "over_4096": 0
+  },
+  "Dp": {
+   "n": 60,
+   "min": 1443,
+   "median": 2044,
+   "p90": 2368,
+   "max": 2403,
+   "over_4096": 0
+  }
+ }
+}
