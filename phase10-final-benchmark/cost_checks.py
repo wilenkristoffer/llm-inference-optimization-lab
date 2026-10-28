@@ -36,7 +36,7 @@ import common
 cost = common._load("p10cost", "03_cost.py")
 p9 = common.p9
 
-BLOB = os.path.expanduser(r"~\.ollama\models\blobs")
+BLOB = p9.BLOBS
 DECODE = {
     "qwen2.5:3b": [os.path.join(BLOB, p9.GGUF["qwen2.5:3b"])],
     "qwen3.5:4b-bf16": [os.path.join(BLOB, "sha256-bb5b8b1308515427ca45544a46ec828f7a5472a505f2e8c9e60f26ce665a4a4d")],

@@ -54,7 +54,7 @@ workloads = _load("workloads", "workloads.py")
 # --- llama.cpp ---------------------------------------------------------------
 
 OLLAMA_LIB = os.path.expandvars(r"%LOCALAPPDATA%\Programs\Ollama\lib\ollama")
-BLOBS = os.path.expanduser(r"~\.ollama\models\blobs")
+BLOBS = os.path.join(os.environ.get("OLLAMA_MODELS") or os.path.expanduser(r"~\.ollama\models"), "blobs")
 # Ollama tag -> blob, from `ollama show --modelfile`. All Q4_K_M.
 GGUF = {
     "qwen2.5:0.5b": "sha256-c5396e06af294bd101b30dce59131a76d2b773e76950acc870eda801d3ab0515",
