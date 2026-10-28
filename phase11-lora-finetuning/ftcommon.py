@@ -55,6 +55,37 @@ def prepare(model, rank, alpha=None, dropout=0.0, grad_ckpt=True):
     return model
 
 
+def encode(tok, messages, tools):
+    """Token ids and labels for one finished episode, in the served format
+    (qwen35fmt.render_train). Only the assistant turns are labelled: a token
+    is a target if it starts inside one of the turn spans."""
+    import qwen35fmt
+    text, spans = qwen35fmt.render_train(messages, tools)
+    enc = tok(text, add_special_tokens=False, return_offsets_mapping=True)
+    ids, labels, k = enc["input_ids"], [], 0
+    for start, _ in enc["offset_mapping"]:
+        while k < len(spans) and start >= spans[k][1]:
+            k += 1
+        labels.append(ids[len(labels)] if k < len(spans) and start >= spans[k][0] else IGNORE)
+    return ids, labels
+
+
+@torch.no_grad()
+def lm_eval(model, input_ids, labels, chunk=256):
+    """Summed loss, correct argmax predictions, and count, over labelled positions."""
+    inner = model.get_base_model()
+    hidden = inner.model(input_ids=input_ids).last_hidden_state
+    y = labels[:, 1:]
+    keep = y != IGNORE
+    h, y = hidden[:, :-1][keep], y[keep]
+    loss = correct = 0.0
+    for i in range(0, y.numel(), chunk):
+        logits = torch.nn.functional.linear(h[i:i + chunk], inner.lm_head.weight).float()
+        loss += float(torch.nn.functional.cross_entropy(logits, y[i:i + chunk], reduction="sum"))
+        correct += int((logits.argmax(-1) == y[i:i + chunk]).sum())
+    return loss, correct, y.numel()
+
+
 def _chunk_loss(h, weight, y):
     logits = torch.nn.functional.linear(h, weight).float()
     return torch.nn.functional.cross_entropy(logits, y, reduction="sum")

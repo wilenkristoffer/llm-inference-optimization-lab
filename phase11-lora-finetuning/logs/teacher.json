@@ -1,0 +1,22 @@
+{
+ "teacher": "bonsai-2:27b",
+ "ollama": "ollama 0.40.12",
+ "train": {
+  "episodes": 400,
+  "correct": 373,
+  "correct_share": 0.932,
+  "email_score": 0.978,
+  "median_s": 19.4,
+  "hours": 2.09,
+  "wrong_by_kind": {
+   "invoice": "0/165",
+   "jailbreak": "14/156",
+   "oos": "0/145",
+   "refund_big": "16/174",
+   "refund_small": "0/167",
+   "sales": "0/323",
+   "support": "0/134",
+   "support_legal": "0/136"
+  }
+ }
+}

@@ -39,3 +39,5 @@ Thumbs.db
 # Phase 11 training episodes: regenerated exactly by 01_episodes.py from fixed
 # seeds (logs/episodes.json records the train.jsonl hash to check against).
 phase11-lora-finetuning/data/
+# LoRA adapters (122 MB each at r16, fp32); logs/train/<name>.json has the run.
+phase11-lora-finetuning/runs/
