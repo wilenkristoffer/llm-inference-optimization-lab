@@ -37,7 +37,9 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TAG = "qwen3.5-mail"
-FT_PYTHON = "~/ft-env/bin/python"
+# activate sets HSA_ENABLE_DXG_DETECTION and the rocprofiler LD_PRELOAD stub;
+# without them ROCm sees no GPU (the merge is CPU-only, but stays uniform)
+FT_PYTHON = "source ~/ft-env/bin/activate && python"
 
 # HF module (under model.language_model.layers.N.) -> GGUF tensor (blk.N.)
 GGUF_NAMES = {

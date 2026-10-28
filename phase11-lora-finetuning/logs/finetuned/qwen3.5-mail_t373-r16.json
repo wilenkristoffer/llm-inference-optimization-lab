@@ -1,0 +1,33 @@
+{
+ "student": "qwen3.5-mail:t373-r16",
+ "runs": {
+  "native-p10-D": {
+   "episodes": 60,
+   "correct": 60,
+   "correct_share": 1.0,
+   "email_score": 1.0,
+   "s_per_episode": 14.6
+  },
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 55,
+   "correct_share": 0.917,
+   "email_score": 0.986,
+   "s_per_episode": 14.2
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r16 native-p10-D": {
+   "only_first": 0,
+   "only_second": 11,
+   "p": 0.001,
+   "identical_transcripts": 0
+  },
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r16 native-p10-Dp": {
+   "only_first": 3,
+   "only_second": 18,
+   "p": 0.0015,
+   "identical_transcripts": 0
+  }
+ }
+}

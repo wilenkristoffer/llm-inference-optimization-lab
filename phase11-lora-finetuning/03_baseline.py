@@ -122,28 +122,37 @@ def parse_xml_calls(text):
     return content, calls
 
 
-def run(run_name, limit):
+def out_dir(model):
+    """The untrained student's runs go to logs/baseline/, a fine-tune's to
+    logs/finetuned/<tag>/ so they pair with the baseline run of the same name."""
+    return OUT if model == STUDENT else os.path.join(HERE, "logs", "finetuned",
+                                                     model.replace(":", "_"))
+
+
+def run(run_name, limit, model=STUDENT):
     backend_name, prompt, suite = parse_run(run_name)
     items = load_suite(suite)[:limit]
-    path = os.path.join(OUT, f"{run_name}.jsonl")
+    path = os.path.join(out_dir(model), f"{run_name}.jsonl")
     done = set()
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
             done = {json.loads(line)["id"] for line in f if line.strip()}
     todo = [ep for ep in items if ep["id"] not in done]
-    print(f"{run_name}: {len(done)} done, {len(todo)} to run "
+    print(f"{model} {run_name}: {len(done)} done, {len(todo)} to run "
           f"(~{len(todo) * S_PER_EPISODE / 60:.0f} min)", flush=True)
     if not todo:
         return
-    backend = (quality.OllamaBackend(STUDENT, think=False) if backend_name == "native"
-               else RawBackend(STUDENT, history_think=backend_name == "raw-train"))
+    # A fine-tune is the student with patched weights: same quant, family, thinking
+    common.CANDIDATES.setdefault(model, common.CANDIDATES[STUDENT])
+    backend = (quality.OllamaBackend(model, think=False) if backend_name == "native"
+               else RawBackend(model, history_think=backend_name == "raw-train"))
     system = PROMPTS[prompt]
 
     def step(messages, tools):
         msgs = [{"role": "system", "content": system}] + messages[1:]
         return backend.chat(msgs, tools, num_predict=quality.NUM_PREDICT["D"])
 
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(out_dir(model), exist_ok=True)
     with open(path, "a", encoding="utf-8", newline="\n") as f:
         for ep in todo:
             r = mb.run_episode(step, ep)
@@ -168,12 +177,17 @@ def mcnemar(a, b):
     return x, y, round(p, 4)
 
 
-def report():
+def load_runs(d):
     rows = {}
-    for name in sorted(os.listdir(OUT)) if os.path.isdir(OUT) else []:
-        with open(os.path.join(OUT, name), encoding="utf-8") as f:
+    for name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        with open(os.path.join(d, name), encoding="utf-8") as f:
             rows[name[:-6]] = {r["id"]: r for r in map(json.loads, f) if r}
-    out = {"student": STUDENT, "runs": {}, "pairs": {}}
+    return rows
+
+
+def report(model=STUDENT):
+    rows = load_runs(out_dir(model))
+    out = {"student": model, "runs": {}, "pairs": {}}
     for run_name, rs in rows.items():
         n = len(rs)
         out["runs"][run_name] = {
@@ -181,18 +195,26 @@ def report():
             "correct_share": round(sum(r["correct"] for r in rs.values()) / n, 3),
             "email_score": round(sum(r["score"] for r in rs.values()) / n, 3),
             "s_per_episode": round(sum(r["wall_ms"] for r in rs.values()) / n / 1000, 1)}
-    for a, b in (("native-p10-D", "native-tuned-D"), ("native-p10-Dp", "native-tuned-Dp"),
-                 ("native-p10-D", "raw-p10-D"), ("native-p10-D", "raw-train-p10-D")):
-        if a in rows and b in rows:
-            ca = {i: r["correct"] for i, r in rows[a].items()}
-            cb = {i: r["correct"] for i, r in rows[b].items()}
+    if model == STUDENT:
+        pairs = [(a, rows, b, rows) for a, b in (
+            ("native-p10-D", "native-tuned-D"), ("native-p10-Dp", "native-tuned-Dp"),
+            ("native-p10-D", "raw-p10-D"), ("native-p10-D", "raw-train-p10-D"))]
+    else:  # each run against the untrained student's run of the same name
+        base = load_runs(OUT)
+        pairs = [(a, base, a, rows) for a in rows if a in base]
+    for a, ra, b, rb in pairs:
+        if a in ra and b in rb:
+            ca = {i: r["correct"] for i, r in ra[a].items()}
+            cb = {i: r["correct"] for i, r in rb[b].items()}
             x, y, p = mcnemar(ca, cb)
-            same = sum(rows[a][i]["transcript"] == rows[b][i]["transcript"]
-                       for i in rows[a] if i in rows[b])
-            out["pairs"][f"{a} vs {b}"] = {"only_first": x, "only_second": y, "p": p,
-                                            "identical_transcripts": same}
+            same = sum(ra[a][i]["transcript"] == rb[b][i]["transcript"]
+                       for i in ra[a] if i in rb[b])
+            label = f"{a} vs {b}" if model == STUDENT else f"{STUDENT} vs {model} {a}"
+            out["pairs"][label] = {"only_first": x, "only_second": y, "p": p,
+                                   "identical_transcripts": same}
     print(json.dumps(out, indent=1))
-    with open(SUMMARY, "w", encoding="utf-8", newline="\n") as f:
+    path = SUMMARY if model == STUDENT else out_dir(model) + ".json"
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(out, f, indent=1)
 
 
@@ -202,6 +224,7 @@ def main():
     ap.add_argument("--limit", type=int)
     ap.add_argument("--plan", action="store_true")
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--model", default=STUDENT, help="a fine-tuned tag, e.g. qwen3.5-mail:t373-r16")
     args = ap.parse_args()
     if args.plan:
         n = sum(len(load_suite(parse_run(r)[2])[:args.limit]) for r in args.runs)
@@ -209,8 +232,8 @@ def main():
         return
     if not args.report:
         for r in args.runs:
-            run(r, args.limit)
-    report()
+            run(r, args.limit, args.model)
+    report(args.model)
 
 
 if __name__ == "__main__":
