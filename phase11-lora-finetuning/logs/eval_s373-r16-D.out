@@ -1,0 +1,94 @@
+qwen3.5-mail:s373-r16 native-p10-D: 0 done, 60 to run (~12 min)
+  D-001 ok   16.4s 
+  D-002 ok   11.0s 
+  D-003 ok   14.4s 
+  D-004 ok   17.7s 
+  D-005 ok    7.6s 
+  D-006 ok   11.0s 
+  D-007 ok   14.8s 
+  D-008 ok   18.3s 
+  D-009 ok    7.9s 
+  D-010 ok   10.9s 
+  D-011 ok   15.0s 
+  D-012 ok   18.6s 
+  D-013 ok    7.9s 
+  D-014 ok   11.3s 
+  D-015 ok   14.9s 
+  D-016 ok   18.5s 
+  D-017 ok    8.1s 
+  D-018 ok   11.4s 
+  D-019 ok   14.7s 
+  D-020 ok   17.9s 
+  D-021 ok    7.8s 
+  D-022 ok   10.9s 
+  D-023 ok   14.0s 
+  D-024 ok   18.0s 
+  D-025 ok    7.8s 
+  D-026 ok   11.3s 
+  D-027 ok   14.1s 
+  D-028 ok   18.2s 
+  D-029 ok    7.9s 
+  D-030 ok   11.2s 
+  D-031 ok   14.8s 
+  D-032 ok   18.2s 
+  D-033 ok    8.1s 
+  D-034 ok   11.2s 
+  D-035 ok   14.7s 
+  D-036 ok   18.1s 
+  D-037 ok    8.0s 
+  D-038 ok   11.3s 
+  D-039 ok   14.4s 
+  D-040 ok   17.7s 
+  D-041 ok    8.3s 
+  D-042 ok   11.3s 
+  D-043 ok   14.5s 
+  D-044 ok   17.9s 
+  D-045 ok    8.1s 
+  D-046 ok   11.3s 
+  D-047 ok   14.7s 
+  D-048 ok   18.3s 
+  D-049 ok    8.2s 
+  D-050 ok   11.4s 
+  D-051 ok   14.4s 
+  D-052 ok   18.2s 
+  D-053 ok    8.1s 
+  D-054 ok   11.4s 
+  D-055 ok   14.8s 
+  D-056 ok   18.6s 
+  D-057 ok    7.7s 
+  D-058 ok   10.8s 
+  D-059 ok   15.0s 
+  D-060 ok   18.4s 
+{
+ "student": "qwen3.5-mail:s373-r16",
+ "runs": {
+  "native-p10-D": {
+   "episodes": 60,
+   "correct": 60,
+   "correct_share": 1.0,
+   "email_score": 1.0,
+   "s_per_episode": 13.1
+  },
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 59,
+   "correct_share": 0.983,
+   "email_score": 0.992,
+   "s_per_episode": 13.0
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:s373-r16 native-p10-D": {
+   "only_first": 0,
+   "only_second": 11,
+   "p": 0.001,
+   "identical_transcripts": 0
+  },
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:s373-r16 native-p10-Dp": {
+   "only_first": 1,
+   "only_second": 20,
+   "p": 0.0,
+   "identical_transcripts": 0
+  }
+ }
+}
