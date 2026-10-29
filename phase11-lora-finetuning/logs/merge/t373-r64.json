@@ -1,0 +1,101 @@
+{
+ "name": "t373-r64",
+ "base_blob": "/mnt/f/ollama/models/blobs/sha256-bb5b8b1308515427ca45544a46ec828f7a5472a505f2e8c9e60f26ce665a4a4d",
+ "scale": 2.0,
+ "rank": 64,
+ "minutes": 5.4,
+ "kinds": {
+  "linear_attn.in_proj_qkv": {
+   "tensors": 24,
+   "layout": [
+    "rows"
+   ],
+   "delta_rel_norm": 0.017077,
+   "delta_lost": 0.097,
+   "weights_changed": 0.8908
+  },
+  "linear_attn.in_proj_z": {
+   "tensors": 24,
+   "layout": [
+    "rows"
+   ],
+   "delta_rel_norm": 0.018155,
+   "delta_lost": 0.0913,
+   "weights_changed": 0.8971
+  },
+  "linear_attn.out_proj": {
+   "tensors": 24,
+   "layout": [
+    "cols"
+   ],
+   "delta_rel_norm": 0.015913,
+   "delta_lost": 0.104,
+   "weights_changed": 0.8871
+  },
+  "mlp.down_proj": {
+   "tensors": 32,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.015077,
+   "delta_lost": 0.11,
+   "weights_changed": 0.8792
+  },
+  "mlp.gate_proj": {
+   "tensors": 32,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.02244,
+   "delta_lost": 0.0739,
+   "weights_changed": 0.9199
+  },
+  "mlp.up_proj": {
+   "tensors": 32,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.025724,
+   "delta_lost": 0.0646,
+   "weights_changed": 0.9287
+  },
+  "self_attn.k_proj": {
+   "tensors": 8,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.021982,
+   "delta_lost": 0.0754,
+   "weights_changed": 0.9198
+  },
+  "self_attn.o_proj": {
+   "tensors": 8,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.014734,
+   "delta_lost": 0.1124,
+   "weights_changed": 0.8767
+  },
+  "self_attn.q_proj": {
+   "tensors": 8,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.019149,
+   "delta_lost": 0.0866,
+   "weights_changed": 0.9042
+  },
+  "self_attn.v_proj": {
+   "tensors": 8,
+   "layout": [
+    "same"
+   ],
+   "delta_rel_norm": 0.014792,
+   "delta_lost": 0.1116,
+   "weights_changed": 0.879
+  }
+ },
+ "delta_lost": 0.0851,
+ "weights_changed": 0.9031
+}

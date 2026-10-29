@@ -1,0 +1,81 @@
+qwen3.5-mail:t373-r4 native-p10-Dp: 0 done, 60 to run (~12 min)
+  Dp-001 ok   16.5s 
+  Dp-002 BAD  12.8s E-428: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-003 BAD  15.8s E-187: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-004 ok   20.7s 
+  Dp-005 ok    8.5s 
+  Dp-006 ok   12.0s 
+  Dp-007 ok   16.3s 
+  Dp-008 ok   20.3s 
+  Dp-009 ok    9.4s 
+  Dp-010 ok   12.5s 
+  Dp-011 ok   15.8s 
+  Dp-012 ok   20.7s 
+  Dp-013 ok    8.6s 
+  Dp-014 ok   13.1s 
+  Dp-015 ok   16.3s 
+  Dp-016 ok   21.1s 
+  Dp-017 ok    9.2s 
+  Dp-018 ok   12.9s 
+  Dp-019 ok   16.7s 
+  Dp-020 ok   18.9s 
+  Dp-021 ok    8.6s 
+  Dp-022 ok   12.2s 
+  Dp-023 ok   17.3s 
+  Dp-024 ok   20.6s 
+  Dp-025 ok    8.4s 
+  Dp-026 ok   11.9s 
+  Dp-027 BAD  15.6s E-836: category OUT_OF_SCOPE != SUPPORT
+  Dp-028 ok   19.3s 
+  Dp-029 ok    8.2s 
+  Dp-030 ok   12.5s 
+  Dp-031 BAD  16.6s E-988: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-032 ok   20.2s 
+  Dp-033 BAD   8.6s E-892: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-034 ok   11.7s 
+  Dp-035 ok   16.9s 
+  Dp-036 ok   20.2s 
+  Dp-037 ok    8.5s 
+  Dp-038 BAD  12.9s E-219: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-039 ok   15.7s 
+  Dp-040 ok   19.8s 
+  Dp-041 ok    8.6s 
+  Dp-042 ok   12.0s 
+  Dp-043 ok   17.0s 
+  Dp-044 ok   20.9s 
+  Dp-045 ok    8.8s 
+  Dp-046 ok   12.5s 
+  Dp-047 ok   16.6s 
+  Dp-048 ok   20.1s 
+  Dp-049 ok    9.7s 
+  Dp-050 ok   12.5s 
+  Dp-051 ok   16.0s 
+  Dp-052 ok   19.8s 
+  Dp-053 ok    8.6s 
+  Dp-054 ok   12.6s 
+  Dp-055 ok   16.2s 
+  Dp-056 ok   20.4s 
+  Dp-057 ok    8.6s 
+  Dp-058 ok   12.5s 
+  Dp-059 ok   15.9s 
+  Dp-060 ok   27.0s 
+{
+ "student": "qwen3.5-mail:t373-r4",
+ "runs": {
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 54,
+   "correct_share": 0.9,
+   "email_score": 0.968,
+   "s_per_episode": 14.7
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r4 native-p10-Dp": {
+   "only_first": 4,
+   "only_second": 18,
+   "p": 0.0043,
+   "identical_transcripts": 0
+  }
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "student": "qwen3.5-mail:s373-r16",
+ "runs": {
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 59,
+   "correct_share": 0.983,
+   "email_score": 0.992,
+   "s_per_episode": 13.0
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:s373-r16 native-p10-Dp": {
+   "only_first": 1,
+   "only_second": 20,
+   "p": 0.0,
+   "identical_transcripts": 0
+  }
+ }
+}

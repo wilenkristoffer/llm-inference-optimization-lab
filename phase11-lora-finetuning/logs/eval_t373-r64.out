@@ -1,0 +1,81 @@
+qwen3.5-mail:t373-r64 native-p10-Dp: 0 done, 60 to run (~12 min)
+  Dp-001 ok   16.4s 
+  Dp-002 ok   12.0s 
+  Dp-003 BAD  15.6s stopped before the inbox was empty
+  Dp-004 ok   21.3s 
+  Dp-005 ok    8.6s 
+  Dp-006 ok   12.4s 
+  Dp-007 BAD  16.1s stopped before the inbox was empty
+  Dp-008 ok   20.2s 
+  Dp-009 ok    9.1s 
+  Dp-010 ok   12.9s 
+  Dp-011 BAD  15.9s E-574: no reply, escalated needlessly
+  Dp-012 BAD  20.4s stopped before the inbox was empty
+  Dp-013 ok    8.7s 
+  Dp-014 ok   12.8s 
+  Dp-015 ok   16.5s 
+  Dp-016 BAD  19.2s stopped before the inbox was empty
+  Dp-017 ok    8.8s 
+  Dp-018 ok   13.2s 
+  Dp-019 ok   16.3s 
+  Dp-020 BAD  15.2s E-180: category None != OUT_OF_SCOPE, no reply, not archived; stopped before the inbox was
+  Dp-021 ok    8.8s 
+  Dp-022 ok   12.3s 
+  Dp-023 ok   17.0s 
+  Dp-024 BAD  20.3s stopped before the inbox was empty
+  Dp-025 ok    8.9s 
+  Dp-026 ok   11.8s 
+  Dp-027 ok   15.8s 
+  Dp-028 BAD  15.9s E-988: category None != SUPPORT, not escalated, not archived; stopped before the inbox was
+  Dp-029 ok    8.5s 
+  Dp-030 ok   12.5s 
+  Dp-031 ok   16.1s 
+  Dp-032 ok   20.3s 
+  Dp-033 ok    8.6s 
+  Dp-034 BAD  11.0s stopped before the inbox was empty
+  Dp-035 ok   16.7s 
+  Dp-036 BAD  20.3s stopped before the inbox was empty
+  Dp-037 ok    8.7s 
+  Dp-038 ok   12.6s 
+  Dp-039 ok   15.6s 
+  Dp-040 BAD  20.5s E-232: not archived
+  Dp-041 ok    8.6s 
+  Dp-042 ok   12.2s 
+  Dp-043 ok   16.4s 
+  Dp-044 ok   21.8s 
+  Dp-045 ok    8.7s 
+  Dp-046 ok   12.5s 
+  Dp-047 ok   16.8s 
+  Dp-048 ok   20.7s 
+  Dp-049 ok    9.8s 
+  Dp-050 ok   12.1s 
+  Dp-051 ok   16.2s 
+  Dp-052 ok   19.9s 
+  Dp-053 ok    8.8s 
+  Dp-054 ok   12.3s 
+  Dp-055 BAD  15.7s stopped before the inbox was empty
+  Dp-056 ok   20.7s 
+  Dp-057 ok    8.8s 
+  Dp-058 ok   12.0s 
+  Dp-059 BAD  15.1s stopped before the inbox was empty
+  Dp-060 BAD  18.7s stopped before the inbox was empty
+{
+ "student": "qwen3.5-mail:t373-r64",
+ "runs": {
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 46,
+   "correct_share": 0.767,
+   "email_score": 0.986,
+   "s_per_episode": 14.4
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r64 native-p10-Dp": {
+   "only_first": 5,
+   "only_second": 11,
+   "p": 0.2101,
+   "identical_transcripts": 0
+  }
+ }
+}
