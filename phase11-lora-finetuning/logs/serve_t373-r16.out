@@ -1,0 +1,141 @@
+lora: loaded in 5.6 s
+lora {'load_s': 5.6, 'prompt_tokens': 788, 'prefill_tok_s': 2186.3, 'decode_tok_s': 46.6}
+lora D: 0 done, 60 to run (~15 min)
+  D-001 ok   10.2s 
+  D-002 ok   15.2s 
+  D-003 ok   18.4s 
+  D-004 ok   23.7s 
+  D-005 ok   10.0s 
+  D-006 ok   14.5s 
+  D-007 ok   18.2s 
+  D-008 ok   23.5s 
+  D-009 ok    9.7s 
+  D-010 ok   14.9s 
+  D-011 ok   19.6s 
+  D-012 ok   23.3s 
+  D-013 ok   10.7s 
+  D-014 ok   14.0s 
+  D-015 ok   19.3s 
+  D-016 ok   24.0s 
+  D-017 ok   10.4s 
+  D-018 ok   15.1s 
+  D-019 ok   19.4s 
+  D-020 ok   22.4s 
+  D-021 ok   10.7s 
+  D-022 ok   14.4s 
+  D-023 ok   18.9s 
+  D-024 ok   24.6s 
+  D-025 ok    9.7s 
+  D-026 ok   14.5s 
+  D-027 ok   19.2s 
+  D-028 ok   23.2s 
+  D-029 ok    9.7s 
+  D-030 ok   14.9s 
+  D-031 ok   18.2s 
+  D-032 ok   23.0s 
+  D-033 ok   10.0s 
+  D-034 ok   14.1s 
+  D-035 ok   18.8s 
+  D-036 ok   23.7s 
+  D-037 ok   10.7s 
+  D-038 ok   14.9s 
+  D-039 ok   19.1s 
+  D-040 ok   22.2s 
+  D-041 ok   10.2s 
+  D-042 ok   14.6s 
+  D-043 ok   19.1s 
+  D-044 ok   23.8s 
+  D-045 ok   10.4s 
+  D-046 ok   14.5s 
+  D-047 ok   19.9s 
+  D-048 ok   22.8s 
+  D-049 ok   10.0s 
+  D-050 ok   14.7s 
+  D-051 ok   21.0s 
+  D-052 ok   26.7s 
+  D-053 ok   10.4s 
+  D-054 ok   13.9s 
+  D-055 ok   19.3s 
+  D-056 ok   23.1s 
+  D-057 ok   10.6s 
+  D-058 ok   14.7s 
+  D-059 ok   19.3s 
+  D-060 ok   23.0s 
+lora Dp: 0 done, 60 to run (~15 min)
+  Dp-001 ok   10.9s 
+  Dp-002 ok   14.0s 
+  Dp-003 BAD  18.7s E-187: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-004 ok   24.8s 
+  Dp-005 ok   10.1s 
+  Dp-006 ok   14.0s 
+  Dp-007 ok   18.6s 
+  Dp-008 ok   23.3s 
+  Dp-009 ok   10.4s 
+  Dp-010 ok   13.9s 
+  Dp-011 ok   18.4s 
+  Dp-012 ok   24.2s 
+  Dp-013 ok    9.9s 
+  Dp-014 ok   15.4s 
+  Dp-015 ok   18.8s 
+  Dp-016 ok   24.1s 
+  Dp-017 ok   10.2s 
+  Dp-018 ok   14.0s 
+  Dp-019 ok   19.4s 
+  Dp-020 ok   21.8s 
+  Dp-021 ok   10.0s 
+  Dp-022 ok   13.9s 
+  Dp-023 ok   19.5s 
+  Dp-024 ok   23.8s 
+  Dp-025 ok    9.9s 
+  Dp-026 ok   13.9s 
+  Dp-027 BAD  18.5s E-836: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-028 ok   23.3s 
+  Dp-029 ok   10.0s 
+  Dp-030 ok   14.5s 
+  Dp-031 ok   18.4s 
+  Dp-032 ok   22.8s 
+  Dp-033 ok    9.6s 
+  Dp-034 ok   13.4s 
+  Dp-035 ok   19.3s 
+  Dp-036 BAD  22.8s stopped before the inbox was empty
+  Dp-037 ok    9.6s 
+  Dp-038 ok   13.7s 
+  Dp-039 ok   18.0s 
+  Dp-040 ok   23.3s 
+  Dp-041 ok   10.1s 
+  Dp-042 BAD  14.1s E-433: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-043 ok   18.9s 
+  Dp-044 ok   24.0s 
+  Dp-045 ok   10.0s 
+  Dp-046 ok   14.8s 
+  Dp-047 ok   18.8s 
+  Dp-048 ok   22.9s 
+  Dp-049 ok   10.9s 
+  Dp-050 ok   14.8s 
+  Dp-051 ok   18.8s 
+  Dp-052 ok   22.6s 
+  Dp-053 ok    9.9s 
+  Dp-054 ok   14.4s 
+  Dp-055 ok   18.5s 
+  Dp-056 ok   23.3s 
+  Dp-057 ok   10.1s 
+  Dp-058 ok   15.0s 
+  Dp-059 BAD  18.3s stopped before the inbox was empty
+  Dp-060 ok   23.8s 
+Traceback (most recent call last):
+  File "H:\iwow\Development\llm-inference-optimization-lab\phase11-lora-finetuning\08_serve_adapter.py", line 341, in <module>
+    main()
+  File "H:\iwow\Development\llm-inference-optimization-lab\phase11-lora-finetuning\08_serve_adapter.py", line 337, in main
+    run(args.name, args.configs, [] if args.no_episodes else args.suites)
+  File "H:\iwow\Development\llm-inference-optimization-lab\phase11-lora-finetuning\08_serve_adapter.py", line 277, in run
+    report(name)
+  File "H:\iwow\Development\llm-inference-optimization-lab\phase11-lora-finetuning\08_serve_adapter.py", line 282, in report
+    state = json.load(open(os.path.join(d, "check.json")))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+                 ^^^^^^^^^
+  File "C:\Users\Work\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 46616: character maps to <undefined>

@@ -1,0 +1,34 @@
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:02<19:51,  2{'update': 0, 'val_loss': 0.214, 'val_acc': 0.9491}
+{'update': 10, 'epoch': 0, 'loss': 0.1551, 'lr': 0.0002, 'tok_s': 520, 'elapsed_min': 2.5}
+{'update': 20, 'epoch': 0, 'loss': 0.0892, 'lr': 0.0001984, 'tok_s': 511, 'elapsed_min': 5.1}
+{'update': 30, 'epoch': 0, 'loss': 0.0745, 'lr': 0.0001938, 'tok_s': 516, 'elapsed_min': 7.6}
+{'update': 40, 'epoch': 0, 'loss': 0.0715, 'lr': 0.0001863, 'tok_s': 425, 'elapsed_min': 10.8}
+{'update': 47, 'val_loss': 0.2471, 'val_acc': 0.9499}
+{'update': 50, 'epoch': 0, 'loss': 0.0702, 'lr': 0.0001761, 'tok_s': 518, 'elapsed_min': 15.1}
+{'update': 60, 'epoch': 0, 'loss': 0.0693, 'lr': 0.0001635, 'tok_s': 512, 'elapsed_min': 17.7}
+{'update': 70, 'epoch': 0, 'loss': 0.0556, 'lr': 0.000149, 'tok_s': 480, 'elapsed_min': 20.6}
+{'update': 80, 'epoch': 0, 'loss': 0.0486, 'lr': 0.0001329, 'tok_s': 368, 'elapsed_min': 24.1}
+{'update': 90, 'epoch': 0, 'loss': 0.0478, 'lr': 0.0001158, 'tok_s': 493, 'elapsed_min': 26.8}
+{'update': 94, 'val_loss': 0.2531, 'val_acc': 0.9516}
+{'update': 100, 'epoch': 1, 'loss': 0.0392, 'lr': 9.82e-05, 'tok_s': 554, 'elapsed_min': 30.6}
+{'update': 110, 'epoch': 1, 'loss': 0.0437, 'lr': 8.07e-05, 'tok_s': 390, 'elapsed_min': 34.0}
+{'update': 120, 'epoch': 1, 'loss': 0.0338, 'lr': 6.38e-05, 'tok_s': 550, 'elapsed_min': 36.4}
+{'update': 130, 'epoch': 1, 'loss': 0.0333, 'lr': 4.8e-05, 'tok_s': 567, 'elapsed_min': 38.6}
+{'update': 140, 'epoch': 1, 'loss': 0.0358, 'lr': 3.38e-05, 'tok_s': 561, 'elapsed_min': 40.9}
+{'update': 140, 'val_loss': 0.2655, 'val_acc': 0.9513}
+{'update': 150, 'epoch': 1, 'loss': 0.036, 'lr': 2.17e-05, 'tok_s': 564, 'elapsed_min': 44.6}
+{'update': 160, 'epoch': 1, 'loss': 0.0318, 'lr': 1.2e-05, 'tok_s': 561, 'elapsed_min': 46.9}
+{'update': 170, 'epoch': 1, 'loss': 0.0348, 'lr': 5e-06, 'tok_s': 561, 'elapsed_min': 49.2}
+{'update': 180, 'epoch': 1, 'loss': 0.0339, 'lr': 1e-06, 'tok_s': 558, 'elapsed_min': 51.6}
+{'update': 187, 'epoch': 1, 'loss': 0.0347, 'lr': 0.0, 'tok_s': 547, 'elapsed_min': 53.3}
+{'update': 187, 'val_loss': 0.2631, 'val_acc': 0.9518}
+done in 54.6 min, peak 11.5 GB, adapter 122.0 MB -> /mnt/h/iwow/Development/llm-inference-optimization-lab/phase11-lora-finetuning/runs/t373-r16
+0:08<00:07, 36.24it/s]Loading weights:  40%|████      | 172/426 [00:08<00:10, 23.87it/s]Loading weights:  42%|████▏     | 181/426 [00:08<00:07, 32.77it/s]Loading weights:  44%|████▎     | 186/426 [00:09<00:08, 28.11it/s]Loading weights:  45%|████▍     | 190/426 [00:09<00:07, 29.83it/s]Loading weights:  46%|████▌     | 196/426 [00:09<00:06, 33.19it/s]Loading weights:  47%|████▋     | 200/426 [00:09<00:09, 23.27it/s]Loading weights:  48%|████▊     | 204/426 [00:09<00:09, 24.11it/s]Loading weights:  49%|████▊     | 207/426 [00:10<00:11, 19.55it/s]Loading weights:  50%|████▉     | 212/426 [00:10<00:10, 20.85it/s]Loading weights:  51%|█████     | 218/426 [00:10<00:08, 25.17it/s]Loading weights:  52%|█████▏    | 222/426 [00:10<00:07, 25.74it/s]Loading weights:  53%|█████▎    | 225/426 [00:10<00:09, 21.37it/s]Loading weights:  54%|█████▎    | 228/426 [00:10<00:08, 22.66it/s]Loading weights:  55%|█████▍    | 234/426 [00:10<00:06, 30.16it/s]Loading weights:  56%|█████▌    | 238/426 [00:11<00:07, 26.33it/s]Loading weights:  57%|█████▋    | 242/426 [00:11<00:07, 24.20it/s]Loading weights:  58%|█████▊    | 249/426 [00:11<00:05, 30.83it/s]Loading weights:  59%|█████▉    | 253/426 [00:11<00:06, 25.25it/s]Loading weights:  60%|██████    | 256/426 [00:11<00:06, 26.02it/s]Loading weights:  61%|██████    | 259/426 [00:12<00:09, 18.51it/s]Loading weights:  62%|██████▏   | 264/426 [00:12<00:07, 21.58it/s]Loading weights:  63%|██████▎   | 270/426 [00:12<00:05, 27.81it/s]Loading weights:  65%|██████▍   | 276/426 [00:12<00:04, 33.67it/s]Loading weights:  66%|██████▌   | 281/426 [00:12<00:05, 25.77it/s]Loading weights:  68%|██████▊   | 288/426 [00:12<00:04, 31.55it/s]Loading weights:  69%|██████▊   | 292/426 [00:13<00:05, 25.45it/s]Loading weights:  69%|██████▉   | 296/426 [00:13<00:04, 27.71it/s]Loading weights:  71%|███████   | 302/426 [00:13<00:03, 31.35it/s]Loading weights:  72%|███████▏  | 306/426 [00:13<00:05, 21.93it/s]Loading weights:  73%|███████▎  | 310/426 [00:13<00:04, 24.85it/s]Loading weights:  74%|███████▎  | 314/426 [00:14<00:04, 22.97it/s]Loading weights:  75%|███████▍  | 318/426 [00:14<00:04, 23.73it/s]Loading weights:  77%|███████▋  | 326/426 [00:14<00:02, 34.18it/s]Loading weights:  78%|███████▊  | 331/426 [00:14<00:04, 23.46it/s]Loading weights:  80%|████████  | 341/426 [00:14<00:02, 33.24it/s]Loading weights:  81%|████████  | 346/426 [00:15<00:03, 24.98it/s]Loading weights:  83%|████████▎ | 355/426 [00:15<00:02, 33.84it/s]Loading weights:  85%|████████▍ | 360/426 [00:15<00:02, 31.20it/s]Loading weights:  86%|████████▌ | 365/426 [00:15<00:01, 30.95it/s]Loading weights:  89%|████████▉ | 379/426 [00:15<00:00, 47.41it/s]Loading weights:  90%|█████████ | 385/426 [00:16<00:01, 40.71it/s]Loading weights:  93%|█████████▎| 395/426 [00:16<00:00, 50.59it/s]Loading weights:  94%|█████████▍| 402/426 [00:16<00:00, 47.45it/s]Loading weights:  96%|█████████▋| 411/426 [00:16<00:00, 50.67it/s]Loading weights:  98%|█████████▊| 417/426 [00:16<00:00, 38.56it/s]Loading weights: 100%|██████████| 426/426 [00:16<00:00, 25.16it/s]
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+/home/work/ft-env/lib/python3.12/site-packages/transformers/integrations/sdpa_attention.py:174: UserWarning: Flash Efficient attention on Current AMD GPU is still experimental. Enable it with TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/hip/sdp_utils.cpp:438.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+/home/work/ft-env/lib/python3.12/site-packages/transformers/integrations/sdpa_attention.py:174: UserWarning: Mem Efficient attention on Current AMD GPU is still experimental. Enable it with TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/hip/sdp_utils.cpp:498.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+[W1028 16:31:55.622488424 HIPCachingAllocator.cpp:3935] memory allocation failed with OOM on device 0 while trying to allocate 371195904 bytes (free: 496197632, total: 17138184192).
+[W1028 16:49:35.008365887 HIPCachingAllocator.cpp:3935] memory allocation failed with OOM on device 0 while trying to allocate 442499072 bytes (free: 577945600, total: 17138184192).
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.

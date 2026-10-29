@@ -1,0 +1,155 @@
+qwen3.5-mail:t373-r16 native-p10-D: 0 done, 60 to run (~12 min)
+  D-001 ok   16.2s 
+  D-002 ok   13.1s 
+  D-003 ok   15.7s 
+  D-004 ok   20.2s 
+  D-005 ok    8.5s 
+  D-006 ok   12.5s 
+  D-007 ok   15.6s 
+  D-008 ok   20.1s 
+  D-009 ok    8.3s 
+  D-010 ok   12.7s 
+  D-011 ok   16.7s 
+  D-012 ok   20.1s 
+  D-013 ok    9.2s 
+  D-014 ok   12.0s 
+  D-015 ok   16.6s 
+  D-016 ok   20.7s 
+  D-017 ok    9.0s 
+  D-018 ok   12.8s 
+  D-019 ok   16.7s 
+  D-020 ok   19.2s 
+  D-021 ok    9.2s 
+  D-022 ok   12.3s 
+  D-023 ok   16.2s 
+  D-024 ok   21.1s 
+  D-025 ok    8.2s 
+  D-026 ok   12.3s 
+  D-027 ok   16.5s 
+  D-028 ok   19.8s 
+  D-029 ok    8.4s 
+  D-030 ok   12.8s 
+  D-031 ok   15.6s 
+  D-032 ok   19.7s 
+  D-033 ok    8.5s 
+  D-034 ok   12.1s 
+  D-035 ok   16.2s 
+  D-036 ok   20.6s 
+  D-037 ok    9.2s 
+  D-038 ok   12.8s 
+  D-039 ok   16.4s 
+  D-040 ok   19.0s 
+  D-041 ok    8.7s 
+  D-042 ok   12.5s 
+  D-043 ok   16.4s 
+  D-044 ok   20.4s 
+  D-045 ok    8.8s 
+  D-046 ok   12.4s 
+  D-047 ok   17.2s 
+  D-048 ok   19.5s 
+  D-049 ok    8.6s 
+  D-050 ok   12.5s 
+  D-051 ok   18.1s 
+  D-052 ok   22.9s 
+  D-053 ok    8.8s 
+  D-054 ok   11.9s 
+  D-055 ok   16.4s 
+  D-056 ok   19.8s 
+  D-057 ok    9.0s 
+  D-058 ok   12.6s 
+  D-059 ok   16.6s 
+  D-060 ok   19.7s 
+qwen3.5-mail:t373-r16 native-p10-Dp: 0 done, 60 to run (~12 min)
+  Dp-001 ok    9.4s 
+  Dp-002 ok   12.0s 
+  Dp-003 BAD  15.8s E-187: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-004 ok   21.3s 
+  Dp-005 ok    8.6s 
+  Dp-006 ok   11.9s 
+  Dp-007 ok   16.1s 
+  Dp-008 ok   19.9s 
+  Dp-009 ok    9.0s 
+  Dp-010 ok   11.9s 
+  Dp-011 ok   15.7s 
+  Dp-012 ok   20.8s 
+  Dp-013 ok    8.5s 
+  Dp-014 ok   13.1s 
+  Dp-015 ok   16.2s 
+  Dp-016 ok   20.9s 
+  Dp-017 ok    8.9s 
+  Dp-018 ok   11.9s 
+  Dp-019 ok   16.6s 
+  Dp-020 ok   18.7s 
+  Dp-021 ok    8.5s 
+  Dp-022 ok   11.9s 
+  Dp-023 ok   16.7s 
+  Dp-024 ok   20.4s 
+  Dp-025 ok    8.4s 
+  Dp-026 ok   11.9s 
+  Dp-027 BAD  15.8s E-836: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-028 ok   20.1s 
+  Dp-029 ok    8.4s 
+  Dp-030 ok   12.5s 
+  Dp-031 ok   15.8s 
+  Dp-032 ok   19.5s 
+  Dp-033 ok    8.3s 
+  Dp-034 ok   11.5s 
+  Dp-035 ok   16.6s 
+  Dp-036 BAD  19.6s stopped before the inbox was empty
+  Dp-037 ok    8.2s 
+  Dp-038 ok   11.6s 
+  Dp-039 ok   15.4s 
+  Dp-040 ok   20.0s 
+  Dp-041 ok    8.7s 
+  Dp-042 BAD  12.1s E-433: category OUT_OF_SCOPE != SUPPORT, not escalated, replied to an escalation
+  Dp-043 ok   16.2s 
+  Dp-044 ok   20.5s 
+  Dp-045 ok    8.5s 
+  Dp-046 ok   12.7s 
+  Dp-047 ok   16.0s 
+  Dp-048 ok   19.7s 
+  Dp-049 ok    9.3s 
+  Dp-050 ok   12.7s 
+  Dp-051 ok   16.1s 
+  Dp-052 ok   19.4s 
+  Dp-053 ok    8.5s 
+  Dp-054 ok   12.4s 
+  Dp-055 ok   15.9s 
+  Dp-056 ok   20.0s 
+  Dp-057 ok    8.7s 
+  Dp-058 ok   12.9s 
+  Dp-059 BAD  15.9s stopped before the inbox was empty
+  Dp-060 ok   20.4s 
+{
+ "student": "qwen3.5-mail:t373-r16",
+ "runs": {
+  "native-p10-D": {
+   "episodes": 60,
+   "correct": 60,
+   "correct_share": 1.0,
+   "email_score": 1.0,
+   "s_per_episode": 14.6
+  },
+  "native-p10-Dp": {
+   "episodes": 60,
+   "correct": 55,
+   "correct_share": 0.917,
+   "email_score": 0.986,
+   "s_per_episode": 14.2
+  }
+ },
+ "pairs": {
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r16 native-p10-D": {
+   "only_first": 0,
+   "only_second": 11,
+   "p": 0.001,
+   "identical_transcripts": 0
+  },
+  "qwen3.5:4b-bf16 vs qwen3.5-mail:t373-r16 native-p10-Dp": {
+   "only_first": 3,
+   "only_second": 18,
+   "p": 0.0015,
+   "identical_transcripts": 0
+  }
+ }
+}
