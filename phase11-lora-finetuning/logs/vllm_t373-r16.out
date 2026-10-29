@@ -1,0 +1,54 @@
+base: starting vLLM (engine log: logs/vllm/t373-r16/base.engine.log)
+lora: starting vLLM (engine log: logs/vllm/t373-r16/lora.engine.log)
+{
+ "name": "t373-r16",
+ "engine": {
+  "dtype": "bfloat16",
+  "max_model_len": 8192,
+  "gpu_memory_utilization": 0.75,
+  "limit_mm_per_prompt": {
+   "image": 0,
+   "video": 0
+  },
+  "max_num_seqs": 16,
+  "seed": 42
+ },
+ "configs": {
+  "base": {
+   "load_s": 50.5,
+   "vs llama-server base": {
+    "turns": 320,
+    "identical": 307,
+    "same_first_40_chars": 318
+   },
+   "vs llama-server merged": {
+    "turns": 320,
+    "identical": 241,
+    "same_first_40_chars": 296
+   },
+   "vs llama-server lora": {
+    "turns": 320,
+    "identical": 241,
+    "same_first_40_chars": 296
+   }
+  },
+  "lora": {
+   "load_s": 54.6,
+   "vs llama-server base": {
+    "turns": 320,
+    "identical": 241,
+    "same_first_40_chars": 296
+   },
+   "vs llama-server merged": {
+    "turns": 320,
+    "identical": 308,
+    "same_first_40_chars": 320
+   },
+   "vs llama-server lora": {
+    "turns": 320,
+    "identical": 309,
+    "same_first_40_chars": 320
+   }
+  }
+ }
+}
